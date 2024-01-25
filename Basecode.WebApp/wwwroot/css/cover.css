@@ -1,0 +1,31 @@
+﻿/*
+ * Globals
+ */
+
+
+/* Custom default button */
+#header {
+    background-image: url('/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    height:700px
+}
+    
+.blur-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(2px); /* Adjust the blur amount as needed */
+}
+.container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Adjust width of the h1 element */
+#header h1 {
+    max-width: 600px; /* Set your desired maximum width */
+    width: 100%; /* Ensure it takes 100% width of the container */
+}

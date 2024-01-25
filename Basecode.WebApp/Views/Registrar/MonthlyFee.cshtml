@@ -1,0 +1,223 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+<link rel="stylesheet" href="/css/TableInfo.css" />
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main p-5">
+        <h1>
+            Manage Monthly Payments
+        </h1>
+        <div class="tab mt-3">
+            <button class="tablinks" onclick="tabs(event, 'Monthly')" id="defaultOpen">Monthly Fee</button>
+            <button class="tablinks" onclick="tabs(event, 'Review')">Pending Review</button>
+        </div>
+
+        <div id="Monthly" class="tabcontent">
+            <div class="row mt-3">
+                <div class="col-2">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter">Add Payment</button>
+                </div>
+                <div class="col-4 container-fluid">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Sort
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Separated link</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6 d-flex justify-content-end">
+                    <div class="input-group rounded w-50 ">
+                        <input type="search" onkeyup="myFunction()" id="myInput" class=" form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive overflow-auto " >
+
+                <table class="table overflow-auto" id="myTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Age</th>
+                            <th scope="col">LRN</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-blue">
+                            <td class="pt-2">
+                                <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="rounded-circle" alt="">
+                                <div class="pl-lg-5 pl-md-3 pl-1 name">Emilia Kollette</div>
+                            </td>
+                            <td class="pt-3 mt-1">25 Sep 2020</td>
+                            <td class="pt-3">11:00 AM</td>
+                            <td class="pt-3">Enrolled</td>
+                            <td class="pt-3"></td>
+                        </tr>
+                        <tr id="spacing-row">
+                            <td></td>
+                        </tr>
+                        <tr class="bg-blue">
+                            <td class="pt-2">
+                                <img src="https://images.pexels.com/photos/3765114/pexels-photo-3765114.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="rounded-circle" alt="">
+                                <div class="pl-lg-5 pl-md-3 pl-1 name">Anny Adams</div>
+                            </td>
+                            <td class="pt-3">26 Sep 2020</td>
+                            <td class="pt-3">11:00 AM</td>
+                            <td class="pt-3"><span class="fa fa-check pl-3"></span></td>
+                            <td class="pt-3"></td>
+                        </tr>
+                        <tr id="spacing-row">
+                            <td></td>
+                        </tr>
+                        <tr class="bg-blue">
+                            <td class="pt-2">
+                                <img src="https://images.pexels.com/photos/3779448/pexels-photo-3779448.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="rounded-circle" alt="">
+                                <div class="pl-lg-5 pl-md-3 pl-1 name">Arnold Linn</div>
+                            </td>
+                            <td class="pt-3">26 Sep 2020</td>
+                            <td class="pt-3">02:00 PM</td>
+                            <td class="pt-3"><span class="fa fa-check pl-3"></span></td>
+                            <td class="pt-3"></td>
+                        </tr>
+                        <tr id="spacing-row">
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <nav aria-label="...">
+                    <ul class="pagination pagination-lg justify-content-center">
+                        <li class="page-item" aria-current="page">
+                            <span class="page-link text-danger">1</span>
+                        </li>
+                        <li class="page-item "><a class="page-link text-danger" href="#">2</a></li>
+                        <li class="page-item "><a class="page-link text-danger" href="#">3</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <div id="Review" class="tabcontent">
+            <div class="row mt-3">
+                <div class="col"> 
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter">Validate Payments</button>
+                </div>             
+                <div class="col-md-6 d-flex justify-content-end">
+                    <div class="input-group rounded w-50">
+                        <input type="search" onkeyup="myFunction1()" id="myInput1" class=" form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+
+                <table class="table" id="myTable1">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Age</th>
+                            <th scope="col">LRN</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-blue">
+                            <td class="pt-2">
+                                <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="rounded-circle" alt="">
+                                <div class="pl-lg-5 pl-md-3 pl-1 name">Emilia Kollette</div>
+                            </td>
+                            <td class="pt-3 mt-1">25 Sep 2020</td>
+                            <td class="pt-3">11:00 AM</td>
+                            <td class="pt-3">Enrolled</td>
+                            <td class="pt-3"></td>
+                        </tr>
+                        <tr id="spacing-row">
+                            <td></td>
+                        </tr>
+                        <tr class="bg-blue">
+                            <td class="pt-2">
+                                <img src="https://images.pexels.com/photos/3765114/pexels-photo-3765114.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="rounded-circle" alt="">
+                                <div class="pl-lg-5 pl-md-3 pl-1 name">Anny Adams</div>
+                            </td>
+                            <td class="pt-3">26 Sep 2020</td>
+                            <td class="pt-3">11:00 AM</td>
+                            <td class="pt-3"><span class="fa fa-check pl-3"></span></td>
+                            <td class="pt-3"></td>
+                        </tr>
+                        <tr id="spacing-row">
+                            <td></td>
+                        </tr>
+                        <tr class="bg-blue">
+                            <td class="pt-2">
+                                <img src="https://images.pexels.com/photos/3779448/pexels-photo-3779448.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="rounded-circle" alt="">
+                                <div class="pl-lg-5 pl-md-3 pl-1 name">Arnold Linn</div>
+                            </td>
+                            <td class="pt-3">26 Sep 2020</td>
+                            <td class="pt-3">02:00 PM</td>
+                            <td class="pt-3"><span class="fa fa-check pl-3"></span></td>
+                            <td class="pt-3"></td>
+                        </tr>
+                        <tr id="spacing-row">
+                            <td></td>
+                        </tr>
+                        <tr class="bg-blue">
+                            <td class="pt-2">
+                                <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="rounded-circle" alt="">
+                                <div class="pl-lg-5 pl-md-3 pl-1 name">Josh Limosel</div>
+                            </td>
+                            <td class="pt-3">26 Sep 2020</td>
+                            <td class="pt-3">04:00 PM</td>
+                            <td class="pt-3"><span class="fa fa-minus pl-3"></span></td>
+                            <td class="pt-3"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <nav aria-label="...">
+                    <ul class="pagination pagination-lg justify-content-center">
+                        <li class="page-item" aria-current="page">
+                            <span class="page-link text-danger">1</span>
+                        </li>
+                        <li class="page-item "><a class="page-link text-danger" href="#">2</a></li>
+                        <li class="page-item "><a class="page-link text-danger" href="#">3</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    
+      
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/Tables.js"></script>

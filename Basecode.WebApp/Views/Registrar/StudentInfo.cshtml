@@ -1,0 +1,206 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+<link rel="stylesheet" href="/css/TableInfo.css" />
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main p-5">
+          <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                             class="rounded-circle img-fluid" style="width: 150px;">
+                        <h5 class="my-3">John Smith</h5>
+                        <p class="text-muted mb-1">Full Stack Developer</p>
+                        <p class="text-muted mb-4">Bay Area, San Francisco, CA</p>
+                        <div class="d-flex justify-content-center mb-2">
+                            <button type="button" class="btn btn-danger">Form-138</button>
+                            <button type="button" class="btn btn-outline-danger ms-1">Report Card</button>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            <div class="col-lg-8 grid-margin stretch-card">
+                <div class="tab">
+                    <button class="tablinks" onclick="tabs(event, 'Grades')" id="defaultOpen">Grades</button>
+                    <button class="tablinks" onclick="tabs(event, 'Values')">Values</button>
+                </div>
+
+                <div id="Grades" class="tabcontent">
+                    <h3>Grades</h3>
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Grades Records</h4>
+                            <p class="card-description">
+                                Basic table with card
+                            </p>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>ID No.</th>
+                                            <th>Created On</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Samso Park</td>
+                                            <td>34424433</td>
+                                            <td>12 May 2017</td>
+                                            <td><label class="badge badge-danger">Pending</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Marlo Sanki</td>
+                                            <td>53425532</td>
+                                            <td>15 May 2015</td>
+                                            <td><label class="badge badge-warning">In progress</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>John ryte</td>
+                                            <td>53275533</td>
+                                            <td>14 May 2017</td>
+                                            <td><label class="badge badge-info">Fixed</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Peter mark</td>
+                                            <td>53275534</td>
+                                            <td>16 May 2017</td>
+                                            <td><label class="badge badge-success">Completed</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dave</td>
+                                            <td>53275535</td>
+                                            <td>20 May 2017</td>
+                                            <td><label class="badge badge-warning">In progress</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dave</td>
+                                            <td>53275535</td>
+                                            <td>20 May 2017</td>
+                                            <td><label class="badge badge-warning">In progress</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dave</td>
+                                            <td>53275535</td>
+                                            <td>20 May 2017</td>
+                                            <td><label class="badge badge-warning">In progress</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dave</td>
+                                            <td>53275535</td>
+                                            <td>20 May 2017</td>
+                                            <td><label class="badge badge-warning">In progress</label></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!--Pagination-->
+                            <nav aria-label="...">
+                                <ul class="pagination pagination-lg justify-content-center">
+                                    <li class="page-item" aria-current="page">
+                                        <span class="page-link text-danger">1</span>
+                                    </li>
+                                    <li class="page-item "><a class="page-link text-danger" href="#">2</a></li>
+                                    <li class="page-item "><a class="page-link text-danger" href="#">3</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="Values" class="tabcontent">
+                    <h3>Values</h3>
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Values Record</h4>
+                            <p class="card-description">
+                                Basic table with card
+                            </p>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>ID No.</th>
+                                            <th>Created On</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Samso Park</td>
+                                            <td>34424433</td>
+                                            <td>12 May 2017</td>
+                                            <td><label class="badge badge-danger">Pending</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Marlo Sanki</td>
+                                            <td>53425532</td>
+                                            <td>15 May 2015</td>
+                                            <td><label class="badge badge-warning">In progress</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>John ryte</td>
+                                            <td>53275533</td>
+                                            <td>14 May 2017</td>
+                                            <td><label class="badge badge-info">Fixed</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Peter mark</td>
+                                            <td>53275534</td>
+                                            <td>16 May 2017</td>
+                                            <td><label class="badge badge-success">Completed</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dave</td>
+                                            <td>53275535</td>
+                                            <td>20 May 2017</td>
+                                            <td><label class="badge badge-warning">In progress</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dave</td>
+                                            <td>53275535</td>
+                                            <td>20 May 2017</td>
+                                            <td><label class="badge badge-warning">In progress</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dave</td>
+                                            <td>53275535</td>
+                                            <td>20 May 2017</td>
+                                            <td><label class="badge badge-warning">In progress</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dave</td>
+                                            <td>53275535</td>
+                                            <td>20 May 2017</td>
+                                            <td><label class="badge badge-warning">In progress</label></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!--Pagination-->
+                            <nav aria-label="...">
+                                <ul class="pagination pagination-lg justify-content-center">
+                                    <li class="page-item" aria-current="page">
+                                        <span class="page-link text-danger">1</span>
+                                    </li>
+                                    <li class="page-item "><a class="page-link text-danger" href="#">2</a></li>
+                                    <li class="page-item "><a class="page-link text-danger" href="#">3</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+          </div>
+    </div>
+        <script src="/js/Tables.js"></script>
+</div>
+</div>
