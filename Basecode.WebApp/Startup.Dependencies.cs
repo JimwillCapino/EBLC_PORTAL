@@ -17,9 +17,12 @@ namespace Basecode.WebApp
 
             // Services 
             services.AddScoped<IUserService, UserService>();
-
+            services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<INewEnrolleeService, NewEnrolleeService>();
             // Repositories
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<INewEnrolleeRepository, NewEnrolleeRepository>();
 
         }
     }
