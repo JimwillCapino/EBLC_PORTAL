@@ -16,18 +16,20 @@ namespace Basecode.Data.Repositories
         {
             _context = context;
         }
-        public string RegisterStudent(NewEnrollee newEnrollee) 
+        public int RegisterStudent(NewEnrollee newEnrollee) 
         {
             try
             {
                 _context.NewEnrollee.Add(newEnrollee);
                 _context.SaveChanges();
-                return "success";
+                return 1;
             }
             catch (Exception ex)
             {
-                return ex + " " + ex.Message;
+                Console.WriteLine(ex);
+                return -1;
             }
         }
+        
     }
 }

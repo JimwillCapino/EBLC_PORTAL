@@ -9,6 +9,6 @@ namespace Basecode.Services.Interfaces
 {
     public interface INewEnrolleeService
     {
-        public string RegisterStudent(NewEnrollee newEnrollee);
+        public int RegisterStudent(NewEnrollee newEnrollee);
     }
 }

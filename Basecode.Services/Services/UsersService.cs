@@ -16,7 +16,7 @@ namespace Basecode.Services.Services
         {
             _userRepository = userRepository;
         }
-        public string AddUser(Users user) 
+        public int AddUser(Users user) 
         {
             return _userRepository.AddUser(user);
         }

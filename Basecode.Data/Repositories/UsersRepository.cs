@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace Basecode.Data.Repositories
 {
     public class UsersRepository : BaseRepository, IUsersRepository
@@ -15,17 +14,18 @@ namespace Basecode.Data.Repositories
         {
             _context = context;
         }
-        public string AddUser(Users user)
+        public int AddUser(Users user)
         {
             try
             {
                 _context.Users.Add(user);
                 _context.SaveChanges();
-                return "success";
+                return user.UID;
             }
             catch (Exception ex)
             {
-                return ex+" "+ex.Message;
+                Console.WriteLine(ex.ToString());
+                return -1;
             }
         }
     }

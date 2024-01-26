@@ -17,6 +17,6 @@ namespace Basecode.Data.Models
         public string sex {  get; set; }
         public string role { get; set; }
         public byte[]? ProfilePic { get; set; }
-        public int PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }

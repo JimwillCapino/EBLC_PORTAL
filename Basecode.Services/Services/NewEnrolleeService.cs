@@ -16,8 +16,9 @@ namespace Basecode.Services.Services
         { 
             _repository = newEnrolleeRepository;
         }
-        public string RegisterStudent(NewEnrollee newEnrollee)
+        public int RegisterStudent(NewEnrollee newEnrollee)
         {
+
             return _repository.RegisterStudent(newEnrollee);
         }
     }

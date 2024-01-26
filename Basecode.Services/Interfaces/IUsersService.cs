@@ -9,6 +9,6 @@ namespace Basecode.Services.Interfaces
 {
     public interface IUsersService
     {
-        public string AddUser(Users user);
+        public int AddUser(Users user);
     }
 }
