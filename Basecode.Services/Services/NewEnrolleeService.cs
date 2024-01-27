@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace Basecode.Services.Services
 {
-    public class NewEnrolleeService : INewEnrolleeService
+    public class NewEnrolleeService:INewEnrolleeService
     {
         INewEnrolleeRepository _repository;
-        public NewEnrolleeService(INewEnrolleeRepository newEnrolleeRepository) 
+        public NewEnrolleeService(INewEnrolleeRepository repository) 
         { 
-            _repository = newEnrolleeRepository;
+            _repository = repository;
         }
-        public int RegisterStudent(NewEnrollee newEnrollee)
+        public void RegisterStudent(NewEnrollee newEnrollee)
         {
-
-            return _repository.RegisterStudent(newEnrollee);
+            if (!_repository.RegisterStudent(newEnrollee))
+                throw new Exception("An error occured.See the console for more info");
         }
     }
 }

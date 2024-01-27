@@ -9,6 +9,7 @@ namespace Basecode.Data.Interfaces
 {
     public interface IUsersRepository
     {
-        public int AddUser(Users user);
+        public int AddUser(UsersPortal user);
+        public int GetMostRecentUsersId();
     }
 }

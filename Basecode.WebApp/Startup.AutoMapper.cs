@@ -11,6 +11,8 @@ namespace Basecode.WebApp
         {
             var Config = new MapperConfiguration(cfg =>
             {
+                cfg.CreateMap<RegisterStudent, UsersPortal>();
+                cfg.CreateMap<RegisterStudent, NewEnrollee>();
             });
 
             services.AddSingleton(Config.CreateMapper());

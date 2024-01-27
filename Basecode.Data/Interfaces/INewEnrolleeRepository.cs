@@ -9,6 +9,6 @@ namespace Basecode.Data.Interfaces
 {
     public interface INewEnrolleeRepository
     {
-        public int RegisterStudent(NewEnrollee newEnrollee);
+        public bool RegisterStudent(NewEnrollee newEnrollee);
     }
 }

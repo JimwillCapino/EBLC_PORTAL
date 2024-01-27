@@ -14,13 +14,26 @@ namespace Basecode.Data.Repositories
         {
             _context = context;
         }
-        public int AddUser(Users user)
+        public int AddUser(UsersPortal user)
         {
             try
             {
-                _context.Users.Add(user);
+                _context.UsersPortal.Add(user);
                 _context.SaveChanges();
                 return user.UID;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return -1;
+            }
+        }
+        public int GetMostRecentUsersId()
+        {
+            try
+            {
+                var recentuserid = _context.UsersPortal.OrderByDescending(j => j.UID).FirstOrDefault();
+                return recentuserid.UID;
             }
             catch (Exception ex)
             {

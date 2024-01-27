@@ -9,6 +9,7 @@ namespace Basecode.Services.Interfaces
 {
     public interface IUsersService
     {
-        public int AddUser(Users user);
+        public int AddUser(UsersPortal user);
+        public int GetMostRecentUsersId();
     }
 }

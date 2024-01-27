@@ -1,4 +1,5 @@
-﻿using Basecode.Data.Models;
+﻿using Basecode.Data.Interfaces;
+using Basecode.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Basecode.Services.Interfaces
 {
     public interface INewEnrolleeService
     {
-        public int RegisterStudent(NewEnrollee newEnrollee);
+        public void RegisterStudent(NewEnrollee newEnrollee);
     }
 }
