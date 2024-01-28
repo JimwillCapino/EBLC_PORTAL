@@ -87,14 +87,14 @@
                                 <label for="fullname" class="form-label">Form-138/TOR<span class="text-danger">*</span></label>
                                 <div class="mb-3">
                                     
-                                    <input class="form-control" asp-for="TOR" type="file" id="formFile">
+                                    <input class="form-control" asp-for="TORFile" type="file" id="formFile" name ="TORFile">
                                 </div>
                             </div>
                             <div class="col-12">
                                 <label for="fullname" class="form-label">Certificate of Good Moral<span class="text-danger">*</span></label>
                                 <div class="mb-3">
 
-                                    <input class="form-control" asp-for="CGM" type="file" id="formFile">
+                                    <input class="form-control" asp-for="CGMFile" type="file" id="formFile" name ="CGMFile">
                                 </div>
                             </div>
                             <div class="col-12">
@@ -110,9 +110,15 @@
         </div>
     </div>
 </section>
-@if (!(string.IsNullOrEmpty(ViewData["Error"] as string)))
+@if (ViewBag.ErrorMessage != null)
 {
     <script>
-        alert('@ViewData["Error"]');
+        alert("@ViewBag.ErrorMessage");
+    </script>
+}
+else
+{
+    <script>
+        alert("Success");
     </script>
 }

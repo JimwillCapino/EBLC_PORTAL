@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Basecode.Data;
 using Basecode.Data.Models;
 using Basecode.Main.Models;
 using Basecode.Services.Interfaces;
@@ -41,28 +42,14 @@ namespace Basecode.Main.Controllers
         {
             try
             {
-                _usersService.AddUser(_mapper.Map<UsersPortal>(registerStudent));
-                var newEnrollee = _mapper.Map<NewEnrollee>(registerStudent);
-                newEnrollee.UID = _usersService.GetMostRecentUsersId();
-                //Console.Write(registerStudent.BirthCertificate.Length);
-                if (registerStudent.BirthCertificateFile!=null && registerStudent.BirthCertificateFile.Length>0)
-                {
-                    using(MemoryStream memory = new MemoryStream())
-                    {
-                        registerStudent.BirthCertificateFile.CopyTo(memory);
-                        newEnrollee.BirthCertificate = memory.ToArray();
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("File empty");
-                }
-                _newEnrolleeService.RegisterStudent(newEnrollee);
+                Constants.Enrollee.id = _usersService.AddUser(_mapper.Map<UsersPortal>(registerStudent));
+                _newEnrolleeService.RegisterStudent(registerStudent);
+                ViewBag.ErrorMessage = null;
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                ViewBag.ErrorMessage = ex.Message;
                 Console.WriteLine(ex.Message);
                 return RedirectToAction("Enroll");
             }

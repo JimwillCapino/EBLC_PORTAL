@@ -20,7 +20,7 @@ namespace Basecode.Data.Models
         public string sex { get; set; }
         public int age { get; set; }
         public IFormFile? BirthCertificateFile { get; set; }
-        public byte[]? CGM { get; set; }
-        public byte[]? TOR { get; set; } 
+        public IFormFile? CGMFile { get; set; }
+        public IFormFile? TORFile { get; set; } 
     }
 }

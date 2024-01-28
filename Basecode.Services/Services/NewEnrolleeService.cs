@@ -1,4 +1,6 @@
-﻿using Basecode.Data.Interfaces;
+﻿using AutoMapper;
+using Basecode.Data;
+using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
 using Basecode.Services.Interfaces;
 using System;
@@ -12,14 +14,45 @@ namespace Basecode.Services.Services
     public class NewEnrolleeService:INewEnrolleeService
     {
         INewEnrolleeRepository _repository;
-        public NewEnrolleeService(INewEnrolleeRepository repository) 
+        IUsersService _userService;
+        IMapper _mapper;
+        public NewEnrolleeService(INewEnrolleeRepository repository,IMapper mapper,IUsersService userService) 
         { 
             _repository = repository;
+            _mapper = mapper;
+            _userService = userService;
         }
-        public void RegisterStudent(NewEnrollee newEnrollee)
+        public void RegisterStudent(RegisterStudent student)
         {
-            if (!_repository.RegisterStudent(newEnrollee))
-                throw new Exception("An error occured.See the console for more info");
+            NewEnrollee enrollee = _mapper.Map<NewEnrollee>(student);
+            enrollee.UID = Constants.Enrollee.id;
+            //Console.Write(registerStudent.BirthCertificate.Length);
+            if ((student.BirthCertificateFile == null && student.BirthCertificateFile.Length == 0) 
+                && (student.CGMFile == null && student.CGMFile.Length == 0)
+                && (student.TORFile ==null && student.TORFile.Length ==0))
+            {
+                Console.WriteLine("File empty");
+                throw new Exception(Constants.Attachment.FileEmpty);
+            }
+            else
+            {       
+                using (MemoryStream memory = new MemoryStream())
+                {
+                    student.BirthCertificateFile.CopyTo(memory);
+                    enrollee.BirthCertificate = memory.ToArray();
+                    //memory.Dispose();
+
+                    student.CGMFile.CopyTo(memory);
+                    enrollee.CGM = memory.ToArray();
+                    //memory.Dispose();
+
+                    student.TORFile.CopyTo(memory);
+                    enrollee.TOR = memory.ToArray();
+                    //memory.Dispose();
+                }
+                if (!_repository.RegisterStudent(enrollee))
+                    throw new Exception(Constants.Exception.DB);
+            }         
         }
     }
 }

@@ -18,9 +18,9 @@ namespace Basecode.Data.Repositories
         {
             try
             {
-                _context.UsersPortal.Add(user);
+                var a =_context.UsersPortal.Add(user);
                 _context.SaveChanges();
-                return user.UID;
+                return a.Entity.UID;
             }
             catch (Exception ex)
             {
