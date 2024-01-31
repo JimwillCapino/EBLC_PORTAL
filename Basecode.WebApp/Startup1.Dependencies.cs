@@ -7,7 +7,7 @@ using Basecode.Services.Services;
 
 namespace Basecode.WebApp
 {
-    public partial class Startup
+    public partial class Startup1
     {
         private void ConfigureDependencies(IServiceCollection services)
         {            
