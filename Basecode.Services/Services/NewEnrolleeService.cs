@@ -40,19 +40,22 @@ namespace Basecode.Services.Services
                 {
                     student.BirthCertificateFile.CopyTo(memory);
                     enrollee.BirthCertificate = memory.ToArray();
-                    //memory.Dispose();
-
+                    
                     student.CGMFile.CopyTo(memory);
                     enrollee.CGM = memory.ToArray();
-                    //memory.Dispose();
+                    
 
                     student.TORFile.CopyTo(memory);
                     enrollee.TOR = memory.ToArray();
-                    //memory.Dispose();
+                   
                 }
                 if (!_repository.RegisterStudent(enrollee))
                     throw new Exception(Constants.Exception.DB);
             }         
+        }
+        public IEnumerable<RegisterStudent> GetAllEnrollees()
+        {
+            return _repository.GetAllEnrollees();
         }
     }
 }

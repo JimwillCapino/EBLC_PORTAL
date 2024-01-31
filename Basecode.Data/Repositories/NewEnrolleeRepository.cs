@@ -15,6 +15,14 @@ namespace Basecode.Data.Repositories
         {
             _context = context;
         }
+        private IQueryable<NewEnrollee> GetEnrollees()
+        {
+            return this.GetDbSet<NewEnrollee>();
+        }
+        private IQueryable<UsersPortal> GetUsersPortal()
+        {
+            return this.GetDbSet<UsersPortal>();
+        }
         public bool RegisterStudent(NewEnrollee newEnrollee)
         {
             try
@@ -27,6 +35,37 @@ namespace Basecode.Data.Repositories
             {
                 Console.WriteLine(ex.ToString());
                 return false;
+            }
+            
+        }
+        public IEnumerable<RegisterStudent> GetAllEnrollees() 
+        {
+            try
+            {
+                var newEnrollee = this.GetEnrollees();
+                var usersPortal = this.GetUsersPortal();
+
+                var registerStudents = from ne in newEnrollee
+                                       join u in usersPortal on ne.UID equals u.UID
+                                       select new RegisterStudent
+                                       {
+                                           FirstName = u.FirstName,
+                                           LastName = u.LastName,
+                                           MiddleName = u.MiddleName,
+                                           PhoneNumber = u.PhoneNumber,
+                                           email = u.email,
+                                           sex = u.sex,
+                                           BirthCertificateRecieve = ne.BirthCertificate,
+                                           CGMRecieve = ne.CGM,
+                                           TORRecieve = ne.TOR
+                                       };
+                return registerStudents;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw new Exception(ex.ToString());
             }
             
         }

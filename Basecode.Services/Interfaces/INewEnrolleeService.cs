@@ -11,5 +11,6 @@ namespace Basecode.Services.Interfaces
     public interface INewEnrolleeService
     {
         public void RegisterStudent(RegisterStudent student);
+        public IEnumerable<RegisterStudent> GetAllEnrollees();
     }
 }

@@ -1,0 +1,93 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+@using Basecode.Data.Models
+@model RegisterStudent
+<link rel="stylesheet" href="/css/TableInfo.css" />
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main p-5">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                             class="rounded-circle img-fluid" style="width: 150px;">
+                        <h5 class="my-3">@Model.FirstName @Model.MiddleName @Model.LastName</h5>
+                        <p class="text-muted mb-1">Enrollee</p>
+                        <p class="text-muted mb-4">@Model.Address</p>
+                        <div class="d-flex justify-content-center mb-2">
+                            <button type="button" class="btn btn-danger">Reject</button>
+                            <button type="button" class="btn btn-outline-danger ms-1">Schedule</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4 mb-lg-0">
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush rounded-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-phone fa-lg"></i>
+                                <p class="mb-0">@Model.PhoneNumber</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-envelope" style="color: #333333;"></>
+                                <p class="mb-0">@Model.email</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fab fa-twitter fa-lg" style="color: #55acee;"></i>
+                                <p class="mb-0"></p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fab fa-instagram fa-lg" style="color: #ac2bac;"></i>
+                                <p class="mb-0">mdbootstrap</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fab fa-facebook-f fa-lg" style="color: #3b5998;"></i>
+                                <p class="mb-0">mdbootstrap</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 grid-margin stretch-card">
+                <div class="tab">
+                    <button class="tablinks" onclick="tabs(event, 'Grades')" id="defaultOpen">Grades</button>
+                    <button class="tablinks" onclick="tabs(event, 'Values')">Values</button>
+                </div>
+
+                <div id="Grades" class="tabcontent">
+                    <h3>Grades</h3>
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Grades Records</h4>
+                            <p class="card-description">
+                                Basic table with card
+                            </p>
+                           
+                          
+                        </div>
+                    </div>
+                </div>
+
+                <div id="Values" class="tabcontent">
+                    <h3>Values</h3>
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Values Record</h4>
+                            <p class="card-description">
+                                Basic table with card
+                            </p>
+                           
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <script src="/js/Tables.js"></script>
+    </div>
+</div>

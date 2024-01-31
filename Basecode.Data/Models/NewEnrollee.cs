@@ -11,7 +11,7 @@ namespace Basecode.Data.Models
     {
         [Key]
         public int Enrollee_Id { get; set; }    
-        public int? UID { get; set; }
+        public int UID { get; set; }
         public byte[]? CGM { get; set; }
         public byte[]? BirthCertificate { get; set; }    
         public byte[]? TOR { get; set; }
