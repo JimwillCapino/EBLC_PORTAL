@@ -19,10 +19,12 @@ namespace Basecode.WebApp
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<INewEnrolleeService, NewEnrolleeService>();
+            services.AddScoped<IAdminService, AdminService>();
             // Repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<INewEnrolleeRepository, NewEnrolleeRepository>();
+            services.AddScoped<IAdminRepository, AdminRepository>();
 
         }
     }
