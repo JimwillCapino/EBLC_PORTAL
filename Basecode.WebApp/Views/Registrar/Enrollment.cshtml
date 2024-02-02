@@ -1,0 +1,50 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+@using Basecode.Data.Models
+@model IEnumerable<RegisterStudent>
+
+<link rel="stylesheet" href="/css/TableInfo.css" />
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main p-5">
+        <h1>
+            Manage New Enrollees
+        </h1>
+        <div class="tab mt-3">
+            <button class="tablinks" onclick="tabs(event, 'newEnrollment')" id="defaultOpen">New Enrollees</button>
+            <button class="tablinks" onclick="tabs(event, 'approval')">Approval</button>
+        </div>
+
+        <div id="newEnrollment" class="tabcontent">
+            <div class="table-responsive overflow-auto">
+                <table class="table overflow-auto" id="myTable">
+                    <tbody>
+                        @foreach (RegisterStudent student in Model)
+                        {
+                            <tr class="bg-blue">
+                                <td class="pt-3 mt-1">@student.FirstName @student.MiddleName @student.LastName</td>
+                                <td class="pt-3">@student.PhoneNumber</td>
+                                <td class="pt-3">@student.email</td>
+                                <td class="pt-3">@student.sex</td>
+                            </tr>
+                            <tr id="spacing-row">
+                                <td> </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>      
+        </div>
+
+        <div id="approval" class="tabcontent">
+            <h3>Paris</h3>
+            <p>Paris is the capital of France.</p>
+        </div>
+    </div>
+</div>
+<script src="/js/Tables.js"></script>

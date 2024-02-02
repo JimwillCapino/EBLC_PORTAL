@@ -4,6 +4,10 @@ namespace Basecode.Data
 {
     public static class Constants
     {
+        public class Enrollee
+        {
+            public static int id;
+        }
         public class Token
         {
             public const string Issuer = "Basecode:Issuer";

@@ -3,10 +3,11 @@ using Basecode.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Azure.Core.Pipeline;
 
 namespace Basecode.WebApp
 {
-    public partial class Startup
+    public partial class Startup1
     {
         private void ConfigureAuth(IServiceCollection services)
         {
@@ -31,6 +32,7 @@ namespace Basecode.WebApp
                     ValidateLifetime = true,            // Validate the token expiry 
                 };
             });
+            services.AddMvc();
         }
 
         private void ConfigureAuth(IApplicationBuilder app)
