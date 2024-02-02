@@ -15,6 +15,7 @@ namespace Basecode.WebApp
                 endpoints.MapControllerRoute(
                     name: "token",
                     pattern: "api/{token}");
+                endpoints.MapRazorPages();
             });
         }
     }

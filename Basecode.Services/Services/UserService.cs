@@ -16,42 +16,42 @@ namespace Basecode.Services.Services
             _userRepository = userRepository;
         }
 
-        public User FindByUsername(string username)
+        public IdentityUser FindByUsername(string username)
         {
             return _userRepository.FindByUsername(username);
         }
 
-        public User FindById(string id)
+        public IdentityUser FindById(string id)
         {
             return _userRepository.FindById(id);
         }
 
-        public User FindUser(string userName)
+        public IdentityUser FindUser(string userName)
         {
             return _userRepository.FindUser(userName);
         }
 
-        public IEnumerable<User> FindAll()
+        public IEnumerable<IdentityUser> FindAll()
         {
             return _userRepository.FindAll();
         }
 
-        public bool Create(User user)
+        public bool Create(IdentityUser user)
         {
             return _userRepository.Create(user);
         }
 
-        public bool Update(User user)
+        public bool Update(IdentityUser user)
         {
             return _userRepository.Update(user);
         }
 
-        public void Delete(User user)
+        public void Delete(IdentityUser user)
         {
             _userRepository.Delete(user);
         }
 
-        public Task<User> FindUserAsync(string userName, string password)
+        public Task<IdentityUser> FindUserAsync(string userName, string password)
         {
             return _userRepository.FindUserAsync(userName, password);
         }

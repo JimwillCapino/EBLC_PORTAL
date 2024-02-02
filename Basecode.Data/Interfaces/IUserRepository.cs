@@ -5,16 +5,16 @@ namespace Basecode.Data.Interfaces
 {
     public interface IUserRepository
     {
-        User FindByUsername(string username);
-        User FindById(string id);
-        User FindUser(string UserName);
-        IEnumerable<User> FindAll();
-        bool Create(User user);
-        bool Update(User user);
-        void Delete(User user);
+        IdentityUser FindByUsername(string username);
+        IdentityUser FindById(string id);
+        IdentityUser FindUser(string UserName);
+        IEnumerable<IdentityUser> FindAll();
+        bool Create(IdentityUser user);
+        bool Update(IdentityUser user);
+        void Delete(IdentityUser user);
         Task<IdentityResult> RegisterUser(string username, string password, string firstName, string lastName, string email, string role);
         Task<IdentityResult> CreateRole(string roleName);
         Task<IdentityUser> FindUser(string userName, string password);
-        Task<User> FindUserAsync(string userName, string password);
+        Task<IdentityUser> FindUserAsync(string userName, string password);
     }
 }
