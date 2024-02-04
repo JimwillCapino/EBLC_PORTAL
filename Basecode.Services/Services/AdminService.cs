@@ -1,4 +1,5 @@
 ﻿using Basecode.Data.Interfaces;
+using Basecode.Data.Models;
 using Basecode.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -20,6 +21,10 @@ namespace Basecode.Services.Services
         public async Task<IdentityResult> CreateRole(string roleName)
         {
             return await _adminRepository.CreateRole(roleName);
+        }
+        public void AddUser(UsersPortal usersPortal)
+        {
+            _adminRepository.AddUser(usersPortal);
         }
     }
 }

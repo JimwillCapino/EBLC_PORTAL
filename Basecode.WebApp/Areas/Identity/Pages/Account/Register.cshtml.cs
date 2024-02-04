@@ -18,6 +18,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Basecode.Data.ViewModels;
+using Newtonsoft.Json;
+using Basecode.Services.Interfaces;
+using Basecode.Data.Models;
 
 namespace Basecode.WebApp.Areas.Identity.Pages.Account
 {
@@ -30,6 +34,7 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IAdminService _adminService;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -37,7 +42,8 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IAdminService adminService)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -46,6 +52,7 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager;
+            _adminService = adminService;
         }
 
         /// <summary>
@@ -73,6 +80,26 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            [Required]
+            [JsonProperty(PropertyName = "first_name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [JsonProperty(PropertyName = "last_name")]      
+            public string LastName { get; set; }
+
+            [Required]
+            [StringLength(50)]
+            public string MiddleName { get; set; }
+            [Required]
+            [StringLength(2)]
+            public string sex { get; set; }
+            [Required]
+            [StringLength(50)]
+            public string Address { get; set; }
+            [Required]
+            [StringLength(11)]
+            public string PhoneNumber { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -130,6 +157,18 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
                         await _userManager.AddToRoleAsync(user, userRole.Name);
 
                     var userId = await _userManager.GetUserIdAsync(user);
+
+                    //add user details to the usersPortal Table
+                    var newuser = new UsersPortal();
+                    newuser.FirstName = Input.FirstName;
+                    newuser.LastName = Input.LastName;
+                    newuser.MiddleName = Input.MiddleName;
+                    newuser.PhoneNumber = Input.PhoneNumber;
+                    newuser.Address =Input.Address;
+                    newuser.sex = Input.sex;
+                    newuser.userId = userId;
+                    _adminService.AddUser(newuser);
+
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(

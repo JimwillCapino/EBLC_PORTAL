@@ -1,10 +1,12 @@
 ﻿using Basecode.Data.ViewModels;
 using Basecode.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Basecode.WebApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         IAdminService _adminService;
