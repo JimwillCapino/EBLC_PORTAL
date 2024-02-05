@@ -18,6 +18,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Basecode.Data.ViewModels;
+using Newtonsoft.Json;
+using Basecode.Services.Interfaces;
+using Basecode.Data.Models;
 
 namespace Basecode.WebApp.Areas.Identity.Pages.Account
 {
@@ -29,13 +33,17 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUsersService _usersService;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager,
+            IUsersService usersService)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,6 +51,8 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
+            _usersService = usersService;
         }
 
         /// <summary>
@@ -70,6 +80,29 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            [Required]
+            [JsonProperty(PropertyName = "first_name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [JsonProperty(PropertyName = "last_name")]      
+            public string LastName { get; set; }
+
+            [Required]
+            [StringLength(50)]
+            public string MiddleName { get; set; }
+            [Required]
+            [StringLength(2)]
+            public string sex { get; set; }
+            [Required]
+            [StringLength(50)]
+            public string Address { get; set; }
+            [Required]
+            [StringLength(11)]
+            public string PhoneNumber { get; set; }
+            [Required]
+            [StringLength(10)]
+            public string Role { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -113,16 +146,32 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
-
+                
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+                    var userRole = _roleManager.FindByNameAsync(Input.Role).Result;
+
+                    if (userRole != null)
+                        await _userManager.AddToRoleAsync(user, userRole.Name);
 
                     var userId = await _userManager.GetUserIdAsync(user);
+
+                    //add user details to the usersPortal Table
+                    var newuser = new UsersPortal();
+                    newuser.FirstName = Input.FirstName;
+                    newuser.LastName = Input.LastName;
+                    newuser.MiddleName = Input.MiddleName;
+                    newuser.PhoneNumber = Input.PhoneNumber;
+                    newuser.Address =Input.Address;
+                    newuser.sex = Input.sex;
+                    newuser.userId = userId;
+                    _usersService.AddUser(newuser);
+                    returnUrl = Url.Action("Index","Admin");
+
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
@@ -140,7 +189,7 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                       // await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }
                 }

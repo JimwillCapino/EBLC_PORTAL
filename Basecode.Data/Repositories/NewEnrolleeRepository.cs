@@ -53,7 +53,6 @@ namespace Basecode.Data.Repositories
                                            LastName = u.LastName,
                                            MiddleName = u.MiddleName,
                                            PhoneNumber = u.PhoneNumber,
-                                           email = u.email,
                                            sex = u.sex,
                                            BirthCertificateRecieve = ne.BirthCertificate,
                                            CGMRecieve = ne.CGM,

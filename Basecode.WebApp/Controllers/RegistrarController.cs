@@ -1,8 +1,10 @@
 ﻿using Basecode.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Basecode_WebApp.Controllers
 {
+    [Authorize(Roles = "Registrar")]
     public class RegistrarController : Controller
     {
         private INewEnrolleeService _newEnrolleeService;
