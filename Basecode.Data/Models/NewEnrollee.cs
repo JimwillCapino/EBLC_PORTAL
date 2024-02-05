@@ -15,5 +15,7 @@ namespace Basecode.Data.Models
         public byte[]? CGM { get; set; }
         public byte[]? BirthCertificate { get; set; }    
         public byte[]? TOR { get; set; }
+        public  int GradeEnrolled { get; set; }
+        
     }
 }
