@@ -1,4 +1,5 @@
 ﻿using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace Basecode.Data.Interfaces
     {
         public bool RegisterStudent(NewEnrollee newEnrollee);
         public IEnumerable<RegisterStudent> GetAllEnrollees();
+        public IEnumerable<NewEnrolleeViewModel> GetNewEnrolleeInitView();
     }
 }

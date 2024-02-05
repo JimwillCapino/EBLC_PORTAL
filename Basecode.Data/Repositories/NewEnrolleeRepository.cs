@@ -1,5 +1,6 @@
 ﻿using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,35 +39,62 @@ namespace Basecode.Data.Repositories
             }
             
         }
-        public IEnumerable<RegisterStudent> GetAllEnrollees() 
+        //public IEnumerable<RegisterStudent> GetAllEnrollees() 
+        //{
+        //    try
+        //    {
+        //        var newEnrollee = this.GetEnrollees();
+        //        var usersPortal = this.GetUsersPortal();
+
+        //        var registerStudents = from ne in newEnrollee
+        //                               join u in usersPortal on ne.UID equals u.UID
+        //                               select new RegisterStudent
+        //                               {
+        //                                   FirstName = u.FirstName,
+        //                                   LastName = u.LastName,
+        //                                   MiddleName = u.MiddleName,
+        //                                   PhoneNumber = u.PhoneNumber,
+        //                                   sex = u.sex,
+        //                                   BirthCertificateRecieve = ne.BirthCertificate,
+        //                                   CGMRecieve = ne.CGM,
+        //                                   TORRecieve = ne.TOR
+        //                               };
+        //        return registerStudents;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.ToString());
+        //        throw new Exception(ex.ToString());
+        //    }
+            
+        //}
+        public IEnumerable<NewEnrolleeViewModel> GetNewEnrolleeInitView()
         {
             try
             {
-                var newEnrollee = this.GetEnrollees();
+                var enrollees = this.GetEnrollees();
                 var usersPortal = this.GetUsersPortal();
 
-                var registerStudents = from ne in newEnrollee
-                                       join u in usersPortal on ne.UID equals u.UID
-                                       select new RegisterStudent
-                                       {
-                                           FirstName = u.FirstName,
-                                           LastName = u.LastName,
-                                           MiddleName = u.MiddleName,
-                                           PhoneNumber = u.PhoneNumber,
-                                           sex = u.sex,
-                                           BirthCertificateRecieve = ne.BirthCertificate,
-                                           CGMRecieve = ne.CGM,
-                                           TORRecieve = ne.TOR
-                                       };
-                return registerStudents;
-
+                var newviewmodel = from e in enrollees
+                                   join u in usersPortal on e.UID equals u.UID
+                                   select new NewEnrolleeViewModel
+                                   {
+                                       UID = e.UID,
+                                       FirstName = u.FirstName,
+                                       Middlename = u.MiddleName,
+                                       LastName = u.LastName,
+                                       sex = u.sex,
+                                       age = u.age,
+                                       GradeEnrolled = e.GradeEnrolled
+                                   };
+                return newviewmodel;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine(ex.Message);
                 throw new Exception(ex.ToString());
             }
-            
         }
     }
 }
