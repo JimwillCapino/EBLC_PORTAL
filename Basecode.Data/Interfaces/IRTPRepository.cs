@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Basecode.Data.Interfaces
 {
-    public interface INewEnrolleeRepository
+    public interface IRTPRepository
     {
-        public bool RegisterStudent(NewEnrollee newEnrollee);
-        public IEnumerable<RegisterStudent> GetAllEnrollees();
+        public void addRTPCommons(RTPCommons rtpcommons);
     }
 }
