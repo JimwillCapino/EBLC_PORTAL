@@ -21,11 +21,14 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
-
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -115,6 +118,18 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    var user = await _signInManager.UserManager.FindByNameAsync(Input.Email);
+                    var role = await _signInManager.UserManager.GetRolesAsync(user);
+
+                    if (role.Contains("Admin"))
+                    {
+                        return LocalRedirect("~/Admin/Index");
+                    }                       
+                    else if (role.Contains("Registrar"))
+                    {
+                        return LocalRedirect("~/Registrar/Index");                     
+                    }
+                    Console.WriteLine(role.First());
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
