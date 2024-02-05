@@ -23,11 +23,12 @@ namespace Basecode.Data.Repositories
         {
             return this.GetDbSet<UsersPortal>();
         }
-        public bool RegisterStudent(NewEnrollee newEnrollee)
+        public bool RegisterStudent(NewEnrollee newEnrollee, Parent parent)
         {
             try
             {
                 _context.NewEnrollee.Add(newEnrollee);
+                _context.Parent.Add(parent);
                 _context.SaveChanges();
                 return true;
             }

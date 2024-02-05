@@ -9,7 +9,7 @@ namespace Basecode.Data.Interfaces
 {
     public interface INewEnrolleeRepository
     {
-        public bool RegisterStudent(NewEnrollee newEnrollee);
+        public bool RegisterStudent(NewEnrollee newEnrollee, Parent parent);
         public IEnumerable<RegisterStudent> GetAllEnrollees();
     }
 }
