@@ -28,5 +28,17 @@ namespace Basecode.Data.Repositories
                 Console.Write(ex.ToString());
             }
         }
+        public IEnumerable<RTPCommons> getRTPCommons()
+        {
+            try
+            {
+                return this.GetDbSet<RTPCommons>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw new Exception("Error");
+            }
+        }
     }
 }
