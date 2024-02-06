@@ -20,12 +20,15 @@ namespace Basecode.WebApp
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<INewEnrolleeService, NewEnrolleeService>();
             services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IParentService, ParentService>();
+            services.AddScoped<IRTPService, RTPService>();
             // Repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<INewEnrolleeRepository, NewEnrolleeRepository>();
             services.AddScoped<IAdminRepository, AdminRepository>();
-
+            services.AddScoped<IParentRepository, ParentRepository>();
+            services.AddScoped<IRTPRepository, RTPRepository>();
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Basecode.Data.Repositories
 {
-    public class ParentRepository:BaseRepository
+    public class ParentRepository:BaseRepository,IParentRepository
     {
         BasecodeContext _context;
         public ParentRepository(IUnitOfWork unitOfWork, BasecodeContext context):base(unitOfWork) 
@@ -28,7 +28,7 @@ namespace Basecode.Data.Repositories
                 Console.WriteLine(ex.ToString());       
             }
         }
-        public IEnumerable<Parent> GetAllParents()
+        public IEnumerable<Parent> GetAllParents()  
         {
             try
             {
