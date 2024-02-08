@@ -11,15 +11,16 @@ namespace Basecode.Services.Services
 {
     public class ParentService: IParentService
     {
-        IParentRepository _parentRepository;
+        private readonly IParentRepository _parentRepository;
 
         public ParentService(IParentRepository parentRepository)
         {
             _parentRepository = parentRepository;
         }
-        public void AddParent(Parent parent)
+        public int AddParent(Parent parent, string status)
         {
-            _parentRepository.AddParent(parent);
+            parent.status = status;
+            return _parentRepository.AddParent(parent);
         }
         public IEnumerable<Parent> GetAllParents()
         {

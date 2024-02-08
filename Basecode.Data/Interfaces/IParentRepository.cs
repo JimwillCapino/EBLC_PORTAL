@@ -9,7 +9,7 @@ namespace Basecode.Data.Interfaces
 {
     public interface IParentRepository
     {
-        public void AddParent(Parent parent);
+        public int AddParent(Parent parent);
         public IEnumerable<Parent> GetAllParents();
     }
 }

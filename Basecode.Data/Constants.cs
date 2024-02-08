@@ -8,6 +8,10 @@ namespace Basecode.Data
         {
             public static int id;
         }
+        public class Parent
+        {
+            public static int UID;
+        }
         public class Token
         {
             public const string Issuer = "Basecode:Issuer";

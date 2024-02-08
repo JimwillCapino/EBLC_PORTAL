@@ -11,21 +11,23 @@ namespace Basecode.Data.Repositories
 {
     public class ParentRepository:BaseRepository,IParentRepository
     {
-        BasecodeContext _context;
+        private readonly BasecodeContext _context;
         public ParentRepository(IUnitOfWork unitOfWork, BasecodeContext context):base(unitOfWork) 
         { 
             _context = context;
         }
-        public void AddParent(Parent parent)
+        public int AddParent(Parent parent)
         {
             try
             {
-                _context.Parent.Add(parent);
+                var a =_context.Parent.Add(parent);
                 _context.SaveChanges();
+                return a.Entity.Id;
             }
             catch (Exception ex) 
             { 
-                Console.WriteLine(ex.ToString());       
+                Console.WriteLine(ex.ToString());
+                throw ex;
             }
         }
         public IEnumerable<Parent> GetAllParents()  

@@ -39,36 +39,36 @@ namespace Basecode.Data.Repositories
             }
             
         }
-        //public IEnumerable<RegisterStudent> GetAllEnrollees() 
-        //{
-        //    try
-        //    {
-        //        var newEnrollee = this.GetEnrollees();
-        //        var usersPortal = this.GetUsersPortal();
+        public IEnumerable<RegisterStudent> GetAllEnrollees()
+        {
+            try
+            {
+                var newEnrollee = this.GetEnrollees();
+                var usersPortal = this.GetUsersPortal();
 
-        //        var registerStudents = from ne in newEnrollee
-        //                               join u in usersPortal on ne.UID equals u.UID
-        //                               select new RegisterStudent
-        //                               {
-        //                                   FirstName = u.FirstName,
-        //                                   LastName = u.LastName,
-        //                                   MiddleName = u.MiddleName,
-        //                                   PhoneNumber = u.PhoneNumber,
-        //                                   sex = u.sex,
-        //                                   BirthCertificateRecieve = ne.BirthCertificate,
-        //                                   CGMRecieve = ne.CGM,
-        //                                   TORRecieve = ne.TOR
-        //                               };
-        //        return registerStudents;
+                var registerStudents = from ne in newEnrollee
+                                       join u in usersPortal on ne.UID equals u.UID
+                                       select new RegisterStudent
+                                       {
+                                           FirstName = u.FirstName,
+                                           LastName = u.LastName,
+                                           MiddleName = u.MiddleName,
+                                           //PhoneNumber = u.PhoneNumber,
+                                           sex = u.sex,
+                                           BirthCertificateRecieve = ne.BirthCertificate,
+                                           CGMRecieve = ne.CGM,
+                                           TORRecieve = ne.TOR
+                                       };
+                return registerStudents;
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.ToString());
-        //        throw new Exception(ex.ToString());
-        //    }
-            
-        //}
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw new Exception(ex.ToString());
+            }
+
+        }
         public IEnumerable<NewEnrolleeViewModel> GetNewEnrolleeInitView()
         {
             try
@@ -85,7 +85,7 @@ namespace Basecode.Data.Repositories
                                        Middlename = u.MiddleName,
                                        LastName = u.LastName,
                                        sex = u.sex,
-                                       age = u.age,
+                                       //age = u.age,
                                        GradeEnrolled = e.GradeEnrolled
                                    };
                 return newviewmodel;

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Basecode.Data;
+using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
 using Basecode.Main.Models;
 using Basecode.Services.Interfaces;
@@ -16,13 +17,20 @@ namespace Basecode.Main.Controllers
         private readonly IMapper _mapper;
         INewEnrolleeService _newEnrolleeService;
         IUsersService _usersService;
-        
-        public HomeController(ILogger<HomeController> logger, IUsersService usersService,IMapper mapper,INewEnrolleeService newEnrolleeService)
+        IRTPService _rtpService;
+        IParentService _parentService;
+        public HomeController(ILogger<HomeController> logger, 
+            IUsersService usersService,IMapper mapper,
+            INewEnrolleeService newEnrolleeService, 
+            IRTPService rTPService,
+            IParentService parentService)
         {
             _logger = logger;
             _newEnrolleeService = newEnrolleeService;
             _usersService = usersService;
             _mapper = mapper;
+            _rtpService = rTPService;
+            _parentService = parentService;
         }
 
         public IActionResult Index()
@@ -39,12 +47,11 @@ namespace Basecode.Main.Controllers
         }
         [HttpPost]
         public IActionResult RegisterEnrollee(RegisterStudent registerStudent)
-        {
+        {          
             try
-            {
-                Constants.Enrollee.id = _usersService.AddUser(_mapper.Map<UsersPortal>(registerStudent));
-                _newEnrolleeService.RegisterStudent(registerStudent);
-                ViewBag.ErrorMessage = null;
+            {           
+                _newEnrolleeService.RegisterStudent(registerStudent);              
+                ViewBag.ErrorMessage = "Success";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
