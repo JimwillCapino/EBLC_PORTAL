@@ -1,6 +1,8 @@
-﻿using Basecode.Services.Interfaces;
+﻿using Basecode.Data;
+using Basecode.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata;
 
 namespace Basecode_WebApp.Controllers
 {
@@ -30,7 +32,15 @@ namespace Basecode_WebApp.Controllers
         }
         public IActionResult Enrollment()
         {
-            return View(_newEnrolleeService.GetAllEnrollees());
+            try
+            {
+                return View(_newEnrolleeService.GetNewEnrolleeInitView());
+            }
+            catch
+            {
+                ViewBag.ErrorMessage = Constants.Exception.DB;
+                return RedirectToAction("Enrollment");
+            }
         }
     }
 }

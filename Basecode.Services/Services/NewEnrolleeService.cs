@@ -2,6 +2,7 @@
 using Basecode.Data;
 using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 using Basecode.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -50,7 +51,7 @@ namespace Basecode.Services.Services
                 //Add parents to the UsersPortal Table
                 var id = _usersService.AddUser(parent);
 
-                //Add Parents Detail the Parents Table
+                //Add Parents Detail to the Parents Table
                 parentDetails.UID = id;                
                 var parentid = _parentService.AddParent(parentDetails, "Not Enrolled");
 
@@ -91,6 +92,30 @@ namespace Basecode.Services.Services
         public IEnumerable<RegisterStudent> GetAllEnrollees()
         {
             return _repository.GetAllEnrollees();
+        }
+        public IEnumerable<NewEnrolleeViewModel> GetNewEnrolleeInitView()
+        {
+            try
+            {
+                return _repository.GetNewEnrolleeInitView();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ex.Message}");
+                throw;
+            }
+        }
+
+        public RegisterStudent GetStudent(int id)
+        {
+            try
+            {
+                return _repository.GetStudent(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

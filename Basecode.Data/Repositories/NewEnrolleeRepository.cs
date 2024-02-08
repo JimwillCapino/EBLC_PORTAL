@@ -84,17 +84,57 @@ namespace Basecode.Data.Repositories
                                        FirstName = u.FirstName,
                                        Middlename = u.MiddleName,
                                        LastName = u.LastName,
-                                       sex = u.sex,
-                                       //age = u.age,
-                                       GradeEnrolled = e.GradeEnrolled
+                                       sex = u.sex,                                   
+                                       GradeEnrolled = e.GradeEnrolled,
+                                       Birthday = u.Birthday
                                    };
                 return newviewmodel;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                throw new Exception(ex.ToString());
+                throw new Exception();
             }
+        }
+        public RegisterStudent GetStudent(int id)
+        {
+            try
+            {
+                var student = _context.NewEnrollee.Find(id);
+                var parent = _context.Parent.FirstOrDefault(p => p.UID == student.ParentID);
+                var userStudent = _context.UsersPortal.FirstOrDefault(us => us.UID == student.UID);
+                var userParent = _context.UsersPortal.FirstOrDefault(up => up.UID == parent.UID);
+                var rtpcommons = _context.RTPCommons.FirstOrDefault(r => r.UID == parent.UID);
+
+                var CompleteInfo = new RegisterStudent()
+                {
+                    FirstName = userStudent.FirstName,
+                    LastName = userStudent.LastName,
+                    MiddleName = userStudent.MiddleName,
+                    Birthday = userStudent.Birthday,
+                    BirthCertificateRecieve =student.BirthCertificate,
+                    CGMRecieve = student.CGM,
+                    TORRecieve = student.TOR,
+                    sex = userStudent.sex,
+                    GradeEnrolled = student.GradeEnrolled,
+                    ParentFirstName = userParent.FirstName,
+                    ParentLastName = userParent.LastName,
+                    ParentMiddleName = userParent.MiddleName,
+                    PhoneNumber = rtpcommons.PhoneNumber,
+                    email = student.Email,
+                    Address = rtpcommons.Address,
+                    Gcash = parent.Gcash,
+                    ParentBirthday = userParent.Birthday,
+                    Parentsex = userParent.sex,
+                };
+                return CompleteInfo;
+            }
+            catch(Exception ex) 
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception(Constants.Exception.DB);
+            }
+            
         }
     }
 }

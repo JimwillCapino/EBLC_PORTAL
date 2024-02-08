@@ -11,9 +11,9 @@ namespace Basecode.Data.ViewModels
         public int UID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Middlename { get; set; } 
-        public int? age { get; set; }
+        public string Middlename { get; set; }        
         public string sex { get; set; }
         public int GradeEnrolled {  get; set; }
+        public DateTime Birthday { get; set; }
     }
 }
