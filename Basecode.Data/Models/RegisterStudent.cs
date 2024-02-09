@@ -22,7 +22,7 @@ namespace Basecode.Data.Models
         public byte[]? BirthCertificateRecieve { get; set; }
         public byte[]? CGMRecieve { get; set; }
         public byte[]? TORRecieve { get; set; }
-
+        public DateTime? ExamSchedule { get; set; }
         public string ParentFirstName { get; set; }
         public string ParentMiddleName { get; set; }
         public string ParentLastName { get; set; }

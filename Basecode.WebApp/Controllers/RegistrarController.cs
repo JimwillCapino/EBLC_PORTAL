@@ -39,6 +39,18 @@ namespace Basecode_WebApp.Controllers
             catch
             {
                 ViewBag.ErrorMessage = Constants.Exception.DB;
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult NewEnrolleeInfo(int studentId)
+        {
+            try
+            {
+                return View(_newEnrolleeService.GetStudent(studentId));
+            }
+            catch
+            {
+                ViewBag.ErrorMessage = Constants.Exception.DB;
                 return RedirectToAction("Enrollment");
             }
         }

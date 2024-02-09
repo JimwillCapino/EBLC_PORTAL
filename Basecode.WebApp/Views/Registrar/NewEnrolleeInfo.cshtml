@@ -1,12 +1,21 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using Basecode.Data.Models
+@model RegisterStudent
 @{
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    var s = "";
+    if (Model.sex == "F") s = "Female";
+    else s = "Male";
+    var currDate = DateTime.Now;
+    var age = currDate.Year - Model.Birthday.Year;
+    var parentsex = "";
+    if (Model.Parentsex == "F") parentsex = "Female";
+    else parentsex = "Male";
 }
-@using Basecode.Data.Models
-@model RegisterStudent
+
 <link rel="stylesheet" href="/css/TableInfo.css" />
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
@@ -18,11 +27,13 @@
                         <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
                              class="rounded-circle img-fluid" style="width: 150px;">
                         <h5 class="my-3">@Model.FirstName @Model.MiddleName @Model.LastName</h5>
-                        <p class="text-muted mb-1">Enrollee</p>
+                        <p class="text-muted mb-1">Grade to Enroll: @Model.GradeEnrolled</p>
+                        <p class="text-muted mb-1">Age: @age</p>
+                        <p class="text-muted mb-1">Gender: @s</p>
                         <p class="text-muted mb-4">@Model.Address</p>
                         <div class="d-flex justify-content-center mb-2">
                             <button type="button" class="btn btn-danger">Reject</button>
-                            <button type="button" class="btn btn-outline-danger ms-1">Schedule</button>
+                            <button type="button" class="btn btn-outline-danger ms-1" data-bs-toggle="modal" data-bs-target="#exampleModal">Schedule</button>
                         </div>
                     </div>
                 </div>
@@ -30,24 +41,35 @@
                     <div class="card-body p-0">
                         <ul class="list-group list-group-flush rounded-3">
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <i class="fa-solid fa-phone fa-lg"></i>
+                                <p class="lead">Parents/Guardian Information</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-hands-holding-child"></i>
+                                <p class="mb-0">@Model.ParentFirstName @Model.ParentMiddleName, @Model.ParentLastName</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-phone" style="color:#555555;"></i>
                                 <p class="mb-0">@Model.PhoneNumber</p>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <i class="fa-solid fa-envelope" style="color: #333333;"></>
+                                <i class="fa-solid fa-g fa-lg" style="color: #55acee;"></i>
+                                <p class="mb-0">@Model.Gcash</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-location-dot fa-lg" style="color: #ac2bac;"></i>
+                                <p class="mb-0">@Model.Address</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-regular fa-envelope fa-lg" style="color: #3b5998;"></i>
                                 <p class="mb-0">@Model.email</p>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <i class="fab fa-twitter fa-lg" style="color: #55acee;"></i>
-                                <p class="mb-0"></p>
+                                <i class="fa-solid fa-cake-candles fa-lg" style="color: #3b5998;"></i>
+                                <p class="mb-0">@Model.ParentBirthday.ToLongDateString()</p>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <i class="fab fa-instagram fa-lg" style="color: #ac2bac;"></i>
-                                <p class="mb-0">mdbootstrap</p>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <i class="fab fa-facebook-f fa-lg" style="color: #3b5998;"></i>
-                                <p class="mb-0">mdbootstrap</p>
+                                <i class="fa-solid fa-venus-mars fa-lg" style="color: #3b5998;"></i>
+                                <p class="mb-0">@parentsex</p>
                             </li>
                         </ul>
                     </div>
@@ -55,39 +77,57 @@
             </div>
             <div class="col-lg-8 grid-margin stretch-card">
                 <div class="tab">
-                    <button class="tablinks" onclick="tabs(event, 'Grades')" id="defaultOpen">Grades</button>
-                    <button class="tablinks" onclick="tabs(event, 'Values')">Values</button>
+                    <button class="tablinks" onclick="tabs(event, 'Grades')" id="defaultOpen">Form-137</button>
+                    <button class="tablinks" onclick="tabs(event, 'Values')">Birth Certificate</button>
+                    <button class="tablinks" onclick="tabs(event, 'GM')">Good Moral</button>
                 </div>
 
                 <div id="Grades" class="tabcontent">
-                    <h3>Grades</h3>
+                   
                     <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Grades Records</h4>
-                            <p class="card-description">
-                                Basic table with card
-                            </p>
-                           
-                          
+                        <div class="card-body">                           
+                            <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.TORRecieve)" type="application/pdf" width="100%" height="600px" />
+                                              
                         </div>
                     </div>
                 </div>
 
                 <div id="Values" class="tabcontent">
-                    <h3>Values</h3>
+                    
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Values Record</h4>
-                            <p class="card-description">
-                                Basic table with card
-                            </p>
-                           
+                            <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.BirthCertificateRecieve)" type="application/pdf" width="100%" height="600px" />
                         </div>
                     </div>
                 </div>
+                <div id="GM" class="tabcontent">
 
+                    <div class="card">
+                        <div class="card-body">
+                            <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.CGMRecieve)" type="application/pdf" width="100%" height="600px" />
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <script src="/js/Tables.js"></script>
+    </div>
+    <!--Modal for Adding Exam Schedule-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

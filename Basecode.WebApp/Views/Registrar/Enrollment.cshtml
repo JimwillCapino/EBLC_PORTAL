@@ -66,6 +66,6 @@
 <script src="/js/Tables.js"></script>
 <script>
     function redirectToIndex(studentId) {
-        window.location.href = '@Url.Action("Index", "Registrar")';
+        window.location.href = '@Url.Action("NewEnrolleeInfo", "Registrar")?studentId=' + studentId;
     }
 </script>

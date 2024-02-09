@@ -12,9 +12,13 @@ namespace Basecode.Data.Repositories
     public class NewEnrolleeRepository : BaseRepository, INewEnrolleeRepository
     {
         BasecodeContext _context;
-        public NewEnrolleeRepository(IUnitOfWork unitOfWork, BasecodeContext context) : base(unitOfWork)
+        IRTPRepository _rTPRepository;
+        public NewEnrolleeRepository(IUnitOfWork unitOfWork, 
+            BasecodeContext context,
+            IRTPRepository rTPRepository) : base(unitOfWork)
         {
             _context = context;
+            _rTPRepository = rTPRepository;           
         }
         private IQueryable<NewEnrollee> GetEnrollees()
         {
@@ -80,7 +84,7 @@ namespace Basecode.Data.Repositories
                                    join u in usersPortal on e.UID equals u.UID
                                    select new NewEnrolleeViewModel
                                    {
-                                       UID = e.UID,
+                                       UID = e.Enrollee_Id,
                                        FirstName = u.FirstName,
                                        Middlename = u.MiddleName,
                                        LastName = u.LastName,
@@ -100,12 +104,13 @@ namespace Basecode.Data.Repositories
         {
             try
             {
-                var student = _context.NewEnrollee.Find(id);
-                var parent = _context.Parent.FirstOrDefault(p => p.UID == student.ParentID);
-                var userStudent = _context.UsersPortal.FirstOrDefault(us => us.UID == student.UID);
-                var userParent = _context.UsersPortal.FirstOrDefault(up => up.UID == parent.UID);
-                var rtpcommons = _context.RTPCommons.FirstOrDefault(r => r.UID == parent.UID);
+                var student = _context.NewEnrollee.Find(id);   
+                var userStudent = _context.UsersPortal.Find(student.UID);
 
+                var parent = _context.Parent.Find(student.ParentID);
+                var userParent = _context.UsersPortal.Find(parent.UID);
+                var rtpCommons = _context.RTPCommons.FirstOrDefault(r => r.UID == parent.UID);
+                
                 var CompleteInfo = new RegisterStudent()
                 {
                     FirstName = userStudent.FirstName,
@@ -120,9 +125,9 @@ namespace Basecode.Data.Repositories
                     ParentFirstName = userParent.FirstName,
                     ParentLastName = userParent.LastName,
                     ParentMiddleName = userParent.MiddleName,
-                    PhoneNumber = rtpcommons.PhoneNumber,
+                    PhoneNumber = rtpCommons.PhoneNumber,
                     email = student.Email,
-                    Address = rtpcommons.Address,
+                    Address = rtpCommons.Address,
                     Gcash = parent.Gcash,
                     ParentBirthday = userParent.Birthday,
                     Parentsex = userParent.sex,
@@ -131,7 +136,7 @@ namespace Basecode.Data.Repositories
             }
             catch(Exception ex) 
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex);
                 throw new Exception(Constants.Exception.DB);
             }
             

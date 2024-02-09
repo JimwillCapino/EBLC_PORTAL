@@ -12,7 +12,7 @@ namespace Basecode.Data.Models
         public int UID { get; set; }
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
-        public string userId  { get; set; }
+        //public string userId  { get; set; }
 
     }
 }
