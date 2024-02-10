@@ -14,5 +14,8 @@ namespace Basecode.Data.Interfaces
         public IEnumerable<RegisterStudent> GetAllEnrollees();
         public IEnumerable<NewEnrolleeViewModel> GetNewEnrolleeInitView();
         public RegisterStudent GetStudent(int id);
+        public void AddSchedule(NewEnrollee enrollee);
+        public NewEnrollee GetEnrolleeByID(int id);
+        public void RemoveEnrollee(NewEnrollee enrollee);
     }
 }

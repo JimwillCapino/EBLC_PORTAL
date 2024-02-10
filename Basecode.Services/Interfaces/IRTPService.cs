@@ -11,5 +11,7 @@ namespace Basecode.Data.Interfaces
     {
         public void addRTPCommons(RTPCommons commons);
         public IEnumerable<RTPCommons> getRTPCommons();
+        public void RemoveRTP(RTPCommons rtpcommons);
+        public RTPCommons GetRTPCommonsByUID(int id);
     }
 }

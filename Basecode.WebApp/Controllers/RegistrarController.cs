@@ -3,7 +3,7 @@ using Basecode.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata;
-
+using System.Web;
 namespace Basecode_WebApp.Controllers
 {
     [Authorize(Roles = "Registrar")]
@@ -52,6 +52,26 @@ namespace Basecode_WebApp.Controllers
             {
                 ViewBag.ErrorMessage = Constants.Exception.DB;
                 return RedirectToAction("Enrollment");
+            }
+        }
+      
+        [HttpPost]
+        public IActionResult AddSchedule()
+        {
+            var Schedule = Request.Form["datetime"];
+            DateTime parseSched = DateTime.Parse(Schedule);
+            int id = Int32.Parse(Request.Form["Id"]);
+            try
+            {
+                _newEnrolleeService.AddSchedule(id, parseSched);
+                ViewBag.Success=true;
+                return RedirectToAction("Enrollment");
+            }
+            catch(Exception ex)
+            {
+                ViewBag.Success = false;
+                ViewBag.ErrorMessage = ex.Message;
+                return RedirectToAction("NewEnrolleeInfo",id);
             }
         }
     }

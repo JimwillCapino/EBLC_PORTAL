@@ -28,6 +28,18 @@ namespace Basecode.Data.Repositories
         {
             return this.GetDbSet<UsersPortal>();
         }
+        public NewEnrollee GetEnrolleeByID(int id)
+        {
+            try
+            {
+                return _context.NewEnrollee.Find(id);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
         public bool RegisterStudent(NewEnrollee newEnrollee)
         {
             try
@@ -110,9 +122,10 @@ namespace Basecode.Data.Repositories
                 var parent = _context.Parent.Find(student.ParentID);
                 var userParent = _context.UsersPortal.Find(parent.UID);
                 var rtpCommons = _context.RTPCommons.FirstOrDefault(r => r.UID == parent.UID);
-                
+
                 var CompleteInfo = new RegisterStudent()
                 {
+                    Id = student.Enrollee_Id,
                     FirstName = userStudent.FirstName,
                     LastName = userStudent.LastName,
                     MiddleName = userStudent.MiddleName,
@@ -135,11 +148,36 @@ namespace Basecode.Data.Repositories
                 return CompleteInfo;
             }
             catch(Exception ex) 
-            {
-                Console.WriteLine(ex);
-                throw new Exception(Constants.Exception.DB);
+            {              
+                throw new Exception(ex.Message +"\n"+ex.Source+"\n" +ex.StackTrace+"\n"+ex.InnerException.Message);
             }
             
+        }
+        public void AddSchedule(NewEnrollee enrollee)
+        {
+            try
+            {
+                _context.NewEnrollee.Update(enrollee);
+                _context.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+        }
+       public void RemoveEnrollee(NewEnrollee enrollee)
+        {
+            try
+            {
+                _context.NewEnrollee.Remove(enrollee);
+                _context.SaveChanges();
+                
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
         }
     }
 }

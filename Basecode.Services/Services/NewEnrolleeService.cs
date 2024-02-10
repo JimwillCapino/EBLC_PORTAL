@@ -6,6 +6,7 @@ using Basecode.Data.ViewModels;
 using Basecode.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -115,6 +116,56 @@ namespace Basecode.Services.Services
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+        public void AddSchedule(int id, DateTime Schedule)
+        {
+            try
+            {
+               //DateTime parseSched = DateTime.ParseExact(Schedule, "2024-02-10 12:30:45", CultureInfo.InvariantCulture);
+                var enrollee = _repository.GetEnrolleeByID(id);
+                enrollee.ExamSchedule = Schedule;
+                _repository.AddSchedule(enrollee);
+            }
+            catch(Exception ex) 
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+            
+        }
+        public void RemoveNewEnrollee(NewEnrollee enrollee)
+        {
+            try
+            {
+                _repository.RemoveEnrollee(enrollee);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public void RejectNewEnrollee(int id)
+        {
+            try
+            {
+                var newEnrolle = _repository.GetEnrolleeByID(id);
+                var userNewEnrolle = _usersService.GetUserById(newEnrolle.UID);
+                var parent = _parentService.GetParentById(newEnrolle.ParentID);
+                var parentUser = _usersService.GetUserById(parent.UID);
+                var parentRTP = _rtpService.GetRTPCommonsByUID(parent.UID);
+
+                _repository.RemoveEnrollee(newEnrolle);
+                _usersService.RemoveUser(userNewEnrolle);
+                _parentService.RemoveParent(parent);
+                _usersService.RemoveUser(parentUser);
+                _rtpService.RemoveRTP(parentRTP);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
             }
         }
     }

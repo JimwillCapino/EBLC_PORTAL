@@ -1,4 +1,5 @@
-﻿using Basecode.Data.Interfaces;
+﻿using Basecode.Data;
+using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
 using Basecode.Services.Interfaces;
 using System;
@@ -25,6 +26,31 @@ namespace Basecode.Services.Services
         public IEnumerable<Parent> GetAllParents()
         {
             return _parentRepository.GetAllParents();
+        }
+        public void RemoveParent(Parent parent)
+        {
+            try
+            {
+                _parentRepository.RemoveParent(parent);
+            }           
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+
+        }
+        public Parent GetParentById(int id)
+        {
+            try
+            {
+                return _parentRepository.GetParentById(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
         }
     }
 }

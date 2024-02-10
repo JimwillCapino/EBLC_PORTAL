@@ -42,5 +42,28 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.ToString());
             }
         }
+        public void RemoveParent(Parent parent)
+        {
+            try
+            {
+                _context.Parent.Remove(parent);
+                _context.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+        }
+        public Parent GetParentById(int id)
+        {
+            try
+            {
+                return _context.Parent.Find(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+        }
     }
 }

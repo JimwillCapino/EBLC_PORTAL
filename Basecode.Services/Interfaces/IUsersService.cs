@@ -11,5 +11,7 @@ namespace Basecode.Services.Interfaces
     {
         public int AddUser(UsersPortal user);
         public int GetMostRecentUsersId();
+        public void RemoveUser(UsersPortal user);
+        public UsersPortal GetUserById(int id);
     }
 }

@@ -41,5 +41,29 @@ namespace Basecode.Data.Repositories
                 return -1;
             }
         }
+        public void RemoveUser(UsersPortal user)
+        {
+            try
+            {
+                _context.UsersPortal.Remove(user);
+                _context.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+
+        }
+        public UsersPortal GetUserById(int id)
+        {
+            try
+            {
+                return _context.UsersPortal.Find(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+        }
     }
 }

@@ -40,5 +40,30 @@ namespace Basecode.Data.Repositories
                 throw new Exception("Error");
             }
         }
+        public void RemoveRTPCommons(RTPCommons rtpcommons)
+        {
+            try
+            {
+                _context.RTPCommons.Remove(rtpcommons);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+        }
+        public RTPCommons GetRTPCommonsByUID(int id)
+        {
+            try
+            {
+                return _context.RTPCommons.FirstOrDefault(r => r.UID == id);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+        }
     }
 }

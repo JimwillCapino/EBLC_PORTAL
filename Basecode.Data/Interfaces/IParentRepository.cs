@@ -11,5 +11,7 @@ namespace Basecode.Data.Interfaces
     {
         public int AddParent(Parent parent);
         public IEnumerable<Parent> GetAllParents();
+        public void RemoveParent(Parent parent);
+        public Parent GetParentById(int id);
     }
 }

@@ -1,5 +1,7 @@
-﻿using Basecode.Data.Interfaces;
+﻿using Basecode.Data;
+using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
+using Basecode.Data.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +25,32 @@ namespace Basecode.Services.Services
         public IEnumerable<RTPCommons> getRTPCommons()
         {
             return _rtpRepository.getRTPCommons();
+        }
+        public void RemoveRTP(RTPCommons rtpcommons)
+        {
+            try
+            {
+                _rtpRepository.RemoveRTPCommons(rtpcommons);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+
+        }
+        public RTPCommons GetRTPCommonsByUID(int id)
+        {
+            try
+            {
+                return _rtpRepository.GetRTPCommonsByUID(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+
         }
 
     }
