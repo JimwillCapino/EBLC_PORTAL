@@ -159,8 +159,8 @@ namespace Basecode.Services.Services
                 _repository.RemoveEnrollee(newEnrolle);
                 _usersService.RemoveUser(userNewEnrolle);
                 _parentService.RemoveParent(parent);
-                _usersService.RemoveUser(parentUser);
                 _rtpService.RemoveRTP(parentRTP);
+                _usersService.RemoveUser(parentUser);              
             }
             catch (Exception ex)
             {

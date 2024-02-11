@@ -39,27 +39,59 @@
                             else s = "Male";
                             var currDate = DateTime.Now;
                             var age = currDate.Year - student.Birthday.Year;
-
-                            <tr class="bg-blue" onclick="redirectToIndex(@student.UID)">
-                                <td class="pt-3 mt-1">@student.FirstName @student.Middlename @student.LastName</td>
-                                <td class="pt-3">@s</td>
-                                <td class="pt-3">@student.GradeEnrolled</td>
-                                <td class="pt-3">@age</td>
-                            </tr>
-                            <tr id="spacing-row">
-                                <td> </td>
-                            </tr>
+                            if(student.ExamSchedule == null)
+                            {
+                                <tr class="bg-blue" onclick="redirectToIndex(@student.UID)">
+                                    <td class="pt-3 mt-1">@student.FirstName @student.Middlename @student.LastName</td>
+                                    <td class="pt-3">@s</td>
+                                    <td class="pt-3">@student.GradeEnrolled</td>
+                                    <td class="pt-3">@age</td>
+                                </tr>
+                                <tr id="spacing-row">
+                                    <td> </td>
+                                </tr>
+                            }                           
                         }
                     </tbody>
-                </table>
-
-               
+                </table>              
             </div>      
         </div>
 
         <div id="approval" class="tabcontent">
-            <h3>Paris</h3>
-            <p>Paris is the capital of France.</p>
+            <div class="table-responsive overflow-auto">
+                <table class="table overflow-auto" id="myTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Grade to Enroll</th>
+                            <th>age</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (NewEnrolleeViewModel student in Model)
+                        {
+                            var s = "";
+                            if (student.sex == "F") s = "Female";
+                            else s = "Male";
+                            var currDate = DateTime.Now;
+                            var age = currDate.Year - student.Birthday.Year;
+                            if (student.ExamSchedule != null)
+                            {
+                                <tr class="bg-blue" onclick="redirectToIndex(@student.UID)">
+                                    <td class="pt-3 mt-1">@student.FirstName @student.Middlename @student.LastName</td>
+                                    <td class="pt-3">@s</td>
+                                    <td class="pt-3">@student.GradeEnrolled</td>
+                                    <td class="pt-3">@age</td>
+                                </tr>
+                                <tr id="spacing-row">
+                                    <td> </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

@@ -102,7 +102,8 @@ namespace Basecode.Data.Repositories
                                        LastName = u.LastName,
                                        sex = u.sex,                                   
                                        GradeEnrolled = e.GradeEnrolled,
-                                       Birthday = u.Birthday
+                                       Birthday = u.Birthday,
+                                       ExamSchedule = e.ExamSchedule
                                    };
                 return newviewmodel;
             }

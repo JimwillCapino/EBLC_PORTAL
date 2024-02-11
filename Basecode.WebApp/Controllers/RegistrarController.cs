@@ -74,5 +74,19 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("NewEnrolleeInfo",id);
             }
         }
+        public IActionResult RejectNewEnrollee(int id)
+        {
+            try
+            {
+                _newEnrolleeService.RejectNewEnrollee(id);
+                return RedirectToAction("Enrollment");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                ViewBag.ErrorMessage = ex.Message;
+                return RedirectToAction("NewEnrolleeInfo", id);
+            }
+        }
     }
 }

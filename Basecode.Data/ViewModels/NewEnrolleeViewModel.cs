@@ -15,5 +15,6 @@ namespace Basecode.Data.ViewModels
         public string sex { get; set; }
         public int GradeEnrolled {  get; set; }
         public DateTime Birthday { get; set; }
+        public DateTime? ExamSchedule { get; set; }
     }
 }
