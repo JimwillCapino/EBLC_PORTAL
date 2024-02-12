@@ -8,8 +8,9 @@ namespace Basecode.Data.Models
 {
     public class Student
     {
-        public int StudentId { get; set; }
+        public int Student_Id { get; set; }
         public int UID { get; set; }
-        public string Name { get; set; }
+        public string? status { get; set; }
+        public string? LRN { get; set; }    
     }
 }
