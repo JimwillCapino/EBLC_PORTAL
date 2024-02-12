@@ -41,7 +41,7 @@
                             var age = currDate.Year - student.Birthday.Year;
                             if(student.ExamSchedule == null)
                             {
-                                <tr class="bg-blue" onclick="redirectToIndex(@student.UID)">
+                                <tr class="bg-blue" onclick="redirectToIndex(@student.Id)">
                                     <td class="pt-3 mt-1">@student.FirstName @student.Middlename @student.LastName</td>
                                     <td class="pt-3">@s</td>
                                     <td class="pt-3">@student.GradeEnrolled</td>
@@ -66,6 +66,7 @@
                             <th>Gender</th>
                             <th>Grade to Enroll</th>
                             <th>age</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -78,11 +79,15 @@
                             var age = currDate.Year - student.Birthday.Year;
                             if (student.ExamSchedule != null)
                             {
-                                <tr class="bg-blue" onclick="redirectToIndex(@student.UID)">
+                                <tr class="bg-blue">
                                     <td class="pt-3 mt-1">@student.FirstName @student.Middlename @student.LastName</td>
                                     <td class="pt-3">@s</td>
                                     <td class="pt-3">@student.GradeEnrolled</td>
                                     <td class="pt-3">@age</td>
+                                    <td class="pt-3">
+                                        <i class="fa-solid fa-check-to-slot fa-lg px-3"></i>
+                                        <a asp-action="RejectNewEnrollee" asp-route-id="@student.Id"><i class="fa-solid fa-x fa-lg"></i></a>
+                                    </td>
                                 </tr>
                                 <tr id="spacing-row">
                                     <td> </td>

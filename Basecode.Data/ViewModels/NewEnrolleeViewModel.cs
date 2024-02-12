@@ -8,7 +8,7 @@ namespace Basecode.Data.ViewModels
 {
     public class NewEnrolleeViewModel
     {
-        public int UID { get; set; }
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Middlename { get; set; }        
