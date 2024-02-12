@@ -28,6 +28,7 @@ namespace Basecode.Data
         public virtual DbSet<NewEnrollee>NewEnrollee { get; set; }
         public virtual DbSet<RTPCommons> RTPCommons { get; set; }
         public virtual DbSet<Parent> Parent { get; set; }
+        public virtual DbSet<Student> Student { get; set; }
         public virtual DbSet<RefreshToken> RefreshToken { get; set; }
     }
 }

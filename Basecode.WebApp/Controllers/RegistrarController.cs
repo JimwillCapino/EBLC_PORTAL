@@ -88,5 +88,6 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("NewEnrolleeInfo", id);
             }
         }
+
     }
 }

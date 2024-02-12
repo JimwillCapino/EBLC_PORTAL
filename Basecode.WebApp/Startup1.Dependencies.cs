@@ -22,6 +22,7 @@ namespace Basecode.WebApp
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IParentService, ParentService>();
             services.AddScoped<IRTPService, RTPService>();
+            services.AddScoped<IStudentService, StudentService>();
             // Repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
@@ -29,6 +30,7 @@ namespace Basecode.WebApp
             services.AddScoped<IAdminRepository, AdminRepository>();
             services.AddScoped<IParentRepository, ParentRepository>();
             services.AddScoped<IRTPRepository, RTPRepository>();
+            services.AddScoped<IStudentRepository, StudentRepository>();
         }
     }
 }
