@@ -85,7 +85,7 @@
                                     <td class="pt-3">@student.GradeEnrolled</td>
                                     <td class="pt-3">@age</td>
                                     <td class="pt-3">
-                                        <i class="fa-solid fa-check-to-slot fa-lg px-3"></i>
+                                        <a asp-action="AdmitNewEnrollee" asp-route-id="@student.Id"><i class="fa-solid fa-check-to-slot fa-lg px-3"></i></a>
                                         <a asp-action="RejectNewEnrollee" asp-route-id="@student.Id"><i class="fa-solid fa-x fa-lg"></i></a>
                                     </td>
                                 </tr>

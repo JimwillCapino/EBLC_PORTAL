@@ -20,17 +20,20 @@ namespace Basecode.Services.Services
         IMapper _mapper;
         IRTPService _rtpService;
         IParentService _parentService;
+        IStudentService _studentService;
         public NewEnrolleeService(INewEnrolleeRepository repository,
             IMapper mapper,
             IUsersService userService,
             IRTPService rTPService,
-            IParentService parentService) 
+            IParentService parentService,
+            IStudentService studentService) 
         { 
             _repository = repository;
             _mapper = mapper;
             _usersService = userService;
             _parentService = parentService;
             _rtpService = rTPService;
+            _studentService = studentService;
         }
         public void RegisterStudent(RegisterStudent student)
         {
@@ -70,20 +73,42 @@ namespace Basecode.Services.Services
                 }
                 else
                 {
-                    using (MemoryStream memory = new MemoryStream())
+                    using (MemoryStream birthCertificateMemory = new MemoryStream())
                     {
-                        student.BirthCertificateFile.CopyTo(memory);
-                        enrollee.BirthCertificate = memory.ToArray();
-
-                        student.CGMFile.CopyTo(memory);
-                        enrollee.CGM = memory.ToArray();
-
-
-                        student.TORFile.CopyTo(memory);
-                        enrollee.TOR = memory.ToArray();
-
+                        student.BirthCertificateFile.CopyTo(birthCertificateMemory);
+                        enrollee.BirthCertificate = birthCertificateMemory.ToArray();
                     }
-                    enrollee.ParentID = parentid;
+
+                    using (MemoryStream cgmMemory = new MemoryStream())
+                    {
+                        student.CGMFile.CopyTo(cgmMemory);
+                        enrollee.CGM = cgmMemory.ToArray();
+                    }
+
+                    using (MemoryStream torMemory = new MemoryStream())
+                    {
+                        student.TORFile.CopyTo(torMemory);
+                        enrollee.TOR = torMemory.ToArray();
+                    }
+                    using (MemoryStream birthCertificateMemory = new MemoryStream())
+                    {
+                        student.BirthCertificateFile.CopyTo(birthCertificateMemory);
+                        enrollee.BirthCertificate = birthCertificateMemory.ToArray();
+                    }
+
+                    using (MemoryStream cgmMemory = new MemoryStream())
+                    {
+                        student.CGMFile.CopyTo(cgmMemory);
+                        enrollee.CGM = cgmMemory.ToArray();
+                    }
+
+                    using (MemoryStream torMemory = new MemoryStream())
+                    {
+                        student.TORFile.CopyTo(torMemory);
+                        enrollee.TOR = torMemory.ToArray();
+                    }
+
+                enrollee.ParentID = parentid;
                     if (!_repository.RegisterStudent(enrollee))
                         throw new Exception(Constants.Exception.DB);
 
@@ -161,6 +186,25 @@ namespace Basecode.Services.Services
                 _parentService.RemoveParent(parent);
                 _rtpService.RemoveRTP(parentRTP);
                 _usersService.RemoveUser(parentUser);              
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public void AdmitNewEnrollee(int id)
+        {
+            try
+            {
+                var newenrollee = _repository.GetEnrolleeByID(id);
+                var student = new Student();
+                student.UID = newenrollee.UID;
+                student.ParentId = newenrollee.ParentID;
+                student.CurrGrade = newenrollee.GradeEnrolled;
+                student.status = "Not Enrolled";
+                _studentService.AddStudent(student);
+                _repository.RemoveEnrollee(newenrollee);
             }
             catch (Exception ex)
             {

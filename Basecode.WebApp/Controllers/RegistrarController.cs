@@ -10,6 +10,7 @@ namespace Basecode_WebApp.Controllers
     public class RegistrarController : Controller
     {
         private INewEnrolleeService _newEnrolleeService;
+       
         public RegistrarController(INewEnrolleeService newEnrolleeService) 
         { 
             _newEnrolleeService = newEnrolleeService;
@@ -86,6 +87,21 @@ namespace Basecode_WebApp.Controllers
                 ViewBag.Success = false;
                 ViewBag.ErrorMessage = ex.Message;
                 return RedirectToAction("NewEnrolleeInfo", id);
+            }
+        }
+        public IActionResult AdmitNewEnrollee(int id)
+        {
+            try
+            {
+                _newEnrolleeService.AdmitNewEnrollee(id);
+                ViewBag.Success = true;
+                return RedirectToAction("Enrollment");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                ViewBag.ErrorMessage = ex.Message;
+                return RedirectToAction("Enrollee");
             }
         }
 

@@ -95,8 +95,8 @@ namespace Basecode.Data.Repositories
                 var newviewmodel = from e in enrollees
                                    join u in usersPortal on e.UID equals u.UID
                                    select new NewEnrolleeViewModel
-                                   {                                       
-                                       Id = e.Enrollee_Id,
+                                   {
+                                       Id = e.Enrollee_Id,                                       
                                        FirstName = u.FirstName,
                                        Middlename = u.MiddleName,
                                        LastName = u.LastName,
