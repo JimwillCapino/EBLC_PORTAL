@@ -56,3 +56,4 @@ document.getElementById("defaultOpen").click();
 $('#myModal').on('shown.bs.modal', function () {
     $('#myInput').trigger('focus')
 })
+

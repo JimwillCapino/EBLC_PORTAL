@@ -5,8 +5,8 @@
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
 }
-@using Basecode.Data.Models
-@model IEnumerable<RegisterStudent>
+@using Basecode.Data.ViewModels
+@model IEnumerable<NewEnrolleeViewModel>
 
 <link rel="stylesheet" href="/css/TableInfo.css" />
 <div class="wrapper">
@@ -23,28 +23,86 @@
         <div id="newEnrollment" class="tabcontent">
             <div class="table-responsive overflow-auto">
                 <table class="table overflow-auto" id="myTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Grade to Enroll</th>
+                            <th>age</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        @foreach (RegisterStudent student in Model)
+                        @foreach (NewEnrolleeViewModel student in Model)
                         {
-                            <tr class="bg-blue">
-                                <td class="pt-3 mt-1">@student.FirstName @student.MiddleName @student.LastName</td>
-                                <td class="pt-3">@student.PhoneNumber</td>
-                                <td class="pt-3">@student.email</td>
-                                <td class="pt-3">@student.sex</td>
-                            </tr>
-                            <tr id="spacing-row">
-                                <td> </td>
-                            </tr>
+                            var s="";
+                            if (student.sex == "F") s = "Female";                              
+                            else s = "Male";
+                            var currDate = DateTime.Now;
+                            var age = currDate.Year - student.Birthday.Year;
+                            if(student.ExamSchedule == null)
+                            {
+                                <tr class="bg-blue" onclick="redirectToIndex(@student.Id)">
+                                    <td class="pt-3 mt-1">@student.FirstName @student.Middlename @student.LastName</td>
+                                    <td class="pt-3">@s</td>
+                                    <td class="pt-3">@student.GradeEnrolled</td>
+                                    <td class="pt-3">@age</td>
+                                </tr>
+                                <tr id="spacing-row">
+                                    <td> </td>
+                                </tr>
+                            }                           
                         }
                     </tbody>
-                </table>
+                </table>              
             </div>      
         </div>
 
         <div id="approval" class="tabcontent">
-            <h3>Paris</h3>
-            <p>Paris is the capital of France.</p>
+            <div class="table-responsive overflow-auto">
+                <table class="table overflow-auto" id="myTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Grade to Enroll</th>
+                            <th>age</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (NewEnrolleeViewModel student in Model)
+                        {
+                            var s = "";
+                            if (student.sex == "F") s = "Female";
+                            else s = "Male";
+                            var currDate = DateTime.Now;
+                            var age = currDate.Year - student.Birthday.Year;
+                            if (student.ExamSchedule != null)
+                            {
+                                <tr class="bg-blue">
+                                    <td class="pt-3 mt-1">@student.FirstName @student.Middlename @student.LastName</td>
+                                    <td class="pt-3">@s</td>
+                                    <td class="pt-3">@student.GradeEnrolled</td>
+                                    <td class="pt-3">@age</td>
+                                    <td class="pt-3">
+                                        <a asp-action="AdmitNewEnrollee" asp-route-id="@student.Id"><i class="fa-solid fa-check-to-slot fa-lg px-3"></i></a>
+                                        <a asp-action="RejectNewEnrollee" asp-route-id="@student.Id"><i class="fa-solid fa-x fa-lg"></i></a>
+                                    </td>
+                                </tr>
+                                <tr id="spacing-row">
+                                    <td> </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 <script src="/js/Tables.js"></script>
+<script>
+    function redirectToIndex(studentId) {
+        window.location.href = '@Url.Action("NewEnrolleeInfo", "Registrar")?studentId=' + studentId;
+    }
+</script>

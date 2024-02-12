@@ -1,4 +1,5 @@
-﻿using Basecode.Data.Interfaces;
+﻿using Basecode.Data;
+using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
 using Basecode.Services.Interfaces;
 using System;
@@ -29,6 +30,30 @@ namespace Basecode.Services.Services
             if (id == -1)
                 throw new Exception("An error occured while getting the recent UserID.");
             return id;
+        }
+        public void RemoveUser(UsersPortal user)
+        {
+            try
+            {
+                _userRepository.RemoveUser(user);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public UsersPortal GetUserById(int id)
+        {
+            try
+            {
+                return _userRepository.GetUserById(id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception(Constants.Exception.DB);
+            }
         }
     }
 }

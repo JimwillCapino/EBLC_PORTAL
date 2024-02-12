@@ -13,6 +13,8 @@ namespace Basecode.WebApp
             {
                 cfg.CreateMap<RegisterStudent, UsersPortal>();
                 cfg.CreateMap<RegisterStudent, NewEnrollee>();
+                cfg.CreateMap<RegisterStudent, Parent>();
+                cfg.CreateMap<RegisterStudent, RTPCommons>();
             });
 
             services.AddSingleton(Config.CreateMapper());

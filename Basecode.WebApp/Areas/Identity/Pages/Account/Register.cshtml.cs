@@ -165,10 +165,10 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
                     newuser.FirstName = Input.FirstName;
                     newuser.LastName = Input.LastName;
                     newuser.MiddleName = Input.MiddleName;
-                    newuser.PhoneNumber = Input.PhoneNumber;
-                    newuser.Address =Input.Address;
+                    //newuser.PhoneNumber = Input.PhoneNumber;
+                    //newuser.Address =Input.Address;
                     newuser.sex = Input.sex;
-                    newuser.userId = userId;
+                    //newuser.userId = userId;
                     _usersService.AddUser(newuser);
                     returnUrl = Url.Action("Index","Admin");
 
@@ -189,7 +189,7 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                       // await _signInManager.SignInAsync(user, isPersistent: false);
+                        //await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }
                 }
