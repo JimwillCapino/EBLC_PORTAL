@@ -22,6 +22,7 @@ using Basecode.Data.ViewModels;
 using Newtonsoft.Json;
 using Basecode.Services.Interfaces;
 using Basecode.Data.Models;
+using Basecode.Data.Interfaces;
 
 namespace Basecode.WebApp.Areas.Identity.Pages.Account
 {
@@ -35,6 +36,8 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUsersService _usersService;
+        private readonly IRTPService _rtpService;
+        private readonly IRTPUsersService _rTPUsersService;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -43,7 +46,9 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             RoleManager<IdentityRole> roleManager,
-            IUsersService usersService)
+            IUsersService usersService,
+            IRTPService rTPService,
+            IRTPUsersService rTPUsersService)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -53,6 +58,8 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
             _emailSender = emailSender;
             _roleManager = roleManager;
             _usersService = usersService;
+            _rtpService = rTPService;
+            _rTPUsersService = rTPUsersService;
         }
 
         /// <summary>
@@ -154,6 +161,7 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
                     var userRole = _roleManager.FindByNameAsync(Input.Role).Result;
+                    
 
                     if (userRole != null)
                         await _userManager.AddToRoleAsync(user, userRole.Name);
@@ -162,14 +170,26 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
 
                     //add user details to the usersPortal Table
                     var newuser = new UsersPortal();
+                    var rtp = new RTPCommons();
+                    var rtpuser = new RTPUsers();
+
                     newuser.FirstName = Input.FirstName;
                     newuser.LastName = Input.LastName;
                     newuser.MiddleName = Input.MiddleName;
-                    //newuser.PhoneNumber = Input.PhoneNumber;
-                    //newuser.Address =Input.Address;
                     newuser.sex = Input.sex;
-                    //newuser.userId = userId;
-                    _usersService.AddUser(newuser);
+
+                    rtp.PhoneNumber = Input.PhoneNumber;
+                    rtp.Address =Input.Address;
+                    rtp.UID = _usersService.AddUser(newuser);
+
+                    var id =_rtpService.AddRTPCommonsInt(rtp);
+
+                    rtpuser.AspUserId = userId;
+                    rtpuser.RTPId = id;
+
+                    _rTPUsersService.AddRTPUsers(rtpuser);
+                     
+                    
                     returnUrl = Url.Action("Index","Admin");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

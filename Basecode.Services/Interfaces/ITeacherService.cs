@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Basecode.Data.Interfaces
+namespace Basecode.Services.Interfaces
 {
-    public interface ITeacherRepository
+    public interface ITeacherService
     {
         public void AddTeacher(Teacher teacher);
-        public IEnumerable<TeacherViewModel> GetAllTeachersInitView();
+        public IEnumerable<TeacherViewModel> GetTeacherinitView();
     }
 }

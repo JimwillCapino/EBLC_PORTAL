@@ -1,5 +1,4 @@
 ﻿using Basecode.Data.Models;
-using Basecode.Data.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Basecode.Data.Interfaces
 {
-    public interface ITeacherRepository
+    public interface IRTPUsersRepository
     {
-        public void AddTeacher(Teacher teacher);
-        public IEnumerable<TeacherViewModel> GetAllTeachersInitView();
+        public void AddRTPUsers(RTPUsers rTPUsers);
     }
 }

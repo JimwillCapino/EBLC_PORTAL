@@ -10,10 +10,12 @@ namespace Basecode_WebApp.Controllers
     public class RegistrarController : Controller
     {
         private INewEnrolleeService _newEnrolleeService;
+        private ITeacherService _teacherService;
        
-        public RegistrarController(INewEnrolleeService newEnrolleeService) 
+        public RegistrarController(INewEnrolleeService newEnrolleeService,ITeacherService teacherService) 
         { 
             _newEnrolleeService = newEnrolleeService;
+            _teacherService = teacherService;
         }
         public IActionResult Index()
         {
@@ -102,6 +104,20 @@ namespace Basecode_WebApp.Controllers
                 ViewBag.Success = false;
                 ViewBag.ErrorMessage = ex.Message;
                 return RedirectToAction("Enrollee");
+            }
+        }
+        public IActionResult ManageTeachers()
+        {
+            try
+            {
+                var teachers = _teacherService.GetTeacherinitView();
+                return View(teachers);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                ViewBag.ErrorMessage = ex.Message;
+                return RedirectToAction("Index");
             }
         }
 
