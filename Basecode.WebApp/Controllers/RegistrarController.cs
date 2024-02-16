@@ -1,4 +1,5 @@
 ﻿using Basecode.Data;
+using Basecode.Data.Models;
 using Basecode.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,14 @@ namespace Basecode_WebApp.Controllers
     {
         private INewEnrolleeService _newEnrolleeService;
         private ITeacherService _teacherService;
-       
-        public RegistrarController(INewEnrolleeService newEnrolleeService,ITeacherService teacherService) 
+        private ISubjectService _subjectService
+        public RegistrarController(INewEnrolleeService newEnrolleeService,
+            ITeacherService teacherService,
+            ISubjectService subjectService) 
         { 
             _newEnrolleeService = newEnrolleeService;
             _teacherService = teacherService;
+            _subjectService = subjectService;
         }
         public IActionResult Index()
         {
@@ -112,6 +116,33 @@ namespace Basecode_WebApp.Controllers
             {
                 var teachers = await _teacherService.GetTeacherinitView();
                 return View(teachers);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult ManageSubjects()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddSubject()
+        {
+            try
+            {
+                var subname = Request.Form["name"];
+                var grade = Int32.Parse(Request.Form["grade"]);
+                var subject = new Subject {
+                    Subject_Name = subname,
+                    Grade = grade
+                };
+
+                _subjectService.AddSubject(subject);
+                return RedirectToAction("ManageSubjects");
             }
             catch (Exception ex)
             {
