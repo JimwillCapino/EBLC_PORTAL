@@ -12,7 +12,7 @@ namespace Basecode_WebApp.Controllers
     {
         private INewEnrolleeService _newEnrolleeService;
         private ITeacherService _teacherService;
-        private ISubjectService _subjectService
+        private ISubjectService _subjectService;
         public RegistrarController(INewEnrolleeService newEnrolleeService,
             ITeacherService teacherService,
             ISubjectService subjectService) 
@@ -126,7 +126,7 @@ namespace Basecode_WebApp.Controllers
         }
         public IActionResult ManageSubjects()
         {
-            return View();
+            return View(_subjectService.GetSubjects());
         }
 
         [HttpPost]

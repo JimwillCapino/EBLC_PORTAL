@@ -10,5 +10,7 @@ namespace Basecode.Services.Interfaces
     public interface ISubjectService
     {
         public void AddSubject(Subject subject);
+        public List<Subject> GetSubjects();
     }
+
 }

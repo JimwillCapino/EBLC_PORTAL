@@ -29,5 +29,17 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
+        public List<Subject> GetSubjects()
+        {
+            try
+            {
+                return _subjectRepository.GetSubjects();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
     }
 }

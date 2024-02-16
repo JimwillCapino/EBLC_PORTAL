@@ -10,5 +10,6 @@ namespace Basecode.Data.Interfaces
     public interface ISubjectRepository
     {
         public void AddSubject(Subject subject);
+        public List<Subject> GetSubjects();
     }
 }

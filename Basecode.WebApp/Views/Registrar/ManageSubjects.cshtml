@@ -1,10 +1,12 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@{
+@{    
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
 }
+@using Basecode.Data.Models
+@model List<Subject> 
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
@@ -17,12 +19,26 @@
             <table class="table overflow-auto" id="myTable">
                 <thead>
                     <tr>
-                        <th>SubjectName</th>
+                        <th>Subject Name</th>
                         <th>Grade</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach(var subject in Model)
+                    {
+                        <tr class="bg-blue">
+                            <td class="pt-3 mt-1">@subject.Subject_Name</td>
+                            <td class="pt-3">@subject.Grade</td>
+                            <td class="pt-3">
+                                <i class="fa-solid fa-check-to-slot fa-lg px-3"></i>
+                                <i class="fa-solid fa-x fa-lg"></i>
+                            </td>
+                        </tr>
+                        <tr id="spacing-row">
+                            <td> </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -49,7 +65,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-danger">Add Subject</button>
+                        <button type="submit" class="btn btn-danger">Add Subject</button>
                     </div>
                 }                
             </div>
