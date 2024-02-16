@@ -106,17 +106,17 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("Enrollee");
             }
         }
-        public IActionResult ManageTeachers()
+        public async Task<IActionResult> ManageTeachersAsync()
         {
             try
             {
-                var teachers = _teacherService.GetTeacherinitView();
+                var teachers = await _teacherService.GetTeacherinitView();
                 return View(teachers);
             }
             catch (Exception ex)
             {
                 ViewBag.Success = false;
-                ViewBag.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
                 return RedirectToAction("Index");
             }
         }

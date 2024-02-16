@@ -11,6 +11,6 @@ namespace Basecode.Data.Interfaces
     public interface ITeacherRepository
     {
         public void AddTeacher(Teacher teacher);
-        public IEnumerable<TeacherViewModel> GetAllTeachersInitView();
+        public Task<List<TeacherViewModel>> GetAllTeachersInitViewAsync();
     }
 }

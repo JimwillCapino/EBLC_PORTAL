@@ -30,11 +30,11 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
-        public IEnumerable<TeacherViewModel> GetTeacherinitView()
+        public async Task<List<TeacherViewModel>> GetTeacherinitView()
         {
             try
             {
-                return _TeacherRepository.GetAllTeachersInitView();
+                return await _TeacherRepository.GetAllTeachersInitViewAsync();
             }
             catch (Exception ex)
             {

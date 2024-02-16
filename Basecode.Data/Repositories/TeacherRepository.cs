@@ -37,29 +37,39 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
-        public IEnumerable<TeacherViewModel> GetAllTeachersInitView()
+        public async Task<List<TeacherViewModel>> GetAllTeachersInitViewAsync()
         {
             try
             {
-                var asproleTeacher = _userManager.GetUsersInRoleAsync("Teacher").Result.AsQueryable();
-                var rtpusers = this.GetDbSet<RTPUsers>().AsQueryable();
-                var rtpcommons = this.GetDbSet<RTPCommons>().AsQueryable();
-                var users = this.GetDbSet<UsersPortal>().AsQueryable();
+                var aspuser = await _userManager.GetUsersInRoleAsync("Teacher");                
+                var rtpuser = this.GetDbSet<RTPUsers>().ToList();
+                var rtpcommons = this.GetDbSet<RTPCommons>().ToList();
+                var usersportal = this.GetDbSet<UsersPortal>().ToList();
 
-                var teacher = from asprole in asproleTeacher
-                              join rtpu in rtpusers on asprole.Id equals rtpu.AspUserId
-                              join rtpc in rtpcommons on rtpu.RTPId equals rtpc.Id
-                              join u in users on rtpc.UID equals u.UID
+                var test = aspuser.Select(p => new 
+                {
+                    Id = p.Id,
+                    Email = p.Email
+                });
+                var u = from t in test
+                        join r in rtpuser on t.Id equals r.AspUserId
+                        select new
+                        {
+                            mail = t.Email
+                        };
+                var teacher = from au in test
+                              join rtu in rtpuser on au.Id equals rtu.AspUserId
+                              join rtc in rtpcommons on rtu.RTPId equals rtc.Id
+                              join users in usersportal on rtc.UID equals users.UID
                               select new TeacherViewModel
                               {
-                                  Id =asprole.Id,
-                                  FirstName = u.FirstName,
-                                  MiddleName = u.MiddleName,
-                                  LastName = u.LastName,
-                                  Gender = u.sex
+                                  FirstName = users.FirstName,
+                                  LastName = users.LastName,
+                                  MiddleName = users.MiddleName,
+                                  Gender = users.sex,
+                                  Id = au.Id,
                               };
-                return teacher;
-                
+                return teacher.ToList();                             
             }
             catch (Exception ex)
             {

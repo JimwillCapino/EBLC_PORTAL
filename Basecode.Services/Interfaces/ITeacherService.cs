@@ -11,6 +11,6 @@ namespace Basecode.Services.Interfaces
     public interface ITeacherService
     {
         public void AddTeacher(Teacher teacher);
-        public IEnumerable<TeacherViewModel> GetTeacherinitView();
+        public  Task<List<TeacherViewModel>> GetTeacherinitView();
     }
 }
