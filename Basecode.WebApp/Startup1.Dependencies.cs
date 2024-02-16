@@ -25,6 +25,7 @@ namespace Basecode.WebApp
             services.AddScoped<IStudentService, StudentService>();
             services.AddScoped<ITeacherService, TeacherService>();
             services.AddScoped<IRTPUsersService, RTPUsesrsService>();
+            services.AddScoped<ISubjectService, SubjectService>();
             // Repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
@@ -35,6 +36,7 @@ namespace Basecode.WebApp
             services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<ITeacherRepository, TeacherRepository>();
             services.AddScoped<IRTPUsersRepository, RTPUsersRepository>();
+            services.AddScoped<ISubjectRepository, SubjectRepository>();
         }
     }
 }

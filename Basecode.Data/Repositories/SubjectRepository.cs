@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Basecode.Data.Repositories
 {
-    public class SubjectRepository : BaseRepository
+    public class SubjectRepository : BaseRepository, ISubjectRepository
     {
         BasecodeContext _context;
         public SubjectRepository(IUnitOfWork unitOfWork, BasecodeContext context) : base(unitOfWork)
