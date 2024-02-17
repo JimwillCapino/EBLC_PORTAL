@@ -151,6 +151,9 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("Index");
             }
         }
-
+        public IActionResult ManageClass()
+        {
+            return View();
+        }
     }
 }

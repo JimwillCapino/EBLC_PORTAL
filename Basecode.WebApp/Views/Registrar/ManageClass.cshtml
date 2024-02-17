@@ -1,0 +1,34 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+<link rel="stylesheet" href="/css/TableInfo.css" />
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main p-5">
+        <h1>Manage Class</h1>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1></h1>
+            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Class</button>
+        </div>
+        <div class="table-responsive overflow-auto">
+            <table class="table overflow-auto" id="myTable">
+                <thead>
+                    <tr>
+                        <th>Class Name</th>
+                        <th>Grade</th>
+                        <th>Adviser</th>
+                        <th>Class Size</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                      
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
