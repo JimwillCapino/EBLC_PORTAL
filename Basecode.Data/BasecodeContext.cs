@@ -32,6 +32,7 @@ namespace Basecode.Data
         public virtual DbSet<Teacher> Teacher { get; set; }
         public virtual DbSet<Subject> Subject { get; set; }
         public virtual DbSet<RTPUsers> RTPUsers { get; set; }
+        public virtual DbSet<Class> Class { get; set; }
         public virtual DbSet<RefreshToken> RefreshToken { get; set; }
     }
 }
