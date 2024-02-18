@@ -15,12 +15,13 @@ namespace Basecode.Data.Repositories
         {
             _context = context;
         }
-        public void AddClass(Class classroom)
+        public int AddClass(Class classroom)
         {
             try
             {
-                _context.Class.Add(classroom);
+                var classRoom = _context.Class.Add(classroom);
                 _context.SaveChanges();
+                return classRoom.Entity.Id;
             }
            
             catch (Exception ex)
@@ -29,5 +30,39 @@ namespace Basecode.Data.Repositories
             }
         
         }
+        public void RemoveClass(Class classroom)
+        {
+
+
+        }
+        public void DeleteClass(Class classroom)
+        {
+
+        }
+        public void AddClassSubject(ClassSubjects classSubjects)
+        {
+            try
+            {
+                _context.ClassSubjects.Add(classSubjects);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+        }
+        public void AddClassStudent(ClassStudents students)
+        {
+            try
+            {
+                _context.ClassStudents.Add(students);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+        }
+
     }
 }

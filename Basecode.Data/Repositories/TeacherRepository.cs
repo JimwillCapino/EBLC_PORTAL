@@ -51,12 +51,7 @@ namespace Basecode.Data.Repositories
                     Id = p.Id,
                     Email = p.Email
                 });
-                var u = from t in test
-                        join r in rtpuser on t.Id equals r.AspUserId
-                        select new
-                        {
-                            mail = t.Email
-                        };
+                
                 var teacher = from au in test
                               join rtu in rtpuser on au.Id equals rtu.AspUserId
                               join rtc in rtpcommons on rtu.RTPId equals rtc.Id

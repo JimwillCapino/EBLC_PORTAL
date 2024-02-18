@@ -9,6 +9,8 @@ namespace Basecode.Data.Interfaces
 {
     public interface IClassManagementRepository
     {
-        public void AddClass(Class classroom);
+        public int AddClass(Class classroom);
+        public void AddClassSubject(ClassSubjects classSubjects);
+        public void AddClassStudent(ClassStudents students);
     }
 }
