@@ -33,6 +33,7 @@ namespace Basecode.Data
         public virtual DbSet<Subject> Subject { get; set; }
         public virtual DbSet<RTPUsers> RTPUsers { get; set; }
         public virtual DbSet<Class> Class { get; set; }
+        public virtual DbSet<Grades> Grades { get; set; }
         public virtual DbSet<ClassStudents> ClassStudents { get; set; }
         public virtual DbSet<ClassSubjects> ClassSubjects { get; set; }
         public virtual DbSet<RefreshToken> RefreshToken { get; set; }

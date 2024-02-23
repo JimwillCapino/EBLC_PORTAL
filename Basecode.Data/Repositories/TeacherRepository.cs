@@ -70,6 +70,6 @@ namespace Basecode.Data.Repositories
             {
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
-        }
+        }       
     }
 }

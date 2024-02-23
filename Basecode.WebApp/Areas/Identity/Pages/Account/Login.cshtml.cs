@@ -129,6 +129,10 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
                     {
                         return LocalRedirect("~/Registrar/Index");                     
                     }
+                    else if(role.Contains("Teacher"))
+                    {
+                        return LocalRedirect("~/Teacher/Index");
+                    }
                     Console.WriteLine(role.First());
                     return LocalRedirect(returnUrl);
                 }

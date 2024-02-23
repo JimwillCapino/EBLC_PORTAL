@@ -13,13 +13,16 @@ namespace Basecode_WebApp.Controllers
         private INewEnrolleeService _newEnrolleeService;
         private ITeacherService _teacherService;
         private ISubjectService _subjectService;
+        private IClassManagementService _classManagementService;
         public RegistrarController(INewEnrolleeService newEnrolleeService,
             ITeacherService teacherService,
-            ISubjectService subjectService) 
+            ISubjectService subjectService,
+            IClassManagementService classManagementService) 
         { 
             _newEnrolleeService = newEnrolleeService;
             _teacherService = teacherService;
             _subjectService = subjectService;
+            _classManagementService = classManagementService;
         }
         public IActionResult Index()
         {
@@ -151,9 +154,143 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("Index");
             }
         }
-        public IActionResult ManageClass()
+        public async Task<IActionResult> ManageClass()
         {
-            return View();
+            var classes = await _classManagementService.GetAllClass();
+            return View(classes);
+        }
+        [HttpPost]
+        public IActionResult AddClass()
+        {
+            try
+            {
+                string classname = Request.Form["className"];
+                string adviser = Request.Form["Adviser"];
+                int grade = Int32.Parse(Request.Form["grade"]);
+                int classSize = Int32.Parse(Request.Form["classsize"]);
+
+                var inputclass = new Class
+                {
+                    ClassName = classname,
+                    Adviser = adviser,
+                    ClassSize = classSize,
+                    Grade = grade
+                };
+
+                _classManagementService.AddClass(inputclass);
+                return RedirectToAction("ManageClass");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public async Task<IActionResult> ClassDetails(int classId)
+        {
+            try
+            {
+                var classdetails = await _classManagementService.GetClassViewModelById(classId);
+                return View(classdetails);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("ManageClass");
+            }
+        }
+        [HttpPost]
+        public IActionResult AddClassSubjects()
+        {
+            try
+            {
+                var classId = Int32.Parse(Request.Form["classId"]);
+                var subjectId = Int32.Parse(Request.Form["subjectId"]);
+                var teacherId = Request.Form["teacherId"];
+
+                var classSubjects = new ClassSubjects
+                {
+                    ClassId = classId,
+                    Subject_Id = subjectId,
+                    Teacher_Id = teacherId
+                };
+
+                _classManagementService.AddClassSubjects(classSubjects);
+
+                return RedirectToAction("ClassDetails", new { classId = classId });
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("ManageClass");
+            }
+        }
+        [HttpPost]
+        public IActionResult AddClassStudents()
+        {
+            try
+            {
+                var classId = Int32.Parse(Request.Form["classId"]);
+                var studentid = Int32.Parse(Request.Form["studentId"]);
+                var classStudent = new ClassStudents
+                {
+                    Class_Id = classId,
+                    Student_Id = studentid,
+                };
+                _classManagementService.AddClassStudent(classStudent);
+                return RedirectToAction("ClassDetails", new { classId = classId });
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("ManageClass");
+            }
+        }
+        public IActionResult RemoveClassStudent(int id, int classId)
+        {
+            try
+            {
+                _classManagementService.RemoveClassStudent(id);
+                return RedirectToAction("ClassDetails", new { classId = classId });
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("ManageClass");
+            }
+        }
+        public IActionResult RemoveClassSubject(int id, int classId)
+        {
+            try
+            {
+                _classManagementService.RemoveClassSubject(id);
+                return RedirectToAction("ClassDetails", new { classId = classId });
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("ManageClass");
+            }
+        }
+        public IActionResult RemoveClass(int classId)
+        {
+            try
+            {
+                _classManagementService.RemoveClass(classId);
+                return RedirectToAction("ManageClass");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("ManageClass");
+            }
         }
     }
 }

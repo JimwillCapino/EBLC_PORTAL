@@ -5,6 +5,8 @@
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
 }
+@using Basecode.Data.ViewModels
+@model ClassDetailsViewModel
 <link rel="stylesheet" href="/css/TableInfo.css" />
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
@@ -26,9 +28,73 @@
                     </tr>
                 </thead>
                 <tbody>
-                      
+                    @foreach(var classes in Model.Classes)
+                    {
+                        <tr class="bg-blue" onclick="redirectToIndex(@classes.Id)">
+                            <td class="pt-3 mt-1">@classes.ClassName</td>
+                            <td class="pt-3">@classes.Grade</td>
+                            <td class="pt-3">@classes.ClassSize</td>
+                            <td class="pt-3">@classes.AdviserName</td>
+                            <td class="pt-3">
+                                <i class="lni lni-trash-can" onclick="RemoveClass(@classes.Id)"></i>
+                            </td>
+                        </tr>
+                        <tr id="spacing-row">
+                            <td> </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
     </div>
+    <!--Modal for Adding Class-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Input Subject Details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                @using (Html.BeginForm("AddClass", "Registrar", FormMethod.Post))
+                {
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Class Name:</label>
+                            <input type="text" class="form-control" id="recipient-name" name="className">
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Grade:</label>
+                            <input type="text" class="form-control" id="recipient-name" name="grade">
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Class Size:</label>
+                            <input type="text" class="form-control" id="recipient-name" name="classsize">
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Adviser:</label>
+                            <select class="form-select" aria-label="Default select example" name="Adviser">
+                                <option selected>Open this select menu</option>
+                                @foreach(var teacher in Model.Teachers)
+                                {
+                                    <option value="@teacher.Id">@teacher.FirstName @teacher.MiddleName @teacher.LastName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Add Class</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <script>
+        function redirectToIndex(classId) {
+            window.location.href = '@Url.Action("ClassDetails", "Registrar")?classId=' + classId;
+        }
+        function RemoveClass(classId){
+            window.location.href = '@Url.Action("RemoveClass", "Registrar")?classId=' + classId;
+        }
+    </script>
 </div>

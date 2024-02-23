@@ -11,8 +11,8 @@ namespace Basecode.Data.Models
     {
         [Key]
         public int Id { get; set; }
-        public int ClassId { get; set; }
-        public int Subject_Id {  get; set; }
+        public int? ClassId { get; set; }
+        public int? Subject_Id {  get; set; }
         public string Teacher_Id { get; set; }
     }
 }
