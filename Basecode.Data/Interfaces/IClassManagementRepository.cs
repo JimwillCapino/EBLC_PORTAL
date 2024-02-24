@@ -24,5 +24,6 @@ namespace Basecode.Data.Interfaces
         public List<ClassStudentViewModel> GetStudents(int grade);
         public Class GetClass(int id);
         public void RemoveClass(Class classroom);
+        public List<TeacherClassDetails> GetTeacherClassDetails(string teacher_Id);
     }
 }

@@ -269,5 +269,36 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
+        public List<TeacherClassDetails> GetTeacherClassDetails(string teacher_Id)
+        {
+            try
+            {
+                var teacherClassDetails = new TeacherClassDetails();
+                var classList = this.GetDbSet<ClassSubjects>().Where(c => c.Teacher_Id == teacher_Id);
+                var allclass = this.GetDbSet<Class>();
+                var subject = this.GetDbSet<Subject>();
+
+                var list = from cl in classList
+                           join ac in allclass
+                           on cl.ClassId equals ac.Id
+                           join s in subject
+                           on cl.Subject_Id equals s.Subject_Id
+                           select new TeacherClassDetails
+                           {
+                               Class_Id = ac.Id,
+                               Subject_Id = s.Subject_Id,
+                               Subject_Name = s.Subject_Name,
+                               Class_Name = ac.ClassName,
+                               grade = ac.Grade,
+                               Students = this.GetClassStudents(ac.Id)
+                           };
+                return list.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+        }
     }
 }
