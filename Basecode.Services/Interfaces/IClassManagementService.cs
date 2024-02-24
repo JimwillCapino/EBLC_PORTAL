@@ -20,5 +20,6 @@ namespace Basecode.Services.Interfaces
         public void RemoveClassStudent(int id);
         public void RemoveClassSubject(int id);
         public void RemoveClass(int id);
+        public List<TeacherClassDetails> GetTeacherClassDetails(string teacher_Id);
     }
 }

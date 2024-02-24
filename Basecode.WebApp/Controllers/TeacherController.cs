@@ -1,16 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Identity; 
+using Microsoft.AspNetCore.Identity;
+using Basecode.Services.Interfaces;
 namespace Basecode.WebApp.Controllers
 {
     [Authorize(Roles = "Teacher")]
     public class TeacherController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
-        public TeacherController(UserManager<IdentityUser> userManager)
+        private readonly IClassManagementService _classManagementService;
+        public TeacherController(UserManager<IdentityUser> userManager, 
+            IClassManagementService classManagementService)
         {
             _userManager = userManager;
+            _classManagementService = classManagementService;
         }
         public IActionResult Index()
         {
@@ -19,7 +23,9 @@ namespace Basecode.WebApp.Controllers
         }
         public IActionResult StudentList()
         {
-            return View();
+            var id = _userManager.GetUserId(User);
+            var ClassList = _classManagementService.GetTeacherClassDetails(id);
+            return View(ClassList);
         }
     }
 }

@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace Basecode.Services.Services
 {
-    public class ClassManagementService:IClassManagementService
+    public class ClassManagementService : IClassManagementService
     {
         IClassManagementRepository _repository;
-        public ClassManagementService(IClassManagementRepository classManagementRepository) 
-        { 
+        public ClassManagementService(IClassManagementRepository classManagementRepository)
+        {
             _repository = classManagementRepository;
         }
         public void AddClass(Class classroom)
@@ -57,7 +57,7 @@ namespace Basecode.Services.Services
                     _repository.AddClassSubject(subs);
                 }
                 //Adding students to a class
-                foreach(var classStudent in classViewModel.ClassStudents)
+                foreach (var classStudent in classViewModel.ClassStudents)
                 {
                     var student = new ClassStudents
                     {
@@ -173,6 +173,18 @@ namespace Basecode.Services.Services
             {
                 var classremove = _repository.GetClass(id);
                 _repository.RemoveClass(classremove);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public List<TeacherClassDetails> GetTeacherClassDetails(string teacher_Id)
+        {
+            try
+            {
+                return _repository.GetTeacherClassDetails(teacher_Id);
             }
             catch (Exception ex)
             {

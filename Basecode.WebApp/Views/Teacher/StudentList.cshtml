@@ -5,12 +5,53 @@
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
 }
+@using Basecode.Data.ViewModels
+@model List<TeacherClassDetails>
+
 <link rel="stylesheet" href="/css/TeachersPage.css" />
 <div class="wrapper">
     @await Html.PartialAsync("./_TeacherSideBar")
     <div class="main p-5">
         <p class="lead">Your Class</p>
         <div class="tab">
+            @foreach(var classTeacher in Model)
+            {
+                string tab = classTeacher.grade + " "+classTeacher.Class_Name + " " + classTeacher.Subject_Name;
+
+                <button class="tablinks" onclick="tabs(event, '@tab')" id="defaultOpen">Grade @tab</button>
+           
+            }
+        </div>
+        @foreach(var classTeacher in Model)
+        {
+            string tab = classTeacher.grade + " " + classTeacher.Class_Name + " " + classTeacher.Subject_Name;
+            <div id="@tab" class="tabcontent">
+                <div class="table-responsive">
+                    <table class="table" id="myTable">
+                        <thead>
+                            <tr>
+                                <th scope="col">Students</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var student in classTeacher.Students)
+                            {
+                                <tr class="bg-blue">
+                                    <td class="pt-2">
+                                        <div class="pl-lg-5 pl-md-3 pl-1 name">@student.FirstName @student.MiddleName, @student.LastName</div>
+                                    </td>
+                                </tr>
+                                <tr id="spacing-row">
+                                    <td></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }      
+        
+       @*  <div class="tab">
             <button class="tablinks" onclick="tabs(event, 'London')" id="defaultOpen">London</button>
             <button class="tablinks" onclick="tabs(event, 'Paris')">Paris</button>
             <button class="tablinks" onclick="tabs(event, 'Tokyo')">Tokyo</button>
@@ -55,7 +96,7 @@
         <div id="Tokyo" class="tabcontent">
             <h3>Tokyo</h3>
             <p>Tokyo is the capital of Japan.</p>
-        </div>
+        </div> *@
     </div>
 </div>
 <script src="/js/Tables.js"></script>

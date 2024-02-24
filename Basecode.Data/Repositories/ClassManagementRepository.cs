@@ -289,10 +289,17 @@ namespace Basecode.Data.Repositories
                                Subject_Id = s.Subject_Id,
                                Subject_Name = s.Subject_Name,
                                Class_Name = ac.ClassName,
-                               grade = ac.Grade,
-                               Students = this.GetClassStudents(ac.Id)
+                               grade = ac.Grade,                              
                            };
-                return list.ToList();
+                var list1 = list.ToList();
+                //Initialize students belonging to the class
+                for (int x = 0; x < list1.Count(); x++)
+                {
+                    int class_Id = list1.ElementAt(x).Class_Id;
+                    list1.ElementAt(x).Students = this.GetClassStudents(class_Id);
+                }
+
+                return list1;
             }
             catch (Exception ex)
             {
