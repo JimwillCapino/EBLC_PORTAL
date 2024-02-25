@@ -1,0 +1,45 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+<div class="wrapper">
+    @await Html.PartialAsync("./_TeacherSideBar")
+    <div class="main p-5">
+        <div class="row">
+            <div class="col">
+                <div class="table-responsive">
+
+                    <table class="table" id="myTable">
+                        <thead>
+                            <tr>
+                                <th scope="col">Quarter</th>
+                                <th scope="col">Grade</th>                               
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-blue">
+                                <td class="pt-2">
+                                   
+                                </td>
+                                <td class="pt-2">
+                                </td>
+                            </tr>
+                            <tr id="spacing-row">
+                                <td></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>                    
+                </div>
+            </div>
+            <div class ="col">
+                <label for="inputPassword5" class="form-label">Grade</label>
+                <input type="text" id="inputPassword5" class="form-control mb-3" aria-describedby="passwordHelpBlock">
+                <button type="button" class="btn btn-outline-danger">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>

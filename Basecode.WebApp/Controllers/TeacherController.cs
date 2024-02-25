@@ -27,5 +27,10 @@ namespace Basecode.WebApp.Controllers
             var ClassList = _classManagementService.GetTeacherClassDetails(id);
             return View(ClassList);
         }
+        public IActionResult SubmitGrade()
+        {
+            
+            return View();
+        }
     }
 }
