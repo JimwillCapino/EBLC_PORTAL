@@ -11,6 +11,7 @@ namespace Basecode.Data.Interfaces
     public interface IStudentManagementRepository
     {
         public void SubmitGrade(Grades grade);
-        public List<GradesViewModel> GetStudentGradeBySubject(int student_Id, int subject_Id);
+        public GradesDetail GetStudentGradeBySubject(int student_Id, int subject_Id);
+        public void EditGrade(Grades grade);
     }
 }

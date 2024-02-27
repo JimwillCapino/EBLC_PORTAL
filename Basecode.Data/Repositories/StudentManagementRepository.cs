@@ -30,17 +30,37 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-        public List<GradesViewModel> GetStudentGradeBySubject(int student_Id, int subject_Id)
+        public GradesDetail GetStudentGradeBySubject(int student_Id, int subject_Id)
         {
             try
             {
                 var grades = this.GetDbSet<Grades>().Where(g => g.Student_Id == student_Id)
                     .Where(g => g.Subject_Id == subject_Id).Select(g => new GradesViewModel
                     {
+                        Grade_Id = g.Grade_Id,
                         Grade = g.Grade,
                         Quarter = g.Quarter,
                     });
-                return grades.ToList();
+                var gradesDetails = new GradesDetail
+                {
+                    Student_Id = student_Id,
+                    Subject_Id = subject_Id,
+                    Grades =grades.ToList(),
+                };
+                return gradesDetails;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void EditGrade(Grades grade)
+        {
+            try
+            {
+                _context.Grades.Update(grade);
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
