@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    double avg = 0, count = 0;
 }
 @using Basecode.Data.ViewModels
 @model StudentDetailsWithGrade
@@ -79,21 +80,38 @@
                                     </thead>
                                     <tbody>
                                         @foreach(var group in Model.grades)
-                                        {
+                                        {                                            
+                                            count++;
                                             <tr>
                                                 <td>@group.SubjectName</td>
                                                 @for(int x=0; x< group.Grades.Count();x++)
                                                 {
                                                     <td>@group.Grades.ElementAt(x).Grade</td>
+                                                    if (x == 4 && group.Grades.ElementAt(x).Grade >= 75)
+                                                    {
+                                                        avg += group.Grades.ElementAt(x).Grade;
+                                                        <td>Passed</td>
+                                                    }
+                                                    else if (x == 4 && group.Grades.ElementAt(x).Grade < 75)
+                                                    {
+                                                        avg += group.Grades.ElementAt(x).Grade;
+                                                        <td>Failed</td>
+                                                    }
                                                 }
                                                 @for (int x = 0; x < (4 - group.Grades.Count());x++)
                                                 {
                                                     <td></td>
                                                 }
+                                                
                                             </tr>
                                         }                                                                        
                                     </tbody>
                                 </table>
+                                <p class="lead">General Average: @Math.Floor(avg / count)</p>
+                                @if (Math.Floor(avg / count) >= 75)
+                                {
+                                    <p class="lead">Promoted</p>
+                                }
                             </div>                           
                         </div>
                     </div>

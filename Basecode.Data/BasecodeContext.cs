@@ -36,6 +36,7 @@ namespace Basecode.Data
         public virtual DbSet<Grades> Grades { get; set; }
         public virtual DbSet<ClassStudents> ClassStudents { get; set; }
         public virtual DbSet<ClassSubjects> ClassSubjects { get; set; }
+        public virtual DbSet<Settings> Settings { get; set; }
         public virtual DbSet<RefreshToken> RefreshToken { get; set; }
     }
 }
