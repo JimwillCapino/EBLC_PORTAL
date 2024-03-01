@@ -2,6 +2,7 @@
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int? max = 0;
+    int finalGrade = 0;
 }
 @using Basecode.Data.ViewModels
 @model GradesDetail
@@ -29,9 +30,19 @@
                                     max = grades.Quarter;
                                 }
                                 <tr class="bg-blue">
-                                    <td class="pt-2">
-                                        @grades.Quarter
-                                    </td>
+                                    @if (grades.Quarter == 5)
+                                    {
+                                        finalGrade = grades.Grade;
+                                        <td class="pt-2">
+                                            Final Grade
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td class="pt-2">
+                                            @grades.Quarter
+                                        </td>
+                                    }
                                     <td class="pt-2">
                                         @grades.Grade
                                     </td>
@@ -42,9 +53,21 @@
                                 <tr id="spacing-row">
                                     <td></td>
                                 </tr>
-                            }                        
+                            }
+                           
                         </tbody>
-                    </table>                    
+                    </table>
+                    @if (max == 5)
+                    {                                                
+                        @if (finalGrade >= 75)
+                        {
+                           <p>Remarks: Passed</p>
+                        }
+                        else
+                        {
+                            <p>Remarks: Failed</p>
+                        }                                                 
+                    }
                 </div>
             </div>
             <div class ="col">
@@ -61,7 +84,7 @@
             <script>
                 var max = @max;
                 var button = document.getElementById("submit");
-                if(max==4)
+                if(max==5)
                 {
                     button.disabled = true;
                 }

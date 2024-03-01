@@ -5,6 +5,8 @@
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
 }
+@using Basecode.Data.ViewModels
+@model StudentDetailsWithGrade
 <link rel="stylesheet" href="/css/TableInfo.css" />
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
@@ -15,9 +17,23 @@
                     <div class="card-body text-center">
                         <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
                              class="rounded-circle img-fluid" style="width: 150px;">
-                        <h5 class="my-3">John Smith</h5>
-                        <p class="text-muted mb-1">Full Stack Developer</p>
-                        <p class="text-muted mb-4">Bay Area, San Francisco, CA</p>
+                        <h5 class="my-3">@Model.Student.FirstName @Model.Student.MiddleName @Model.Student.LastName</h5>
+                        <p class="text-muted mb-1">@Model.Student.Status</p>
+                        <p class="text-muted mb-4">Grade @Model.Student.Grade</p>
+                        <p class="text-muted mb-4">@Model.Student.age years old</p>
+                        @if (Model.Student.lrn == null)
+                        {
+                            <p class="text-muted mb-4">
+                                LRN  not set.
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-4">
+                                @Model.Student.lrn
+                            </p>
+                        }
+
                         <div class="d-flex justify-content-center mb-2">
                             <button type="button" class="btn btn-danger">Form-138</button>
                             <button type="button" class="btn btn-outline-danger ms-1">Report Card</button>
@@ -35,82 +51,50 @@
                     <h3>Grades</h3>
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Grades Records</h4>
-                            <p class="card-description">
-                                Basic table with card
-                            </p>
+                            <h4 class="card-title">Grades</h4>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    School Year
+                                </button>
+                                <ul class="dropdown-menu">
+                                    @foreach(var schoolyear in Model.School_Years)
+                                    {
+                                        <li><a class="dropdown-item" asp-action="StudentInfo" asp-route-student_Id="@Model.Student.Student_ID" asp-route-school_year="@schoolyear">@schoolyear</a></li>
+                                    }                                    
+                                    
+                                </ul>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>ID No.</th>
-                                            <th>Created On</th>
-                                            <th>Status</th>
+                                            <th>Subject</th>
+                                            <th>1</th>
+                                            <th>2</th>
+                                            <th>3</th>
+                                            <th>4</th>
+                                            <th>5</th>
+                                            <th>Remarks</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Samso Park</td>
-                                            <td>34424433</td>
-                                            <td>12 May 2017</td>
-                                            <td><label class="badge badge-danger">Pending</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Marlo Sanki</td>
-                                            <td>53425532</td>
-                                            <td>15 May 2015</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>John ryte</td>
-                                            <td>53275533</td>
-                                            <td>14 May 2017</td>
-                                            <td><label class="badge badge-info">Fixed</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Peter mark</td>
-                                            <td>53275534</td>
-                                            <td>16 May 2017</td>
-                                            <td><label class="badge badge-success">Completed</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
+                                        @foreach(var group in Model.grades)
+                                        {
+                                            <tr>
+                                                <td>@group.SubjectName</td>
+                                                @for(int x=0; x< group.Grades.Count();x++)
+                                                {
+                                                    <td>@group.Grades.ElementAt(x).Grade</td>
+                                                }
+                                                @for (int x = 0; x < (4 - group.Grades.Count());x++)
+                                                {
+                                                    <td></td>
+                                                }
+                                            </tr>
+                                        }                                                                        
                                     </tbody>
                                 </table>
-                            </div>
-                            <!--Pagination-->
-                            <nav aria-label="...">
-                                <ul class="pagination pagination-lg justify-content-center">
-                                    <li class="page-item" aria-current="page">
-                                        <span class="page-link text-danger">1</span>
-                                    </li>
-                                    <li class="page-item "><a class="page-link text-danger" href="#">2</a></li>
-                                    <li class="page-item "><a class="page-link text-danger" href="#">3</a></li>
-                                </ul>
-                            </nav>
+                            </div>                           
                         </div>
                     </div>
                 </div>

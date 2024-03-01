@@ -13,5 +13,8 @@ namespace Basecode.Services.Interfaces
         public GradesDetail GetStudentGradeBySubject(int student_Id, int subject_Id);
         public void SubmitGrade(int student_id, int Subject_Id, int grade, int Quarter);
         public void EditGrade(int Grade_Id,int student_id, int Subject_Id, int grade, int Quarter);
+        public StudentDetailsWithGrade GetStudentGrades(int student_Id, string school_year);
+        public List<StudentViewModel> GetAllStudents();
+
     }
 }

@@ -5,13 +5,14 @@
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
 }
-
+@using Basecode.Data.ViewModels
+@model List<StudentViewModel>
 
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-3">
         <div class="container p-lg-2">
-            <i class="fas fa-user-circle"></i><span class="p-2">School Year 2024-2025</span>
+            <span class="">School Year 2024-2025</span>
             <h1>
                 Student Record
             </h1>
@@ -36,60 +37,24 @@
                             <th scope="col">Name</th>
                             <th scope="col">Status</th>
                             <th scope="col">Age</th>
-                            <th scope="col">LRN</th>
-                            <th scope="col">Actions</th>
+                            <th scope="col">LRN</th>                           
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="bg-blue">
-                            <td class="pt-2">
-                                <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="rounded-circle" alt="">
-                                <div class="pl-lg-5 pl-md-3 pl-1 name">Emilia Kollette</div>
-                            </td>
-                            <td class="pt-3 mt-1">25 Sep 2020</td>
-                            <td class="pt-3">11:00 AM</td>
-                            <td class="pt-3">Enrolled</td>
-                            <td class="pt-3"></td>
-                        </tr>
-                        <tr id="spacing-row">
-                            <td></td>
-                        </tr>
-                        <tr class="bg-blue">
-                            <td class="pt-2">
-                                <img src="https://images.pexels.com/photos/3765114/pexels-photo-3765114.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" class="rounded-circle" alt="">
-                                <div class="pl-lg-5 pl-md-3 pl-1 name">Anny Adams</div>
-                            </td>
-                            <td class="pt-3">26 Sep 2020</td>
-                            <td class="pt-3">11:00 AM</td>
-                            <td class="pt-3"><span class="fa fa-check pl-3"></span></td>
-                            <td class="pt-3"></td>
-                        </tr>
-                        <tr id="spacing-row">
-                            <td></td>
-                        </tr>
-                        <tr class="bg-blue">
-                            <td class="pt-2">
-                                <img src="https://images.pexels.com/photos/3779448/pexels-photo-3779448.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="rounded-circle" alt="">
-                                <div class="pl-lg-5 pl-md-3 pl-1 name">Arnold Linn</div>
-                            </td>
-                            <td class="pt-3">26 Sep 2020</td>
-                            <td class="pt-3">02:00 PM</td>
-                            <td class="pt-3"><span class="fa fa-check pl-3"></span></td>
-                            <td class="pt-3"></td>
-                        </tr>
-                        <tr id="spacing-row">
-                            <td></td>
-                        </tr>
-                        <tr class="bg-blue">
-                            <td class="pt-2">
-                                <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="rounded-circle" alt="">
-                                <div class="pl-lg-5 pl-md-3 pl-1 name">Josh Limosel</div>
-                            </td>
-                            <td class="pt-3">26 Sep 2020</td>
-                            <td class="pt-3">04:00 PM</td>
-                            <td class="pt-3"><span class="fa fa-minus pl-3"></span></td>
-                            <td class="pt-3"></td>
-                        </tr>
+                        @foreach(var student in Model)
+                        {
+                            <tr class="bg-blue" onclick="redirectToStudentInfo(@student.Student_ID)">
+                                <td class="pt-2">
+                                    <div class="pl-lg-5 pl-md-3 pl-1 name">@student.FirstName @student.MiddleName @student.LastName</div>
+                                </td>
+                                <td class="pt-3 mt-1">@student.Status</td>
+                                <td class="pt-3">@student.age</td>
+                                <td class="pt-3">@student.lrn</td>                          
+                            </tr>
+                            <tr id="spacing-row">
+                                <td></td>
+                            </tr>
+                        }                                          
                     </tbody>
                 </table>
                 <nav aria-label="...">
@@ -105,3 +70,9 @@
         </div>
     </div>
 </div>
+<script>
+    function redirectToStudentInfo(student_Id)
+    {
+        window.location.href = '@Url.Action("StudentInfo", "Registrar")?student_Id=' + student_Id + '&school_year=2023-2024';
+    }
+</script>

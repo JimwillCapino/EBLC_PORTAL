@@ -14,15 +14,18 @@ namespace Basecode_WebApp.Controllers
         private ITeacherService _teacherService;
         private ISubjectService _subjectService;
         private IClassManagementService _classManagementService;
+        private IStudentManagementService _studentManagementService;
         public RegistrarController(INewEnrolleeService newEnrolleeService,
             ITeacherService teacherService,
             ISubjectService subjectService,
-            IClassManagementService classManagementService) 
+            IClassManagementService classManagementService,
+            IStudentManagementService studentManagementService) 
         { 
             _newEnrolleeService = newEnrolleeService;
             _teacherService = teacherService;
             _subjectService = subjectService;
             _classManagementService = classManagementService;
+            _studentManagementService = studentManagementService;
         }
         public IActionResult Index()
         {
@@ -30,11 +33,30 @@ namespace Basecode_WebApp.Controllers
         }
         public IActionResult StudentRecord()
         {
-            return View();
+            try
+            {
+                var studentList = _studentManagementService.GetAllStudents();
+                return View(studentList);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                ViewBag.ErrorMessage = ex.Message;
+                return RedirectToAction("Index");
+            }
         }
-        public IActionResult StudentInfo()
+        public IActionResult StudentInfo(int student_Id, string school_year)
         {
-            return View();
+            try
+            {
+                return View(_studentManagementService.GetStudentGrades(student_Id, school_year));
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                ViewBag.ErrorMessage = ex.Message;
+                return RedirectToAction("Index");
+            }         
         }
         public IActionResult MonthlyFee()
         {

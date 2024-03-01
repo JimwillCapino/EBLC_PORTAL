@@ -75,5 +75,31 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
+        public StudentDetailsWithGrade GetStudentGrades(int student_Id, string school_year)
+        {
+            try
+            {
+                var student = new StudentDetailsWithGrade();
+                student.School_Years = _studentManagementRepository.GetSchoolYears(student_Id);
+                student.Student = _studentManagementRepository.GetStudent(student_Id);
+                student.grades = _studentManagementRepository.GetStudentGrades(student_Id,school_year);
+                return student;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public List<StudentViewModel> GetAllStudents()
+        {
+            try
+            {
+                return _studentManagementRepository.GetAllStudents();
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
     }
 }
