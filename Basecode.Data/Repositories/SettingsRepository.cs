@@ -40,5 +40,19 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        public string GetSchoolYear()
+        {
+            try
+            {
+                var settings = this.GetSettings();
+                var schoolYear = settings.StartofClass.Value.Year.ToString() + "-" + settings.EndofClass.Value.Year.ToString();
+                return schoolYear;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }

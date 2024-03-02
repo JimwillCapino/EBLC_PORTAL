@@ -1,9 +1,11 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using Basecode.Services.Interfaces
 @{
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    
 }
 @using Basecode.Data.ViewModels
 @model List<StudentViewModel>
@@ -73,6 +75,6 @@
 <script>
     function redirectToStudentInfo(student_Id)
     {
-        window.location.href = '@Url.Action("StudentInfo", "Registrar")?student_Id=' + student_Id + '&school_year=2023-2024';
-    }
+        window.location.href = '@Url.Action("StudentInfo", "Registrar")?student_Id=' + student_Id;
+    }  
 </script>

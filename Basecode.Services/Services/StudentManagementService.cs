@@ -15,11 +15,14 @@ namespace Basecode.Services.Services
     {
         private readonly IStudentManagementRepository _studentManagementRepository;
         private readonly IStudentRepository _studentRepository;
+        private readonly ISettingsRepository _settingsRepository;
         public StudentManagementService(IStudentManagementRepository studentManagementRepository,
-            IStudentRepository studentRepository) 
+            IStudentRepository studentRepository,
+            ISettingsRepository settings) 
         {
             _studentManagementRepository = studentManagementRepository;
             _studentRepository = studentRepository;
+            _settingsRepository = settings;
         }
         public GradesDetail GetStudentGradeBySubject(int student_Id, int subject_Id)
         {
@@ -44,7 +47,7 @@ namespace Basecode.Services.Services
                     Grade = grade,
                     Quarter =   Quarter,
                     Grade_Level = student.CurrGrade,
-                    School_Year ="2023-2024"
+                    School_Year =_settingsRepository.GetSchoolYear()
                 };
                 _studentManagementRepository.SubmitGrade(grades);
             }
@@ -66,7 +69,7 @@ namespace Basecode.Services.Services
                     Grade = grade,
                     Quarter = Quarter,
                     Grade_Level = student.CurrGrade,
-                    School_Year = "2023-2024"
+                    School_Year = _settingsRepository.GetSchoolYear()
                 };
                 _studentManagementRepository.EditGrade(grades);
             }

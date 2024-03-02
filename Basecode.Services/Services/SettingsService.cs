@@ -1,4 +1,5 @@
 ﻿using Basecode.Data.Interfaces;
+using Basecode.Data.Models;
 using Basecode.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,28 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
 
+        }
+        public void UpdateSettings(Settings settings)
+        {
+            try
+            {
+                _settingsRepository.UpdateSchoolYear(settings);
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public Settings GetSettings()
+        {
+            try
+            {
+                return _settingsRepository.GetSettings();
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
         }
     }
 }

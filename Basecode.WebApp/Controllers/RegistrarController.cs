@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata;
 using System.Web;
+//using System.Web.Mvc;
+
 namespace Basecode_WebApp.Controllers
 {
     [Authorize(Roles = "Registrar")]
@@ -15,17 +17,21 @@ namespace Basecode_WebApp.Controllers
         private ISubjectService _subjectService;
         private IClassManagementService _classManagementService;
         private IStudentManagementService _studentManagementService;
+        private ISettingsService _settingsService;
+        
         public RegistrarController(INewEnrolleeService newEnrolleeService,
             ITeacherService teacherService,
             ISubjectService subjectService,
             IClassManagementService classManagementService,
-            IStudentManagementService studentManagementService) 
+            IStudentManagementService studentManagementService,
+            ISettingsService settingsService) 
         { 
             _newEnrolleeService = newEnrolleeService;
             _teacherService = teacherService;
             _subjectService = subjectService;
             _classManagementService = classManagementService;
             _studentManagementService = studentManagementService;
+            _settingsService = settingsService;           
         }
         public IActionResult Index()
         {
@@ -48,7 +54,14 @@ namespace Basecode_WebApp.Controllers
         public IActionResult StudentInfo(int student_Id, string school_year)
         {
             try
-            {
+            {              
+                if (school_year == null)
+                {
+                    var schoolYear = _settingsService.GetSettings().StartofClass.Value.Year.ToString() + "-" +
+                _settingsService.GetSettings().EndofClass.Value.Year.ToString();
+                    school_year = schoolYear;
+                }
+                   
                 return View(_studentManagementService.GetStudentGrades(student_Id, school_year));
             }
             catch (Exception ex)
@@ -313,6 +326,32 @@ namespace Basecode_WebApp.Controllers
                 Console.WriteLine(ex);
                 return RedirectToAction("ManageClass");
             }
+        }
+        public IActionResult Settings()
+        {
+            return View(_settingsService.GetSettings);
+        }
+        public IActionResult UpdateSettings(Settings settings)
+        {
+            try
+            {
+                _settingsService.UpdateSettings(settings);
+                return RedirectToAction("Settings");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public JsonResult GetCurrentSchoolYear()
+        {
+            var start = _settingsService.GetSettings().StartofClass;
+            var end = _settingsService.GetSettings().EndofClass;
+            string currentSchoolYear = start.Value.Year.ToString()+"-"+end.Value.Year.ToString(); // Replace this with your actual logic
+
+            return Json(currentSchoolYear,System.Web.Mvc.JsonRequestBehavior.AllowGet);
         }
     }
 }

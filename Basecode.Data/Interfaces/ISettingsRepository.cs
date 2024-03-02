@@ -11,5 +11,6 @@ namespace Basecode.Data.Interfaces
     {
         public void UpdateSchoolYear(Settings settings);
         public Settings GetSettings();
+        public string GetSchoolYear();
     }
 }
