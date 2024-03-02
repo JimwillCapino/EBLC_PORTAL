@@ -28,5 +28,17 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        public Settings GetSettings()
+        {
+            try
+            {
+                return this.GetDbSet<Settings>().First();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }

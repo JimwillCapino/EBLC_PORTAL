@@ -10,5 +10,6 @@ namespace Basecode.Data.Interfaces
     public interface ISettingsRepository
     {
         public void UpdateSchoolYear(Settings settings);
+        public Settings GetSettings();
     }
 }
