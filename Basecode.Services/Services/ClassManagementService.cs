@@ -192,5 +192,18 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
+        public List<HomeRoom> GetTeacherHomeRoom(string teacher_Id)
+        {
+            try
+            {
+                return _repository.GetTeacherHomeRoom(teacher_Id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+    }
     }
 }

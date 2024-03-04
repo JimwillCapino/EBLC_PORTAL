@@ -25,5 +25,6 @@ namespace Basecode.Data.Interfaces
         public Class GetClass(int id);
         public void RemoveClass(Class classroom);
         public List<TeacherClassDetails> GetTeacherClassDetails(string teacher_Id);
+        public List<HomeRoom> GetTeacherHomeRoom(string teacher_Id);
     }
 }

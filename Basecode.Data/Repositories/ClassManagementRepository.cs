@@ -307,5 +307,29 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
+        public List<HomeRoom> GetTeacherHomeRoom(string teacher_Id)
+        {
+            try
+            {
+                var classHome = this.GetDbSet<Class>().Where(c => c.Adviser == teacher_Id).Select(c => new HomeRoom
+                {
+                    Class_Id = c.Id,
+                    ClassName = c.ClassName,
+                    Grade = c.Grade
+                }).ToList();
+
+                foreach(var item in classHome)
+                {
+                    item.Students = this.GetClassStudents(item.Class_Id);
+                }
+                return classHome;
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        
     }
 }
