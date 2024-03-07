@@ -17,5 +17,15 @@ namespace Basecode.Data.Interfaces
         public List<StudentViewModel> GetAllStudents();
         public StudentViewModel GetStudent(int student_Id);
         public List<string> GetSchoolYears(int student_Id);
+        public void AddCoreValues(Core_Values core_Values);
+        public void AddBehaviouralStatement(Behavioural_Statement behaviour_Statement);
+        public void AddLearnerValues(Learner_Values values);
+        public List<Core_Values> GetAllCoreValues();
+        public List<Learners_Values_Report> GetLearnersValues();
+        public void UpdateCoreValues(Core_Values values);
+        public void DeleteCore_Values(Core_Values values);
+        public void UpdateBehavioralStatement(Behavioural_Statement statement);
+        public Behavioural_Statement GetBehaviouralStatementById(int Id);
+        public Core_Values GetCoreValuesById(int Id);
     }
 }

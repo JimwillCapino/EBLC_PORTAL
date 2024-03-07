@@ -58,5 +58,10 @@ namespace Basecode.WebApp.Controllers
             _studentManagementService.EditGrade(Grade_Id, student_id, subject_Id, grade, quarter);
             return RedirectToAction("SubmitGrade", new { student_Id = student_id, subject_Id = subject_Id });
         }
+        public IActionResult HomeRoom()
+        {
+            var id = _userManager.GetUserId(User);
+            return View(_classManagementService.GetTeacherHomeRoom(id));
+        }
     }
 }

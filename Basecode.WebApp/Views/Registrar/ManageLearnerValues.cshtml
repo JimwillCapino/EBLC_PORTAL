@@ -1,0 +1,64 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+@using Basecode.Data.ViewModels
+@model Learner_Values_ViewModel
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main p-5">
+        <form asp-action="AddBehavioralStatement">
+            <div class="mb-3">
+                <select class="form-select" aria-label="Default select example" asp-for="Core_Values">
+                    <option selected>Open this select menu</option>
+                    @foreach(var core_value in Model.CoreValues)
+                    {
+                        <option value="@core_value.Id">@core_value.core_Values</option>
+                    }                                      
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Behavioral Statement</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" asp-for="Behavioural_Statement"></textarea>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="submit" class="btn btn-outline-danger">Add Behavioural Statement</button>
+                </div>
+                <div class="col-md-6 d-flex justify-content-end">
+                    <a asp-action="ViewLearnersValues"><button type="button" class="btn btn-outline-danger" style="margin-right:10px"> View Learner's Value</button></a>
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Core Values</button>
+                </div>               
+            </div>            
+        </form>
+    </div>
+    @* Modal For adding Core Values *@
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                @using (Html.BeginForm("AddCoreValue", "Registrar", FormMethod.Post))
+                    {
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Core Values:</label>
+                            <textarea class="form-control" id="message-text" name="Core_Value" required></textarea>
+                        </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Core Value</button>
+                        </div>
+                    }
+                </div>
+        </div>
+    </div>
+
+</div>

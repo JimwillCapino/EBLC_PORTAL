@@ -1,6 +1,8 @@
 ﻿using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
 using Basecode.Data.ViewModels;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +29,57 @@ namespace Basecode.Data.Repositories
             catch(Exception ex)
             {
                 Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+        public void AddCoreValues(Core_Values core_Values)
+        {
+            try
+            {
+                _context.Core_Values.Add(core_Values);
+                _context.SaveChanges();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                throw;
+            }
+        }
+        public void AddBehaviouralStatement(Behavioural_Statement behaviour_Statement)
+        {
+            try
+            {
+                _context.Behavioural_Statement.Add(behaviour_Statement);
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                throw;
+            }
+        }
+        public void AddLearnerValues(Learner_Values values)
+        {
+            try
+            {
+                _context.Learner_Values.Add(values);
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                throw;
+            }
+        }
+        public List<Core_Values> GetAllCoreValues()
+        {
+            try
+            {
+                return this.GetDbSet<Core_Values>().ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
                 throw;
             }
         }
@@ -171,6 +224,107 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-        
+        public List<Learners_Values_Report> GetLearnersValues()
+        {
+            try
+            {
+                var core_values = this.GetDbSet<Core_Values>();
+                var behavioral = this.GetDbSet<Behavioural_Statement>();
+
+                var learners_Values = from c in core_values
+                                      join b in behavioral
+                                      on c.Id equals b.Core_Values
+                                      select new
+                                      {
+                                          Core_Values_Id = c.Id,
+                                          Core_Values = c.core_Values,
+                                          behavioralStatement = b.Statements,
+                                          behavioral_Id = b.Id,
+                                      };
+
+                var learners_Values_GroupBy = learners_Values.GroupBy(p => new { p.Core_Values, p.Core_Values_Id })
+                    .Select(group => new Learners_Values_Report
+                    {
+                        Core_Values = group.Key.Core_Values,
+                        Core_Values_Id= group.Key.Core_Values_Id,
+                        behavioural_Statements = group.Select(g => new Behavioural_Statement
+                        {
+                            Id = g.behavioral_Id,
+                            Statements = g.behavioralStatement,
+                            Core_Values = g.Core_Values_Id
+                        }).ToList()
+                    });
+
+                return learners_Values_GroupBy.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void UpdateCoreValues(Core_Values values)
+        {
+            try
+            {
+                _context.Core_Values.Update(values);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void DeleteCore_Values(Core_Values values)
+        {
+            try
+            {
+                _context.Core_Values.Remove(values);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void UpdateBehavioralStatement(Behavioural_Statement statement)
+        {
+            try
+            {
+                _context.Behavioural_Statement.Update(statement);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public Behavioural_Statement GetBehaviouralStatementById(int Id)
+        {
+            try
+            {
+                return _context.Behavioural_Statement.Find(Id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public Core_Values GetCoreValuesById(int Id) 
+        {
+            try
+            {
+                return _context.Core_Values.Find(Id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }        
     }
 }

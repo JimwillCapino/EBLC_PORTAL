@@ -1,8 +1,10 @@
 ﻿using Basecode.Data;
 using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 using Basecode.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System.Reflection.Metadata;
 using System.Web;
 //using System.Web.Mvc;
@@ -329,7 +331,7 @@ namespace Basecode_WebApp.Controllers
         }
         public IActionResult Settings()
         {
-            return View(_settingsService.GetSettings);
+            return View(_settingsService.GetSettings());
         }
         public IActionResult UpdateSettings(Settings settings)
         {
@@ -345,13 +347,178 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("Index");
             }
         }
-        public JsonResult GetCurrentSchoolYear()
+        public IActionResult ManageLearnerValues()
         {
-            var start = _settingsService.GetSettings().StartofClass;
-            var end = _settingsService.GetSettings().EndofClass;
-            string currentSchoolYear = start.Value.Year.ToString()+"-"+end.Value.Year.ToString(); // Replace this with your actual logic
+            try
+            {
+                var learnerValues = new Learner_Values_ViewModel();
+                learnerValues.CoreValues = _studentManagementService.GetAllCoreValues();
+                return View(learnerValues);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        public IActionResult AddCoreValue()
+        {
+            try
+            {
+                var core_value = Request.Form["Core_Value"];
+                var core_value_object = new Core_Values
+                {
+                    core_Values = core_value
+                };
+                _studentManagementService.AddCoreValues(core_value_object);
+                return RedirectToAction("ManageLearnerValues");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult AddBehavioralStatement(Learner_Values_ViewModel model)
+        {
+            try
+            {
+                var statement = new Behavioural_Statement();
+                statement.Core_Values = model.Core_Values;
+                statement.Statements = model.Behavioural_Statement;
+                _studentManagementService.AddBehavioralStatement(statement);
+                return RedirectToAction("ManageLearnerValues");   
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult ViewLearnersValues()
+        {
+            try
+            {
+                var test = _studentManagementService.GetLearnersValues();
+                return View(_studentManagementService.GetLearnersValues());
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult UpdateCoreValues(Core_Values values)
+        {
+            try
+            {
+                _studentManagementService.UpdateCoreValues(values);
+                return RedirectToAction("ViewLearnersValues");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult UpdateBeheviouralStatement(Learner_Values_ViewModel model)
+        {
+            try
+            {
+                var statement = new Behavioural_Statement()
+                {
+                    Id = model.Id,
+                    Core_Values = model.Core_Values,
+                    Statements = model.Behavioural_Statement
+                };
+                _studentManagementService.UpdateBehavioralStatement(statement);
+                return RedirectToAction("ViewLearnersValues");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult DeleteCoreValues(Core_Values values)
+        {
+            try
+            {
+                _studentManagementService.DeleteCoreValues(values);
+                return RedirectToAction("ViewLearnersValues");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult UpdateBehaviouralStatementView(int id)
+        {
+            try
+            {
+                var statement = _studentManagementService.GetBehaviouralStatementById(id);
+                var values = new Learner_Values_ViewModel()
+                {
+                    Id = id,
+                    Behavioural_Statement = statement.Statements,
+                    Core_Values = statement.Core_Values,
+                    CoreValues = _studentManagementService.GetAllCoreValues()
+                };
+                return View(values);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult RemoveCoreValues(int id)
+        {
+            try
+            {
+                var corevalues = _studentManagementService.GetCoreValuesById(id);
+                _studentManagementService.DeleteCoreValues(corevalues);
+                return RedirectToAction("ViewLearnersValues");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        public IActionResult UpdateCoreValues()
+        {
+            try
+            {
+                var corevalues = Request.Form["corevalues"];
+                var corevaluesId = Request.Form["id"];
+                var cv = new Core_Values()
+                {
+                    core_Values = corevalues,
+                    Id = Int32.Parse(corevaluesId),
+                };
+                _studentManagementService.UpdateCoreValues(cv);
 
-            return Json(currentSchoolYear,System.Web.Mvc.JsonRequestBehavior.AllowGet);
+                return RedirectToAction("ViewLearnersValues");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
         }
     }
 }

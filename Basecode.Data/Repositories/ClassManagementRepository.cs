@@ -329,7 +329,6 @@ namespace Basecode.Data.Repositories
                 Console.WriteLine(ex);
                 throw;
             }
-        }
-        
+        }       
     }
 }

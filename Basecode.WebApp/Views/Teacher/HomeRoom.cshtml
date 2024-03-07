@@ -6,23 +6,23 @@
     Layout = "~/Views/Shared/NoLayout.cshtml";
 }
 @using Basecode.Data.ViewModels
-@model List<TeacherClassDetails>
+@model List<HomeRoom>
 
 <link rel="stylesheet" href="/css/TeachersPage.css" />
 <div class="wrapper">
     @await Html.PartialAsync("./_TeacherSideBar")
     <div class="main p-5">
-        <p class="lead">Your Class</p>
+        <p class="lead">Your Advisee</p>
         <div class="tab">
             @foreach (var classTeacher in Model)
             {
-                string tab = classTeacher.grade + " " + classTeacher.Class_Name + " " + classTeacher.Subject_Name;
+                string tab = classTeacher.Grade+" "+classTeacher.ClassName;
                 <button class="tablinks" onclick="tabs(event, '@tab')" id="defaultOpen">Grade @tab</button>
             }
         </div>
         @foreach (var classTeacher in Model)
         {
-            string tab = classTeacher.grade + " " + classTeacher.Class_Name + " " + classTeacher.Subject_Name;
+            string tab = classTeacher.Grade + " " + classTeacher.ClassName;
             <div id="@tab" class="tabcontent">
                 <div class="table-responsive">
                     <table class="table" id="myTable">
@@ -34,7 +34,7 @@
                         <tbody>
                             @foreach (var student in classTeacher.Students)
                             {
-                                <tr class="bg-blue" onclick="redirectToSubmitGradePage(@student.Student_Id,@classTeacher.Subject_Id)">
+                                <tr class="bg-blue" onclick="redirectToSubmitGradePage(@student.Student_Id)">
                                     <td class="pt-2">
                                         <div class="pl-lg-5 pl-md-3 pl-1 name">@student.FirstName @student.MiddleName, @student.LastName</div>
                                     </td>

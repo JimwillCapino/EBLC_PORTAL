@@ -78,6 +78,17 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
+        public List<Core_Values> GetAllCoreValues()
+        {
+            try
+            {
+                return _studentManagementRepository.GetAllCoreValues();
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
         public StudentDetailsWithGrade GetStudentGrades(int student_Id, string school_year)
         {
             try
@@ -98,6 +109,94 @@ namespace Basecode.Services.Services
             try
             {
                 return _studentManagementRepository.GetAllStudents();
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public void AddCoreValues(Core_Values values)
+        {
+            try
+            {
+                _studentManagementRepository.AddCoreValues(values);
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public void AddBehavioralStatement(Behavioural_Statement statement)
+        {
+            try
+            {
+                _studentManagementRepository.AddBehaviouralStatement(statement);
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public List<Learners_Values_Report> GetLearnersValues()
+        {
+            try
+            {
+                return _studentManagementRepository.GetLearnersValues();
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public void UpdateCoreValues(Core_Values values)
+        {
+            try
+            {
+                _studentManagementRepository.UpdateCoreValues(values);
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public void UpdateBehavioralStatement(Behavioural_Statement statement)
+        {
+            try
+            {
+                _studentManagementRepository.UpdateBehavioralStatement(statement);
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public void DeleteCoreValues(Core_Values values)
+        {
+            try
+            {
+                _studentManagementRepository.DeleteCore_Values(values);
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public Behavioural_Statement GetBehaviouralStatementById(int Id)
+        {
+            try
+            {
+                return _studentManagementRepository.GetBehaviouralStatementById(Id);
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public Core_Values GetCoreValuesById(int Id)
+        {
+            try
+            {
+                return _studentManagementRepository.GetCoreValuesById(Id);
             }
             catch
             {
