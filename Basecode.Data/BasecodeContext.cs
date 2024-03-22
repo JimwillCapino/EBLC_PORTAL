@@ -43,5 +43,6 @@ namespace Basecode.Data
         public virtual DbSet<RefreshToken> RefreshToken { get; set; }
         public virtual DbSet<ChildSubject> ChildSubject { get; set; }
         public virtual DbSet<HeadSubject> HeadSubject { get; set; }
+        public virtual DbSet<Attendance> Attendance { get; set; }
     }
 }
