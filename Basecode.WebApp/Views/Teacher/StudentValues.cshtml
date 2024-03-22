@@ -1,0 +1,215 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+    var max = 0;
+}
+@using Basecode.Data.ViewModels
+@model ValuesWithGradesContainer
+<link rel="stylesheet" href="/css/TableInfo.css" />
+<div class="wrapper">
+    @await Html.PartialAsync("./_TeacherSideBar")
+    <div class="main p-1">
+        <div class="page-content page-container p-5 mx-lg-5" id="page-content">            
+                <div class="row container d-flex justify-content-center">
+                    <!--learner's observes values table.-->
+                    <div class="col-lg-7 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Report on Learner's Observed Values</h4>
+                                <p class="card-description">
+                                    Below are the criteria of rating the Learner's observed values.
+                                </p>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        School Year
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        @foreach (var schoolyear in Model.Scool_Years)
+                                        {
+                                            <li><a class="dropdown-item" asp-action="StudentValues" asp-route-studentId="@Model.Student_Id" asp-route-school_year="@schoolyear">@schoolyear</a></li>
+                                        }
+
+                                    </ul>
+                                </div>                
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        </thead>
+                                        <tbody>
+                                            <thead>
+                                            <tr>
+                                                <th>Core Values</th>
+                                                <th>Behavioral Statement</th>
+                                                <th>1</th>
+                                                <th>2</th>
+                                                <th>3</th>
+                                                <th>4</th>
+                                                <th>Final</th>
+                                            </tr>
+                                            </thead>    
+                                            @foreach (var corevalues in Model.Values)
+                                            {
+                                                var grades = Model.Grades.Where(p => p.BehaviouralId == corevalues.behavioural_Statements.ElementAt(0).Id);
+                                                <tr>
+                                                    <th rowspan="@corevalues.behavioural_Statements.Count()">
+                                                        @corevalues.Core_Values                                                                                                                
+                                                    </th>
+                                                    <td>
+                                                        @corevalues.behavioural_Statements.ElementAt(0).Statements
+                                                    <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="setBehavioural('@corevalues.behavioural_Statements.ElementAt(0).Id')"><i class="lni lni-plus"></i></a>
+                                                    </td>                 
+                                                        @foreach(var grade in grades)
+                                                        {
+                                                            if (grade.Quarter > max)
+                                                            {
+                                                                max = grade.Quarter;
+                                                            }
+                                                            <td>
+                                                            @grade.Grade <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="updateGrade('@grade.Grade','@grade.Id')"><i class="lni lni-pencil"></i></a>
+                                                            </td>
+                                                        }                                                    
+                                                 </tr>
+                                                @for (int x = 1; x < @corevalues.behavioural_Statements.Count(); x++)
+                                                {
+                                                    var gradesi = Model.Grades.Where(p => p.BehaviouralId == corevalues.behavioural_Statements.ElementAt(x).Id);
+                                                    
+                                                    <tr>
+                                                        <td>
+                                                            @corevalues.behavioural_Statements.ElementAt(x).Statements <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="setBehavioural('@corevalues.behavioural_Statements.ElementAt(x).Id')"><i class="lni lni-plus"></i></a> 
+                                                        </td>
+                                                        @for (int y = 0; y < gradesi.Count(); y++)
+                                                        {
+                                                        <td>
+                                                                @gradesi.ElementAt(y).Grade <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="updateGrade('@gradesi.ElementAt(y).Grade','@gradesi.ElementAt(y).Id')"><i class="lni lni-pencil">
+                                                                </i>
+
+                                                            </a>
+                                                        </td>
+                                                        }
+                                                </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Decription of Scale-->
+                    <div class="col-lg-5">
+                        <table class="table mx-lg-5">
+                            <thead>
+                            <th>Marking</th>
+                            <th>Nom-Numerical Rating</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        AO
+                                    </td>
+                                    <td>
+                                        Always Observed
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        SO
+                                    </td>
+                                    <td>
+                                        Sometimes Observed
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        RO
+                                    </td>
+                                    <td>
+                                        Rarely Observed
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        NO
+                                    </td>
+                                    <td>
+                                        Not Observed
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>            
+        </div>
+
+        @* Modal For adding grades *@
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Input Grade</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    @using (Html.BeginForm("SubmitGradeValues", "Teacher", FormMethod.Post))
+                    {
+                        <div class="modal-body">
+                            <input type="hidden" id="behavioural" name="Behavioural" value="" />
+                            <input type="hidden" name="Quarter" value="@(max+1)"/>
+                            <input type="hidden" name="School_Year" value="@Model.School_Year" />
+                            <input type="hidden" name="Student_Id" value="@Model.Student_Id" />
+                            <div class="mb-3">
+                                <label for="message-text" class="col-form-label">Grades:</label>
+                                <textarea class="form-control" value="" id="message-text" name="Grades" required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit Grade</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @* Modal For Updating grades *@
+        <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Update Grade</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    @using (Html.BeginForm("UpdateLearnerValues", "Teacher", FormMethod.Post))
+                    {
+                        <div class="modal-body">
+                            <input type="hidden" id="LearnerValuesId" name="LearnerValuesId" value="" />
+                            <input type="hidden" id="" name="StudentId" value="@Model.Student_Id" />
+                            <div class="mb-3">
+                                <label for="message-text" class="col-form-label">Grades:</label>
+                                <textarea class="form-control" value="" id="grade" name="Grades" required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit Grade</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function setBehavioural(behaviouralId){
+                var box = document.getElementById("behavioural");
+                box.value = behaviouralId;
+            }
+            function updateGrade(grade,id) {
+                var idbox = document.getElementById("LearnerValuesId");
+                var gradebox = document.getElementById("grade");
+                idbox.value = id;
+                gradebox.value = grade;
+            }
+        </script>
+    </div>

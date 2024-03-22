@@ -12,50 +12,49 @@
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-1">
         <div class="page-content page-container" id="page-content">
-        <div class="padding">
-            <div class="row container d-flex justify-content-center">
-
-                <div class="col-lg-8 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Learner Values</h4>
-                            <p class="card-description">
-                               Below are the criteria of rating the Learner's observed values.
-                            </p>
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>                                       
-                                    </thead>
-                                    <tbody>
-                                        @foreach(var corevalues in Model)
-                                        {
-                                            <tr>
-                                                    <th rowspan="@corevalues.behavioural_Statements.Count()">@corevalues.Core_Values 
-                                                        <a asp-action="RemoveCoreValues" asp-route-id="@corevalues.Core_Values_Id"><i class="lni lni-eraser"></i></a>
-                                                        <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="set('@corevalues.Core_Values_Id','@corevalues.Core_Values')"><i class="lni lni-pencil"></i></a>
-                                                    </th>
-                                                    <td>@corevalues.behavioural_Statements.ElementAt(0).Statements
-                                                        <a asp-action="UpdateBehaviouralStatementView" asp-route-id="@corevalues.behavioural_Statements.ElementAt(0).Id"><i class="lni lni-pencil"></i></a>
-                                                    </td>
-                                            </tr>
-                                                @for (int x = 1; x < @corevalues.behavioural_Statements.Count();x++)
-                                                {
-                                                    <tr>
-                                                        <td>
-                                                            @corevalues.behavioural_Statements.ElementAt(x).Statements  <a asp-action="UpdateBehaviouralStatementView" asp-route-id="@corevalues.behavioural_Statements.ElementAt(x).Id"><i class="lni lni-pencil"></i></a>
+            <div class="padding">
+                <div class="row container d-flex justify-content-center">
+                    <div class="col-lg-8 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Learner Values</h4>
+                                <p class="card-description">
+                                   Below are the criteria of rating the Learner's observed values.
+                                </p>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>                                       
+                                        </thead>
+                                        <tbody>
+                                            @foreach(var corevalues in Model)
+                                            {
+                                                <tr>
+                                                        <th rowspan="@corevalues.behavioural_Statements.Count()">@corevalues.Core_Values 
+                                                            <a asp-action="RemoveCoreValues" asp-route-id="@corevalues.Core_Values_Id"><i class="lni lni-eraser"></i></a>
+                                                            <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="set('@corevalues.Core_Values_Id','@corevalues.Core_Values')"><i class="lni lni-pencil"></i></a>
+                                                        </th>
+                                                        <td>@corevalues.behavioural_Statements.ElementAt(0).Statements
+                                                            <a asp-action="UpdateBehaviouralStatementView" asp-route-id="@corevalues.behavioural_Statements.ElementAt(0).Id"><i class="lni lni-pencil"></i></a>
                                                         </td>
-                                                    </tr>
-                                                }
-                                            }   
-                                    </tbody>
-                                </table>
+                                                </tr>
+                                                    @for (int x = 1; x < @corevalues.behavioural_Statements.Count();x++)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @corevalues.behavioural_Statements.ElementAt(x).Statements  <a asp-action="UpdateBehaviouralStatementView" asp-route-id="@corevalues.behavioural_Statements.ElementAt(x).Id"><i class="lni lni-pencil"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }   
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
-        </div>
     </div>
     </div>
 

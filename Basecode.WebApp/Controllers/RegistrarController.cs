@@ -1,4 +1,5 @@
-﻿using Basecode.Data;
+﻿using AutoMapper.Configuration.Conventions;
+using Basecode.Data;
 using Basecode.Data.Models;
 using Basecode.Data.ViewModels;
 using Basecode.Services.Interfaces;
@@ -63,7 +64,7 @@ namespace Basecode_WebApp.Controllers
                 _settingsService.GetSettings().EndofClass.Value.Year.ToString();
                     school_year = schoolYear;
                 }
-                   
+                
                 return View(_studentManagementService.GetStudentGrades(student_Id, school_year));
             }
             catch (Exception ex)
@@ -176,13 +177,91 @@ namespace Basecode_WebApp.Controllers
             {
                 var subname = Request.Form["name"];
                 var grade = Int32.Parse(Request.Form["grade"]);
+                var HasChildValue = Request.Form["HasChild"];
+                bool HasChild = bool.Parse(HasChildValue);
                 var subject = new Subject {
                     Subject_Name = subname,
+                    Grade = grade,
+                    HasChild = HasChild
+                };                
+                var id = _subjectService.AddSubject(subject);
+                var headSubject = new HeadSubject
+                {
+                    Subect_Id = id
+                };
+                _subjectService.AddHeadSubejct(headSubject);
+
+                if(HasChild)
+                {
+                    return RedirectToAction("AddChildSubjectForm", new { headId =id, grade =grade});
+                }
+                _subjectService.SaveDbChanges();
+                return RedirectToAction("ManageSubjects");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult AddChildSubjectForm(int headId, int grade)
+        {
+            try
+            {
+                var form = new ChildSubjectForm
+                {
+                    HeadId = headId,
                     Grade = grade
                 };
-
-                _subjectService.AddSubject(subject);
+                return View(form);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        public IActionResult AddChildSubject()
+        {
+            try
+            {
+                var headId = Int32.Parse(Request.Form["headId"]);
+                var grade = Int32.Parse(Request.Form["grade"]);
+                var input = Request.Form["inputSubname"];                
+                for(int x = 0; x< input.Count; x++)
+                {
+                    var subname = input[x];                   
+                    var subject = new Subject
+                    {
+                        Subject_Name = subname,
+                        Grade = grade,
+                        HasChild = false
+                    };
+                    var id = _subjectService.AddSubject(subject);
+                    var childsubject = new ChildSubject
+                    {
+                        HeadSubjectId = headId,
+                        Subject_Id = id,                        
+                    };
+                    _subjectService.AddChildSubject(childsubject);                   
+                }
                 return RedirectToAction("ManageSubjects");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult ViewChildSubject(int headId)
+        {
+            try
+            {
+                return View(_subjectService.GetChildSubject(headId));
             }
             catch (Exception ex)
             {

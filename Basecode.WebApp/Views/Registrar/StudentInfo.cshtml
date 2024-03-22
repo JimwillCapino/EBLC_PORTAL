@@ -128,75 +128,62 @@
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>ID No.</th>
-                                            <th>Created On</th>
-                                            <th>Status</th>
-                                        </tr>
                                     </thead>
                                     <tbody>
+                                    <thead>
                                         <tr>
-                                            <td>Samso Park</td>
-                                            <td>34424433</td>
-                                            <td>12 May 2017</td>
-                                            <td><label class="badge badge-danger">Pending</label></td>
+                                            <th>Core Values</th>
+                                            <th>Behavioral Statement</th>
+                                            <th>1</th>
+                                            <th>2</th>
+                                            <th>3</th>
+                                            <th>4</th>
+                                            <th>Final</th>
                                         </tr>
+                                    </thead>
+                                        @foreach (var corevalues in Model.learnersValues)
+                                        {
+                                            var grades = Model.valuesGrades.Where(p => p.BehaviouralId == corevalues.behavioural_Statements.ElementAt(0).Id);
                                         <tr>
-                                            <td>Marlo Sanki</td>
-                                            <td>53425532</td>
-                                            <td>15 May 2015</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
+                                            <th rowspan="@corevalues.behavioural_Statements.Count()">
+                                                    @corevalues.Core_Values
+                                            </th>
+                                            <td>
+                                                    @corevalues.behavioural_Statements.ElementAt(0).Statements
+                                                <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="setBehavioural('@corevalues.behavioural_Statements.ElementAt(0).Id')"><i class="lni lni-plus"></i></a>
+                                            </td>
+                                                @foreach (var grade in grades)
+                                                {
+                                                   
+                                                <td>
+                                                        @grade.Grade <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="updateGrade('@grade.Grade','@grade.Id')"><i class="lni lni-pencil"></i></a>
+                                                </td>
+                                                }
                                         </tr>
-                                        <tr>
-                                            <td>John ryte</td>
-                                            <td>53275533</td>
-                                            <td>14 May 2017</td>
-                                            <td><label class="badge badge-info">Fixed</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Peter mark</td>
-                                            <td>53275534</td>
-                                            <td>16 May 2017</td>
-                                            <td><label class="badge badge-success">Completed</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
+                                            @for (int x = 1; x < @corevalues.behavioural_Statements.Count(); x++)
+                                            {
+                                                var gradesi = Model.valuesGrades.Where(p => p.BehaviouralId == corevalues.behavioural_Statements.ElementAt(x).Id);
+
+                                            <tr>
+                                                <td>
+                                                        @corevalues.behavioural_Statements.ElementAt(x).Statements <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="setBehavioural('@corevalues.behavioural_Statements.ElementAt(x).Id')"><i class="lni lni-plus"></i></a>
+                                                </td>
+                                                    @for (int y = 0; y < gradesi.Count(); y++)
+                                                    {
+                                                    <td>
+                                                            @gradesi.ElementAt(y).Grade <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="updateGrade('@gradesi.ElementAt(y).Grade','@gradesi.ElementAt(y).Id')">
+                                                            <i class="lni lni-pencil">
+                                                            </i>
+
+                                                        </a>
+                                                    </td>
+                                                    }
+                                            </tr>
+                                            }
+                                        }
                                     </tbody>
                                 </table>
-                            </div>
-                            <!--Pagination-->
-                            <nav aria-label="...">
-                                <ul class="pagination pagination-lg justify-content-center">
-                                    <li class="page-item" aria-current="page">
-                                        <span class="page-link text-danger">1</span>
-                                    </li>
-                                    <li class="page-item "><a class="page-link text-danger" href="#">2</a></li>
-                                    <li class="page-item "><a class="page-link text-danger" href="#">3</a></li>
-                                </ul>
-                            </nav>
+                            </div>                          
                         </div>
                     </div>
                 </div>

@@ -162,34 +162,180 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-        public List<StudentGrades> GetStudentGrades(int student_Id, string school_year)
+        public List<string> GetValuesSchoolyear(int student_Id)
         {
             try
             {
+                var schoolYears = this.GetDbSet<Learner_Values>()
+                    .Where(g => g.Student_Id == student_Id)
+                    .Select(g => g.School_Year).Distinct();
+                return schoolYears.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public List<StudentGrades> GetChildSubjectGrades(int student_Id, string school_year)
+        {
+            try
+            {
+                //Get the Grade(S) of a particular student along with the choosen school Year
                 var grades = this.GetDbSet<Grades>().Where(g => g.Student_Id == student_Id)
-                    .Where(g=> g.School_Year == school_year);
+                   .Where(g => g.School_Year == school_year);
                 var subjects = this.GetDbSet<Subject>();
-
-                var studentsubjects = from g in grades join s in subjects
-                                      on g.Subject_Id equals s.Subject_Id
-                                      select new
-                                      {
-                                          SubjectName = s.Subject_Name,
-                                          Quarter = g.Quarter,
-                                          Grade = g.Grade
-                                      };
-
-                var studentGrade = studentsubjects.GroupBy(g => g.SubjectName)
+                //Get the subjects with child subjects
+                var HeadSubjects = this.GetDbSet<Subject>().Where(p => p.HasChild == true);
+                //Get the Child Subjects
+                var childSubjects = this.GetDbSet<ChildSubject>();
+                //Join the childSubject table to the Subject Table to get the child subject details e.g name                
+                var childSubjectsUnion = from s in subjects
+                                         join
+                                         c in childSubjects on
+                                         s.Subject_Id equals c.Subject_Id
+                                         join h in HeadSubjects on c.HeadSubjectId equals h.Subject_Id
+                                         select new 
+                                         {
+                                             HeadId = c.HeadSubjectId,
+                                             Subject_Id = c.Subject_Id,
+                                             Subject_Name = s.Subject_Name,
+                                             Grade = s.Grade,
+                                             HasChild = s.HasChild,
+                                         };
+                //Join the Head Subject to the grades table to get its grades.
+                var subjectGrade = from g in grades join s in HeadSubjects
+                                   on g.Subject_Id equals s.Subject_Id
+                                   select new
+                                   {
+                                       Subject_Id = s.Subject_Id,
+                                       SubjectName = s.Subject_Name,
+                                       Quarter = g.Quarter,
+                                       Grade = g.Grade
+                                   };
+                //Join the child subject to the grade table to get its grades.
+                //The Subject Id holds the head Id value instead of the child subject Id.
+                //This is to make sure that the placement in viewing the grades of the head subject and the child subject
+                //are adjacent to one another.
+                var childSubjectGrade = from g in grades join c in childSubjectsUnion
+                                        on g.Subject_Id equals c.Subject_Id
+                                        where g.School_Year == school_year
+                                        select new
+                                        {                                            
+                                            Subject_Id = c.HeadId,
+                                            SubjectName = c.Subject_Name,
+                                            Quarter = g.Quarter,
+                                            Grade = g.Grade
+                                        };
+                //Group the Head subject grades
+               var subjectGradeGrouped = subjectGrade.GroupBy(g => new { g.SubjectName,g.Subject_Id })
                     .Select(group => new StudentGrades
                     {
-                        SubjectName = group.Key,
+                        SubjectId = group.Key.Subject_Id,
+                        SubjectName = group.Key.SubjectName,
                         Grades = group.Select(g => new GradesViewModel
                         {
                             Grade = g.Grade,
                             Quarter = g.Quarter,
                         }).ToList()
                     });
-                return studentGrade.ToList();
+                //group the child subject grades
+                var childSubjectGradeGrouped = childSubjectGrade.GroupBy(g => new { g.SubjectName, g.Subject_Id })
+                   .Select(group => new StudentGrades
+                   {
+                       SubjectId = group.Key.Subject_Id,
+                       SubjectName = group.Key.SubjectName,
+                       Grades = group.Select(g => new GradesViewModel
+                       {
+                           Grade = g.Grade,
+                           Quarter = g.Quarter,
+                       }).ToList()
+                   });
+                
+                var container = new List<StudentGrades>();
+                //To arrange the list of which the Head and Child subjects are contigouse/ not separated.
+                foreach(var subject in  subjectGradeGrouped)
+                {
+                    container.Add(subject);
+                    var childSub = childSubjectGradeGrouped.Where(p=> p.SubjectId == subject.SubjectId).ToList();
+                    foreach(var child in childSub)
+                    {
+                        container.Add(child);
+                    }
+                }
+                return container;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public List<StudentGrades> GetStudentGrades(int student_Id, string school_year)
+        {
+            try
+            {
+                var grades = this.GetDbSet<Grades>().Where(g => g.Student_Id == student_Id)
+                    .Where(g=> g.School_Year == school_year);
+                var subjects = this.GetDbSet<Subject>().Where(p=> !p.HasChild);
+                var headSubjects = this.GetDbSet<HeadSubject>();
+                var joinSubs = from s in subjects
+                               join h in headSubjects
+                               on s.Subject_Id equals h.Subect_Id
+                               select new Subject
+                               {
+                                   Subject_Id = s.Subject_Id,
+                                   Subject_Name = s.Subject_Name,
+                                   Grade = s.Grade,
+                                   HasChild = s.HasChild
+                               };
+                var studentsubjects = from g in grades join s in joinSubs
+                                      on g.Subject_Id equals s.Subject_Id
+                                      select new
+                                      {
+                                          SubjectId = s.Subject_Id,
+                                          SubjectName = s.Subject_Name,
+                                          Quarter = g.Quarter,
+                                          Grade = g.Grade
+                                      };
+
+                var studentGrade = studentsubjects.GroupBy(g => new { g.SubjectName,g.SubjectId })
+                    .Select(group => new StudentGrades
+                    {
+                        SubjectId = group.Key.SubjectId,
+                        SubjectName = group.Key.SubjectName,
+                        Grades = group.Select(g => new GradesViewModel
+                        {
+                            Grade = g.Grade,
+                            Quarter = g.Quarter,
+                        }).ToList()
+                    }).ToList();
+                var childSubjectGrades = this.GetChildSubjectGrades(student_Id, school_year).ToList(); // Execute the query to fetch results from the database
+
+                var concatenatedList = studentGrade.Concat(childSubjectGrades).ToList();
+
+                return concatenatedList;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public List<ValuesGrades> GetValuesGrades(int StudentId, string schoolyear) 
+        {
+            try
+            {
+                var studentGrades = this.GetDbSet<Learner_Values>().Where(p => p.Student_Id == StudentId).Where(p => p.School_Year == schoolyear)
+                    .Select(p => new ValuesGrades
+                    {
+                        Id = p.Id,
+                        BehaviouralId = p.Behavioural_Statement,
+                        Grade = p.Grade,
+                        Quarter = p.Quarter
+                    }).ToList();
+                
+                return studentGrades;
             }
             catch (Exception ex)
             {
@@ -325,6 +471,31 @@ namespace Basecode.Data.Repositories
                 Console.WriteLine(ex);
                 throw;
             }
-        }        
+        }
+        public Learner_Values GetLearnerValuesById(int id)
+        {
+            try
+            {
+                return this.GetDbSet<Learner_Values>().Find(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void UpdateLearnerValues(Learner_Values valuesgrades)
+        {
+            try
+            {
+                _context.Learner_Values.Update(valuesgrades);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }

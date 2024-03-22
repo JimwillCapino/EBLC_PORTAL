@@ -11,8 +11,8 @@ namespace Basecode.Data.Models
         public int Id { get; set; }
         public int Behavioural_Statement { get; set; }
         public int Quarter {  get; set; }
-        public int Grade { get; set; }
-        public int Grade_Level { get; set; }
+        public string Grade { get; set; }
         public string School_Year { get; set; }
+        public int Student_Id { get; set; }
     }
 }

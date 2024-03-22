@@ -24,5 +24,9 @@ namespace Basecode.Services.Interfaces
         public void DeleteCoreValues(Core_Values values);
         public Behavioural_Statement GetBehaviouralStatementById(int Id);
         public Core_Values GetCoreValuesById(int Id);
+        public ValuesWithGradesContainer GetValuesWithGrades(int StudentId, string schoolyear);
+        public void AddLearnerValues(Learner_Values values);
+        public void UpdateLearnerValues(int id, string grade);
+        public ChildSubjectGrades GetChildSubjectGrades(int headId, int studentId);
     }
 }

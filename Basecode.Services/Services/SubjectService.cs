@@ -1,6 +1,7 @@
 ﻿using Basecode.Data;
 using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 using Basecode.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,23 @@ namespace Basecode.Services.Services
         { 
             _subjectRepository = subjectRepository;
         }
-        public void AddSubject(Subject subject)
+        public Subject GetSubject(int id)
         {
             try
             {
-                _subjectRepository.AddSubject(subject);
+                return _subjectRepository.GetSubjectById(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public int AddSubject(Subject subject)
+        {
+            try
+            {
+                return _subjectRepository.AddSubject(subject);
             }
             catch (Exception ex)
             {
@@ -34,6 +47,82 @@ namespace Basecode.Services.Services
             try
             {
                 return _subjectRepository.GetSubjects();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public void AddChildSubject(ChildSubject subject)
+        {
+            try
+            {
+                _subjectRepository.AddChildSubject(subject);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public void AddHeadSubejct(HeadSubject subject)
+        {
+            try
+            {
+                _subjectRepository.AddHeadSubejct(subject);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public HeadSubject GetHeadSubjectById(int id)
+        {
+            try
+            {
+                return _subjectRepository.GetHeadSubjectById(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public void SaveDbChanges()
+        {
+            try
+            {
+                _subjectRepository.SaveDbChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }        
+        public void RemoveSubject(int id)
+        {
+            try
+            {
+                var subject = _subjectRepository.GetSubjectById(id);
+                _subjectRepository.RemoveSubject(subject);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public ChildSubjectContainer GetChildSubject(int headId)
+        {
+            try
+            {
+                var container = new ChildSubjectContainer();
+                container.ChildSubjects = _subjectRepository.GetChildSubject(headId);
+                container.HeadId = headId;
+                return container;
             }
             catch (Exception ex)
             {

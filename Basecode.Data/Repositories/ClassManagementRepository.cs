@@ -15,12 +15,15 @@ namespace Basecode.Data.Repositories
     {
         BasecodeContext _context;
         ITeacherRepository _teacherRepository;
+        ISubjectRepository _subjectRepository;
         public ClassManagementRepository(IUnitOfWork unitOfWork, 
             BasecodeContext context,
-            ITeacherRepository teacherRepository) : base(unitOfWork)
+            ITeacherRepository teacherRepository,
+            ISubjectRepository subjectRepository) : base(unitOfWork)
         {
             _context = context;
             _teacherRepository = teacherRepository;
+            _subjectRepository = subjectRepository;
         }
         public int AddClass(Class classroom)
         {
@@ -135,7 +138,7 @@ namespace Basecode.Data.Repositories
         }
         public List<Subject> GetSubjects()
         {
-            return this.GetDbSet<Subject>().ToList();
+            return _subjectRepository.GetSubjects();
         }
         public List<ClassStudentViewModel> GetStudents(int grade)
         {
@@ -289,7 +292,8 @@ namespace Basecode.Data.Repositories
                                Subject_Id = s.Subject_Id,
                                Subject_Name = s.Subject_Name,
                                Class_Name = ac.ClassName,
-                               grade = ac.Grade,                              
+                               grade = ac.Grade,
+                               HasChild =s.HasChild
                            };
                 var list1 = list.ToList();
                 //Initialize students belonging to the class

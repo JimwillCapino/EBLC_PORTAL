@@ -50,8 +50,8 @@
         }
     </div>
     <script>
-        function redirectToSubmitGradePage(student_Id, subject_Id) {
-            window.location.href = '@Url.Action("SubmitGrade", "Teacher")?student_Id=' + student_Id + '&subject_Id=' + subject_Id;
+        function redirectToSubmitGradePage(student_Id) {
+            window.location.href = '@Url.Action("StudentValues", "Teacher")?studentId=' + student_Id;
         }
     </script>
 </div>

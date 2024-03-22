@@ -31,8 +31,13 @@
                             <td class="pt-3 mt-1">@subject.Subject_Name</td>
                             <td class="pt-3">@subject.Grade</td>
                             <td class="pt-3">
-                                <i class="fa-solid fa-check-to-slot fa-lg px-3"></i>
-                                <i class="fa-solid fa-x fa-lg"></i>
+                                <i class="lni lni-cross-circle px-3"></i>
+                                @if(subject.HasChild)
+                                {
+                                   
+                                        <i class="lni lni-layers" onclick="redirect('@subject.Subject_Id')"></i>
+                                    
+                                }                               
                             </td>
                         </tr>
                         <tr id="spacing-row">
@@ -62,6 +67,14 @@
                             <label for="message-text" class="col-form-label">Grade:</label>
                             <input type="text" class="form-control" id="recipient-name" name="grade">
                         </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Has Child Subject:</label>
+                            <select class="form-select" aria-label="Default select example" name="HasChild">
+                                <option selected>Click to open menu</option>
+                                <option value="false">False</option>
+                                <option value="true">True</option>                                
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -72,4 +85,8 @@
         </div>
     </div>
 </div>
-
+<script>
+    function redirect(headId){
+        window.location.href = '@Url.Action("ViewChildSubject", "Registrar")?headId=' + headId;
+    }
+</script>

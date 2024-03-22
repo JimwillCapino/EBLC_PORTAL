@@ -1,0 +1,47 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+@using Basecode.Data.ViewModels
+@model ChildSubjectForm
+
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main p-5">
+        @using (Html.BeginForm("AddChildSubject", "Registrar", FormMethod.Post))
+        {
+            <div id="form">
+                <input type="hidden" value="@Model.HeadId" name="headId" />
+                <input type="hidden" value="@Model.Grade" name="grade" />
+                <div class="input-group mb-3" id="text">
+                    <input type="text" class="form-control" placeholder="Subject Name" aria-label="Recipient's username" aria-describedby="basic-addon2" name="inputSubname">
+                </div>                               
+            </div>
+            <button type="button" class="btn btn-danger" id="add">Add Child Subject</button>
+            <button type="submit" class="btn btn-danger">Save</button>
+        }
+    </div>
+</div>
+<script>
+    document.getElementById("add").onclick  = function(){
+        var form = document.getElementById("form");
+        var text = document.getElementById("text");
+        var clone = text.cloneNode(true);
+
+        form.appendChild(clone);
+
+        // Add remove button to the new input group
+        var removeButton = document.createElement("span");
+        removeButton.classList.add("input-group-text", "remove-text");
+        removeButton.innerHTML = '<i class="lni lni-circle-minus"></i>';
+        removeButton.onclick = function() {
+            this.closest(".input-group").remove(); // Remove the closest parent input group
+        };
+        clone.appendChild(removeButton);
+
+        form.appendChild(clone);
+    }
+</script>

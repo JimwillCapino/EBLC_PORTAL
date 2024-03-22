@@ -41,5 +41,7 @@ namespace Basecode.Data
         public virtual DbSet<Behavioural_Statement> Behavioural_Statement { get; set; }
         public virtual DbSet<Learner_Values> Learner_Values { get; set; }
         public virtual DbSet<RefreshToken> RefreshToken { get; set; }
+        public virtual DbSet<ChildSubject> ChildSubject { get; set; }
+        public virtual DbSet<HeadSubject> HeadSubject { get; set; }
     }
 }

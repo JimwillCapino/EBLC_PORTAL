@@ -27,5 +27,9 @@ namespace Basecode.Data.Interfaces
         public void UpdateBehavioralStatement(Behavioural_Statement statement);
         public Behavioural_Statement GetBehaviouralStatementById(int Id);
         public Core_Values GetCoreValuesById(int Id);
+        public List<ValuesGrades> GetValuesGrades(int StudentId, string schoolyear);
+        public Learner_Values GetLearnerValuesById(int id);
+        public void UpdateLearnerValues(Learner_Values valuesgrades);
+        public List<string> GetValuesSchoolyear(int student_Id);
     }
 }

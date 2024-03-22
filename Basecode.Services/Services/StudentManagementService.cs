@@ -16,13 +16,16 @@ namespace Basecode.Services.Services
         private readonly IStudentManagementRepository _studentManagementRepository;
         private readonly IStudentRepository _studentRepository;
         private readonly ISettingsRepository _settingsRepository;
+        private readonly ISubjectRepository _subjectRepository;
         public StudentManagementService(IStudentManagementRepository studentManagementRepository,
             IStudentRepository studentRepository,
-            ISettingsRepository settings) 
+            ISettingsRepository settings,
+            ISubjectRepository subjectRepository) 
         {
             _studentManagementRepository = studentManagementRepository;
             _studentRepository = studentRepository;
             _settingsRepository = settings;
+            _subjectRepository = subjectRepository;
         }
         public GradesDetail GetStudentGradeBySubject(int student_Id, int subject_Id)
         {
@@ -78,6 +81,26 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
+        public ChildSubjectGrades GetChildSubjectGrades(int headId, int studentId)
+        {
+            try
+            {
+                var childSubjectGrade = new ChildSubjectGrades();
+                childSubjectGrade.ChildSubjects = _subjectRepository.GetChildSubject(headId);
+                childSubjectGrade.GradesContainer = new List<GradesDetail>();
+                childSubjectGrade.HeadId = headId;
+                childSubjectGrade.StudentId = studentId;
+                foreach(var subject in childSubjectGrade.ChildSubjects)
+                {
+                    childSubjectGrade.GradesContainer.Add(_studentManagementRepository.GetStudentGradeBySubject(studentId, subject.Id));
+                }
+                return childSubjectGrade;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
         public List<Core_Values> GetAllCoreValues()
         {
             try
@@ -97,6 +120,8 @@ namespace Basecode.Services.Services
                 student.School_Years = _studentManagementRepository.GetSchoolYears(student_Id);
                 student.Student = _studentManagementRepository.GetStudent(student_Id);
                 student.grades = _studentManagementRepository.GetStudentGrades(student_Id,school_year);
+                student.valuesGrades = _studentManagementRepository.GetValuesGrades(student_Id,school_year);
+                student.learnersValues = _studentManagementRepository.GetLearnersValues();
                 return student;
             }
             catch
@@ -197,6 +222,47 @@ namespace Basecode.Services.Services
             try
             {
                 return _studentManagementRepository.GetCoreValuesById(Id);
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public ValuesWithGradesContainer GetValuesWithGrades(int StudentId, string schoolyear)
+        {
+            try
+            {
+                var valueswithgrades = new ValuesWithGradesContainer();
+                valueswithgrades.Student_Id = StudentId;
+                valueswithgrades.School_Year = schoolyear;
+                valueswithgrades.Grades = _studentManagementRepository.GetValuesGrades(StudentId, schoolyear);
+                valueswithgrades.Values = _studentManagementRepository.GetLearnersValues();
+                valueswithgrades.Scool_Years = _studentManagementRepository.GetValuesSchoolyear(StudentId);
+                return valueswithgrades;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public void AddLearnerValues(Learner_Values values)
+        {
+            try
+            {
+                _studentManagementRepository.AddLearnerValues(values);
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public void UpdateLearnerValues(int id, string grade)
+        {
+            try
+            {
+                var valuesgrade = _studentManagementRepository.GetLearnerValuesById(id);
+                valuesgrade.Grade = grade;
+                _studentManagementRepository.UpdateLearnerValues(valuesgrade);
             }
             catch
             {
