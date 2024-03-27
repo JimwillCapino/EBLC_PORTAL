@@ -15,14 +15,18 @@ namespace Basecode.Services.Services
     public class ClassManagementService : IClassManagementService
     {
         IClassManagementRepository _repository;
-        public ClassManagementService(IClassManagementRepository classManagementRepository)
+        ISettingsRepository _settings;
+        public ClassManagementService(IClassManagementRepository classManagementRepository,
+            ISettingsRepository settings)
         {
             _repository = classManagementRepository;
+            _settings = settings;
         }
         public void AddClass(Class classroom)
         {
             try
             {
+                classroom.SchoolYear = _settings.GetSchoolYear();
                 _repository.AddClass(classroom);
             }
             catch (Exception ex)
@@ -41,6 +45,7 @@ namespace Basecode.Services.Services
                     Adviser = classViewModel.Adviser,
                     Grade = classViewModel.Grade,
                     ClassSize = classViewModel.ClassSize,
+                    SchoolYear = _settings.GetSchoolYear()
                 };
 
                 var classid = _repository.AddClass(classSection);

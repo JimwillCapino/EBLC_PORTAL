@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Basecode.Services.Interfaces;
 using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 namespace Basecode.WebApp.Controllers
 {
     [Authorize(Roles = "Teacher")]
@@ -197,6 +198,50 @@ namespace Basecode.WebApp.Controllers
                     _studentManagementService.SubmitGrade(studentId, HeadId, (int)avg, quarter+1);
                 }
                 return RedirectToAction("ChildSubjectGrades", new { headId = HeadId, studentId = studentId });
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                ViewBag.ErrorMessage = ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult AddStudentAttendance(AttendanceContainer container)
+        {
+            try
+            {
+                _studentManagementService.AddStudentAttendance(container.studentId, container.Days_of_School, container.Days_of_Present, container.Time_of_Tardy, container.Month);
+                return RedirectToAction("StudentAttendance", new { studentId = container.studentId });    
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+                ViewBag.Success = false;
+                ViewBag.ErrorMessage = ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult StudentAttendance(int studentId)
+        {
+            try
+            {
+                var schoolYear = _settingsService.GetSchoolYear();
+                var container = _studentManagementService.GetStudentAttendance(studentId,schoolYear);
+                return View(container);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                ViewBag.ErrorMessage = ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult UpdateStudentAttendance(AttendanceContainer container)
+        {
+            try
+            {
+                _studentManagementService.UpdateAttendance(container.Id, container.studentId, container.Days_of_School, container.Days_of_Present, container.Time_of_Tardy, container.Month);
+                return RedirectToAction("StudentAttendance", new { studentId = container.studentId });
             }
             catch (Exception ex)
             {

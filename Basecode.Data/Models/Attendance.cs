@@ -10,7 +10,7 @@ namespace Basecode.Data.Models
     {
         public int Id { get; set; }
         public int Studentid { get; set; }
-        public string Month { get; set; }
+        public int Month { get; set; }
         public string School_Year { get; set; }
         public int Days_of_Schoool { get; set; }
         public int Days_of_Present { get; set; }

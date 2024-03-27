@@ -7,11 +7,24 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Mail;
 using System.Text;
-
+using System.Globalization;
 namespace Basecode.Data
 {
     public static class Helper
     {
+        public static string GetFullMonthName(string abbreviatedMonth)
+        {
+            DateTimeFormatInfo dtfi = CultureInfo.CurrentCulture.DateTimeFormat;
+            for (int i = 1; i <= 12; i++)
+            {
+                if (dtfi.GetAbbreviatedMonthName(i).Equals(abbreviatedMonth, StringComparison.OrdinalIgnoreCase))
+                {
+                    return dtfi.GetMonthName(i);
+                }
+            }
+            return null; // Indicate failure to find a matching month abbreviation
+        }
+
         public static IQueryable<T> OrderByPropertyName<T>(this IQueryable<T> query, string attribute, string direction)
         {
             return ApplyOrdering(query, attribute, direction, "OrderBy");

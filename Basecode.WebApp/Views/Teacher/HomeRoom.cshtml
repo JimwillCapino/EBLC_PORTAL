@@ -29,14 +29,19 @@
                         <thead>
                             <tr>
                                 <th scope="col">Students</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var student in classTeacher.Students)
                             {
-                                <tr class="bg-blue" onclick="redirectToSubmitGradePage(@student.Student_Id)">
+                                <tr class="bg-blue">
                                     <td class="pt-2">
                                         <div class="pl-lg-5 pl-md-3 pl-1 name">@student.FirstName @student.MiddleName, @student.LastName</div>
+                                    </td>
+                                    <td>
+                                        <i class="lni lni-heart-fill mx-3" onclick="redirectToSubmitGradePage(@student.Student_Id)"></i>
+                                        <i class="lni lni-list" onclick="redirectToAttendanccePage(@student.Student_Id)"></i>
                                     </td>
                                 </tr>
                                 <tr id="spacing-row">
@@ -52,6 +57,10 @@
     <script>
         function redirectToSubmitGradePage(student_Id) {
             window.location.href = '@Url.Action("StudentValues", "Teacher")?studentId=' + student_Id;
+        }
+        function redirectToAttendanccePage(student_Id)
+        {
+            window.location.href = '@Url.Action("StudentAttendance", "Teacher")?studentId=' + student_Id;
         }
     </script>
 </div>

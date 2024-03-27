@@ -31,5 +31,11 @@ namespace Basecode.Data.Interfaces
         public Learner_Values GetLearnerValuesById(int id);
         public void UpdateLearnerValues(Learner_Values valuesgrades);
         public List<string> GetValuesSchoolyear(int student_Id);
+        public void AddAttendance(Attendance attendance);
+        public void UpdateAttendance(Attendance attendance);
+        public void DeleteAttendance(Attendance attendance);
+        public List<Attendance> GetStudentAtendance(int student_Id, string schoolYear);
+        public bool isDateExisting(int month, string schoolYear);
+        public List<string> GetAttendanceSchoolYear(int student_Id);
     }
 }

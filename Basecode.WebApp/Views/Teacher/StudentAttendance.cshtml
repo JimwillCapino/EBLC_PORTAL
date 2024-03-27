@@ -1,0 +1,194 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+    int x = 1;
+}
+@using Basecode.Data.ViewModels
+@model AttendanceContainer
+<div class="wrapper">
+    @await Html.PartialAsync("./_TeacherSideBar")
+    <div class="main p-5">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Student Attendance</h4>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Add Details
+                    </button>                    
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                @foreach(var month in Model.Months)
+                                {
+                                    <th>@month</th>                                    
+                                }
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Days of School</td>
+                                @foreach(var attendance in Model.Attendances)
+                                {
+
+                                    <td>@(attendance != null ? attendance.Days_of_Schoool : " ")</td>
+                                }
+                            </tr>
+                            <tr>
+                                <td>Days of Present</td>
+                                @foreach(var attendance in Model.Attendances)
+                                {
+                                    <td>@(attendance != null ? attendance.Days_of_Present : " ")</td>
+                                }
+                            </tr>
+                            <tr>
+                                <td>Time of Tardy</td>
+                                @foreach(var attendance in Model.Attendances)
+                                {
+                                    <td>@(attendance != null ? attendance.Time_of_Tardy : " ")</td>
+                                }
+                            </tr>
+                            <tr>
+                                <td></td>
+                                @foreach (var attendance in Model.Attendances)
+                                {                                   
+                                    <td>
+                                        @if(attendance != null)
+                                        {
+                                            <i class="lni lni-pencil-alt" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="editAttendance(@attendance.Id,@attendance.Days_of_Schoool,@attendance.Days_of_Present,@attendance.Time_of_Tardy,@x)"></i>
+                                        }                                        
+                                    </td>
+                                    x = x + 1;
+                                }
+                            </tr>
+                        </tbody>
+                    </table>                    
+               </div>
+            </div>
+        </div>
+    </div>
+    <!--Modal for adding attendance-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="AddStudentAttendance">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="modal-body">
+                        <input type="hidden" value="@Model.studentId" asp-for="studentId"/>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Month:</label>
+                            <select class="form-select" aria-label="Default select example" asp-for="Month">
+                                <option value=""selected>Open this select menu</option>
+                                @foreach(var month in Model.Months)
+                                {                                    
+                                    <option value="@month">@month</option>
+                                }
+                            </select>
+                        </div>                       
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Days of School:</label>
+                            <input type="text" class="form-control" id="recipient-name" asp-for="Days_of_School">
+                            <span asp-validation-for="Days_of_School" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Days of Present:</label>
+                            <input type="text" class="form-control" id="recipient-name" asp-for="Days_of_Present">
+                            <span asp-validation-for="Days_of_Present" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Time of Tardy:</label>
+                            <input type="text" class="form-control" id="recipient-name" asp-for="Time_of_Tardy">
+                            <span asp-validation-for="Time_of_Tardy" class="text-danger"></span>
+                        </div>
+                   
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>                    
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--Modal for Editing attendance-->
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="UpdateStudentAttendance">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="modal-body">
+                        <input type ="hidden" value="" id="id" asp-for="Id"/>
+                        <input type="hidden" value="@Model.studentId" asp-for="studentId" />
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Month:</label>
+                            <select class="form-select" aria-label="Default select example" id="month" asp-for="Month">
+                                <option value="" selected>Open this select menu</option>
+                                @foreach (var month in Model.Months)
+                                {
+                                    <option value="@month">@month</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Days of School:</label>
+                            <input type="text" class="form-control" id="dayOfSchool" asp-for="Days_of_School">
+                            <span asp-validation-for="Days_of_School" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Days of Present:</label>
+                            <input type="text" class="form-control" id="daysOfPresent" asp-for="Days_of_Present">
+                            <span asp-validation-for="Days_of_Present" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Time of Tardy:</label>
+                            <input type="text" class="form-control" id="timeOfTardy" asp-for="Time_of_Tardy">
+                            <span asp-validation-for="Time_of_Tardy" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+    <script>
+        function editAttendance(id,daysOfSchool, daysOfPresent, TimeOfTardy, MonthIdx) {
+            var daysOfSchoolTextBox = document.getElementById("dayOfSchool");
+            var daysOfPresentTextBox = document.getElementById("daysOfPresent");
+            var timeOfTardyTextBox = document.getElementById("timeOfTardy");
+            var monthSelect = document.getElementById("month");
+            var idTextBox = document.getElementById("id");
+
+            daysOfSchoolTextBox.value = daysOfSchool;
+            daysOfPresentTextBox.value = daysOfPresent;
+            timeOfTardyTextBox.value = TimeOfTardy;
+            monthSelect.selectedIndex = MonthIdx;
+            idTextBox.value = id;
+        }
+    </script>
+</div>

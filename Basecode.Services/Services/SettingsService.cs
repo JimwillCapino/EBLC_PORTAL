@@ -53,5 +53,16 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
+        public string GetSchoolYear()
+        {
+            try
+            {
+                return _settingsRepository.GetSchoolYear();
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
     }
 }

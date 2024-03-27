@@ -168,7 +168,26 @@ namespace Basecode.Data.Repositories
             {
                 var schoolYears = this.GetDbSet<Learner_Values>()
                     .Where(g => g.Student_Id == student_Id)
-                    .Select(g => g.School_Year).Distinct();
+                    .Select(g => g.School_Year).Distinct().ToList();
+                var valuesSchoolyears = this.GetValuesSchoolyear(student_Id);
+                var attendanceSchoolYears = this.GetAttendanceSchoolYear(student_Id);
+
+                var concatList = schoolYears.Concat(valuesSchoolyears).Concat(attendanceSchoolYears).Distinct();
+                return concatList.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public List<string> GetAttendanceSchoolYear(int student_Id)
+        {
+            try
+            {
+                var schoolYears = this.GetDbSet<Attendance>()
+                                    .Where(g => g.Studentid == student_Id)
+                                    .Select(g => g.School_Year).Distinct();
                 return schoolYears.ToList();
             }
             catch (Exception ex)
@@ -221,8 +240,9 @@ namespace Basecode.Data.Repositories
                                         on g.Subject_Id equals c.Subject_Id
                                         where g.School_Year == school_year
                                         select new
-                                        {                                            
-                                            Subject_Id = c.HeadId,
+                                        { 
+                                            Head_Id = c.HeadId,
+                                            Subject_Id = c.Subject_Id,
                                             SubjectName = c.Subject_Name,
                                             Quarter = g.Quarter,
                                             Grade = g.Grade
@@ -240,9 +260,10 @@ namespace Basecode.Data.Repositories
                         }).ToList()
                     });
                 //group the child subject grades
-                var childSubjectGradeGrouped = childSubjectGrade.GroupBy(g => new { g.SubjectName, g.Subject_Id })
+                var childSubjectGradeGrouped = childSubjectGrade.GroupBy(g => new { g.SubjectName, g.Subject_Id,g.Head_Id })
                    .Select(group => new StudentGrades
                    {
+                       HeadId = group.Key.Head_Id,
                        SubjectId = group.Key.Subject_Id,
                        SubjectName = group.Key.SubjectName,
                        Grades = group.Select(g => new GradesViewModel
@@ -257,7 +278,7 @@ namespace Basecode.Data.Repositories
                 foreach(var subject in  subjectGradeGrouped)
                 {
                     container.Add(subject);
-                    var childSub = childSubjectGradeGrouped.Where(p=> p.SubjectId == subject.SubjectId).ToList();
+                    var childSub = childSubjectGradeGrouped.Where(p=> p.HeadId == subject.SubjectId).ToList();
                     foreach(var child in childSub)
                     {
                         container.Add(child);
@@ -302,6 +323,7 @@ namespace Basecode.Data.Repositories
                 var studentGrade = studentsubjects.GroupBy(g => new { g.SubjectName,g.SubjectId })
                     .Select(group => new StudentGrades
                     {
+                        HeadId  = 0,
                         SubjectId = group.Key.SubjectId,
                         SubjectName = group.Key.SubjectName,
                         Grades = group.Select(g => new GradesViewModel
@@ -490,6 +512,71 @@ namespace Basecode.Data.Repositories
             {
                 _context.Learner_Values.Update(valuesgrades);
                 _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void AddAttendance(Attendance attendance)
+        {
+            try
+            {
+                _context.Attendance.Add(attendance);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void UpdateAttendance(Attendance attendance)
+        {
+            try
+            {
+                _context.Attendance.Update(attendance);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void DeleteAttendance(Attendance attendance)
+        {
+            try
+            {
+                _context.Attendance.Remove(attendance);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public List<Attendance> GetStudentAtendance(int student_Id, string schoolYear)
+        {
+            try
+            {
+                var studentAttendance = this.GetDbSet<Attendance>().Where(p => p.Studentid == student_Id).Where(p => p.School_Year == schoolYear);
+                return studentAttendance.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public bool isDateExisting(int month, string schoolYear)
+        {
+            try
+            {
+                var list = this.GetDbSet<Attendance>().Where(p => p.School_Year == schoolYear).Where(p => p.Month == month);
+                return list.Count() > 0;
             }
             catch (Exception ex)
             {

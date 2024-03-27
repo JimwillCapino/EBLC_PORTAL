@@ -19,5 +19,7 @@ namespace Basecode.Data.Interfaces
         public void RemoveSubject(Subject subject); 
         public Subject GetSubjectById(int id);
         public List<ChildSubjectView> GetChildSubject(int headId);
+        public List<Subject> GetAllSubjects(int studentId, string schoolYear);
+        public List<HeadSubject> GetAllHeadSubject();
     }
 }

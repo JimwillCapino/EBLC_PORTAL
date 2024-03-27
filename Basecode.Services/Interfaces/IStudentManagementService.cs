@@ -28,5 +28,8 @@ namespace Basecode.Services.Interfaces
         public void AddLearnerValues(Learner_Values values);
         public void UpdateLearnerValues(int id, string grade);
         public ChildSubjectGrades GetChildSubjectGrades(int headId, int studentId);
+        public void AddStudentAttendance(int studentId, int Days_of_School, int Days_of_Present, int Time_of_Tardy, string month);
+        public AttendanceContainer GetStudentAttendance(int studentId, string schoolYear);
+        public void UpdateAttendance(int id, int studentId, int Days_of_School, int Days_of_Present, int Time_of_Tardy, string month);
     }
 }

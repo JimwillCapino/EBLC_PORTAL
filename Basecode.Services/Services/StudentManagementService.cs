@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using Basecode.Data;
 using Basecode.Data.Models;
 using Basecode.Services.Interfaces;
+using System.Globalization;
+using System.Drawing;
+using System.Xml;
 namespace Basecode.Services.Services
 {
     public class StudentManagementService:IStudentManagementService
@@ -16,7 +19,7 @@ namespace Basecode.Services.Services
         private readonly IStudentManagementRepository _studentManagementRepository;
         private readonly IStudentRepository _studentRepository;
         private readonly ISettingsRepository _settingsRepository;
-        private readonly ISubjectRepository _subjectRepository;
+        private readonly ISubjectRepository _subjectRepository;        
         public StudentManagementService(IStudentManagementRepository studentManagementRepository,
             IStudentRepository studentRepository,
             ISettingsRepository settings,
@@ -116,12 +119,25 @@ namespace Basecode.Services.Services
         {
             try
             {
+                var headSubjects = _subjectRepository.GetAllHeadSubject();
                 var student = new StudentDetailsWithGrade();
                 student.School_Years = _studentManagementRepository.GetSchoolYears(student_Id);
                 student.Student = _studentManagementRepository.GetStudent(student_Id);
                 student.grades = _studentManagementRepository.GetStudentGrades(student_Id,school_year);
                 student.valuesGrades = _studentManagementRepository.GetValuesGrades(student_Id,school_year);
                 student.learnersValues = _studentManagementRepository.GetLearnersValues();
+                student.StudentAttendance = this.GetStudentAttendance(student_Id,school_year);
+                student.Subjects = _subjectRepository.GetAllSubjects(student_Id, school_year);
+
+                var unionHeadSubject = from h in headSubjects
+                                       join s in student.Subjects
+                                        on h.Subect_Id equals s.Subject_Id
+                                       select new
+                                       {
+                                           
+                                       };
+
+                student.TotalHeadSubjectCount = unionHeadSubject.Count();
                 return student;
             }
             catch
@@ -269,5 +285,96 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
+        public void AddStudentAttendance(int studentId,int Days_of_School, int Days_of_Present, int Time_of_Tardy, string month)
+        {
+            try
+            {                
+                var schoolYear = _settingsRepository.GetSchoolYear();               
+                //var thisMonth = DateTime.Now.Date;
+                var attendance = new Attendance();
+                var numMonth = DateTime.ParseExact(Helper.GetFullMonthName(month), "MMMM", CultureInfo.CurrentCulture, DateTimeStyles.None).Month;
+                if (!_studentManagementRepository.isDateExisting(numMonth, schoolYear))
+                {
+                    attendance.Studentid = studentId;
+                    attendance.Days_of_Schoool = Days_of_School;
+                    attendance.Days_of_Present = Days_of_Present;
+                    attendance.School_Year = schoolYear;
+                    attendance.Month = numMonth;
+                    attendance.Time_of_Tardy = Time_of_Tardy;
+                    _studentManagementRepository.AddAttendance(attendance);
+                }
+                else
+                    throw new Exception("The attendance for this month is already Existing");
+            }
+            catch(Exception ex)
+            {
+                Console.Write(ex);
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public AttendanceContainer GetStudentAttendance(int studentId, string schoolYear)
+        {
+            try
+            {
+                var listAttendance = _studentManagementRepository.GetStudentAtendance(studentId, schoolYear);
+                List<string> Months = new List<string>();
+                List<int> MonthsInt = new List<int>();
+                List<Attendance> containerAttendance = new List<Attendance>();
+                var attendanceContainer = new AttendanceContainer();
+
+                var StartSchoolDate = _settingsRepository.GetSettings().StartofClass;
+                var EndSchoolDate = _settingsRepository.GetSettings().EndofClass;
+                var currentDate = StartSchoolDate;
+                DateTimeFormatInfo dtfi = new DateTimeFormatInfo();
+
+                while (currentDate<= EndSchoolDate)
+                {                    
+                    Months.Add(dtfi.GetAbbreviatedMonthName(currentDate.Value.Month));
+                    var attendance = listAttendance.FirstOrDefault(p => p.Month == currentDate.Value.Month);
+                    
+                    containerAttendance.Add(attendance);
+
+                    currentDate = currentDate.Value.AddMonths(1);
+                }
+                attendanceContainer.studentId = studentId;
+                attendanceContainer.Months = Months;
+                attendanceContainer.Attendances = containerAttendance;
+
+                return attendanceContainer;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public void UpdateAttendance(int id,int studentId, int Days_of_School, int Days_of_Present, int Time_of_Tardy, string month)
+        {
+            try
+            {
+                var schoolYear = _settingsRepository.GetSchoolYear();
+                var numMonth = DateTime.ParseExact(Helper.GetFullMonthName(month), "MMMM", CultureInfo.CurrentCulture, DateTimeStyles.None).Month;
+                var attendance = new Attendance();
+
+                if (_studentManagementRepository.isDateExisting(numMonth, schoolYear))
+                    throw new Exception("Month already existing");
+
+                attendance.Id = id;
+                attendance.Studentid = studentId;
+                attendance.Days_of_Schoool = Days_of_School;
+                attendance.Days_of_Present = Days_of_Present;
+                attendance.School_Year = schoolYear;
+                attendance.Month = numMonth;
+                attendance.Time_of_Tardy = Time_of_Tardy;
+
+                _studentManagementRepository.UpdateAttendance(attendance);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+
     }
 }

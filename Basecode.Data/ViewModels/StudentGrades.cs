@@ -8,6 +8,7 @@ namespace Basecode.Data.ViewModels
 {
     public class StudentGrades
     {
+        public int HeadId { get; set; }
         public int SubjectId { get; set; }  
         public string SubjectName { get; set; }
         public List<GradesViewModel> Grades { get; set; }

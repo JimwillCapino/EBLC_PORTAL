@@ -1,6 +1,7 @@
 ﻿using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
 using Basecode.Data.ViewModels;
+using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,83 @@ namespace Basecode.Data.Repositories
             catch (Exception ex)
             {
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+        }
+       public List<Subject> GetAllSubjects(int studentId, string schoolYear) 
+       {
+            try
+            {
+                List<Subject> ChildSubjectContainer = new List<Subject>();
+                var mainClass = this.GetDbSet<Class>().Where(p => p.SchoolYear == schoolYear);
+                var mainClassStudent = this.GetDbSet<ClassStudents>().Where(p => p.Student_Id == studentId);
+                var mainClassSubjects = this.GetDbSet<ClassSubjects>();
+                var referenceSubjcect = this.GetDbSet<Subject>();
+                var nochildsub = this.GetDbSet<Subject>().Where(p => !p.HasChild);
+                var subjects = this.GetDbSet<HeadSubject>();
+                var HeadSubs = this.GetDbSet<Subject>().Where(p => p.HasChild);
+                var childSubs = this.GetDbSet<ChildSubject>();
+
+                var unionMainSubjects = from mclass in mainClass
+                                        join student in mainClassStudent
+                                        on mclass.Id equals student.Class_Id
+                                        join subject in mainClassSubjects
+                                        on mclass.Id equals subject.ClassId
+                                        join nc in nochildsub
+                                        on subject.Subject_Id equals nc.Subject_Id
+                                        join s in subjects 
+                                        on nc.Subject_Id equals s.Subect_Id
+                                        select new Subject
+                                        {
+                                            Subject_Id = nc.Subject_Id,
+                                            Subject_Name = nc.Subject_Name,
+                                            Grade = nc.Grade,
+                                            HasChild = nc.HasChild,
+                                        };
+
+                var unionHeadSubject = from subs in HeadSubs
+                                       join reference in referenceSubjcect
+                                       on subs.Subject_Id equals reference.Subject_Id
+                                       select new Subject
+                                       {
+                                           Subject_Id = subs.Subject_Id,
+                                           Subject_Name = subs.Subject_Name,
+                                           Grade = subs.Grade,
+                                           HasChild = subs.HasChild,
+                                       };
+                var unionChildSubjects = from subs in childSubs
+                                         join reference in referenceSubjcect
+                                         on subs.Subject_Id equals reference.Subject_Id
+                                         select new 
+                                         {
+                                             HeadId = subs.HeadSubjectId,
+                                             Subject_Id = subs.Subject_Id,
+                                             Subject_Name = reference.Subject_Name,
+                                             Grade = reference.Grade,
+                                             HasChild = reference.HasChild,
+                                         };
+                foreach(var sub in unionHeadSubject)
+                {
+                    ChildSubjectContainer.Add(sub);
+                    var holder = unionChildSubjects.Where(p => p.HeadId == sub.Subject_Id);
+                    foreach(var subs in holder)
+                    {
+                        var childsubject = new Subject
+                        {
+                            Subject_Id = subs.Subject_Id,
+                            Subject_Name = subs.Subject_Name,
+                            Grade = subs.Grade,
+                            HasChild = subs.HasChild
+                        };
+                        ChildSubjectContainer.Add(childsubject);
+                    }                   
+                }
+                var concat = unionMainSubjects.ToList().Concat(ChildSubjectContainer);
+                return concat.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
             }
         }
         public List<Subject> GetSubjects()
@@ -127,7 +205,20 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-        public HeadSubject GetHeadSubjectById(int id)
+        public List<HeadSubject> GetAllHeadSubject()
+        {
+            try
+            {
+                return this.GetDbSet<HeadSubject>().ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
+        }
+    public HeadSubject GetHeadSubjectById(int id)
         {
             try
             {

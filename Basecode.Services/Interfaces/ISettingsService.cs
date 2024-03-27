@@ -12,5 +12,6 @@ namespace Basecode.Services.Interfaces
         public void UpdateSchoolYear(DateTime StartofClass, DateTime EndofClass, int Id);
         public void UpdateSettings(Settings settings);
         public Settings GetSettings();
+        public string GetSchoolYear();      
     }
 }
