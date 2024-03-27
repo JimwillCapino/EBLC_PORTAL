@@ -10,6 +10,7 @@ namespace Basecode.Data.Interfaces
     public interface IRTPRepository
     {
         public void addRTPCommons(RTPCommons rtpcommons);
+        public int addRTPCommonsInt(RTPCommons rtpcommons);
         public IEnumerable<RTPCommons> getRTPCommons();
         public void RemoveRTPCommons(RTPCommons rtpcommons);
         public RTPCommons GetRTPCommonsByUID(int id);

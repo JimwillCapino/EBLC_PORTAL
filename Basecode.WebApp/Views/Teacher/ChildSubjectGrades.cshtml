@@ -1,0 +1,96 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+    int? max = 0;
+}
+@using Basecode.Data.ViewModels
+@model ChildSubjectGrades
+<link rel="stylesheet" href="/css/TableInfo.css" />
+<div class="wrapper">
+    @await Html.PartialAsync("./_TeacherSideBar")
+    <div class="main p-5">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Child Subject Grades</h4>
+                <p class="card-description">
+                    Below are the grades obtained by the student.
+                </p>
+                <button type="button" id="add"class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Grades</button>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Subjects</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                           @for(int x =0;x<Model.ChildSubjects.Count;x++)
+                            {
+                                var subject = Model.ChildSubjects.ElementAt(x);                               
+                                <tr>
+                                    <td>@subject.Name </td>
+                                    @foreach(var grade in Model.GradesContainer.ElementAt(x).Grades)
+                                    {
+                                        if(grade.Quarter>max)
+                                        {
+                                            max = grade.Quarter;
+                                        }
+                                        <td>@grade.Grade</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>              
+            </div>
+        </div>
+    </div>
+    <!--Modal for adding grades-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Grades</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                @using (Html.BeginForm("AddChildSubjectGrades", "Teacher", FormMethod.Post))
+                {
+                    <div class="modal-body">
+                        <input type="hidden" value="@Model.HeadId" name="headId" />
+                        <input type="hidden" value="@Model.StudentId" name="studentId" />
+                        <input type="hidden" value="@(max+1)" name="quarter" />
+                        @for (int x = 0; x < Model.ChildSubjects.Count; x++)
+                        {
+                            var subject = Model.ChildSubjects.ElementAt(x);
+                            <div class="mb-3">
+                                 <label for="recipient-name" class="col-form-label">@subject.Name:</label>
+                                 <input type="hidden" value="@subject.Id" name="subject" />
+                                 <input type="text" class="form-control" id="recipient-name" name="grades" required>
+                            </div>
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Save Changes</button>
+                    </div>
+                }                                                                  
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    var button = document.getElementById("add");
+    if (@max == 4)
+    {
+        button.disabled = true;
+    }
+</script>

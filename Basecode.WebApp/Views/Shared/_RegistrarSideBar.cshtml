@@ -33,13 +33,19 @@
             </a>
             <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">Schedule</a>
+                    <a asp-action="ManageClass" class="sidebar-link">
+                        Manage Class
+                    </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">Manage Teachers</a>
+                    <a asp-action="ManageTeachers" class="sidebar-link">
+                        Manage Teachers
+                    </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">Subjects</a>
+                    <a asp-action="ManageSubjects" class="sidebar-link">
+                        Subjects
+                    </a>
                 </li>
             </ul>
         </li>
@@ -81,7 +87,7 @@
             </a>
         </li>
         <li class="sidebar-item">
-            <a href="#" class="sidebar-link">
+            <a asp-action="Settings" class="sidebar-link">
                 <i class="lni lni-cog"></i>
                 <span>Setting</span>
             </a>

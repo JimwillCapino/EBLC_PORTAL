@@ -1,0 +1,53 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+@using Basecode.Data.ViewModels
+@model ChildSubjectContainer
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main p-5">
+        <h1>Manage Subjects</h1>
+        
+        <div class="row">
+            <div class="col">
+                <div class="table-responsive overflow-auto">
+                    <table class="table overflow-auto" id="myTable">
+                        <thead>
+                            <tr>
+                                <th>Subject Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var subject in Model.ChildSubjects)
+                            {
+                                <tr class="bg-blue">
+                                    <td class="pt-3 mt-1">@subject.Name</td>
+                                    <td class="pt-3">
+                                        <i class="lni lni-cross-circle px-3"></i>
+
+                                    </td>
+                                </tr>
+                                <tr id="spacing-row">
+                                    <td> </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col">
+                @using (Html.BeginForm("AddGrade", "Teacher", FormMethod.Post))
+                {
+                    <input type="hidden" value="@Model.HeadId" name="headId" />                    
+                    <label for="inputPassword5" class="form-label">Grade</label>
+                    <input type="text" id="inputPassword5" name="name" class="form-control mb-3" required />
+                    <button type="submit" class="btn btn-outline-danger" id="submit">Submit</button>
+                }
+            </div>
+        </div>        
+    </div>

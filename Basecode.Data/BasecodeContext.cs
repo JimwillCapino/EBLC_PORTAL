@@ -29,6 +29,20 @@ namespace Basecode.Data
         public virtual DbSet<RTPCommons> RTPCommons { get; set; }
         public virtual DbSet<Parent> Parent { get; set; }
         public virtual DbSet<Student> Student { get; set; }
+        public virtual DbSet<Teacher> Teacher { get; set; }
+        public virtual DbSet<Subject> Subject { get; set; }
+        public virtual DbSet<RTPUsers> RTPUsers { get; set; }
+        public virtual DbSet<Class> Class { get; set; }
+        public virtual DbSet<Grades> Grades { get; set; }
+        public virtual DbSet<ClassStudents> ClassStudents { get; set; }
+        public virtual DbSet<ClassSubjects> ClassSubjects { get; set; }
+        public virtual DbSet<Settings> Settings { get; set; }
+        public virtual DbSet<Core_Values>Core_Values { get; set; }
+        public virtual DbSet<Behavioural_Statement> Behavioural_Statement { get; set; }
+        public virtual DbSet<Learner_Values> Learner_Values { get; set; }
         public virtual DbSet<RefreshToken> RefreshToken { get; set; }
+        public virtual DbSet<ChildSubject> ChildSubject { get; set; }
+        public virtual DbSet<HeadSubject> HeadSubject { get; set; }
+        public virtual DbSet<Attendance> Attendance { get; set; }
     }
 }

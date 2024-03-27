@@ -4,8 +4,13 @@
 @{
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    double avg = 0;
+    int monthIdx = 1;
 }
+@using Basecode.Data.ViewModels
+@model StudentDetailsWithGrade
 <link rel="stylesheet" href="/css/TableInfo.css" />
+<script src="~/js/Tables.js"></script>
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
@@ -15,9 +20,23 @@
                     <div class="card-body text-center">
                         <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
                              class="rounded-circle img-fluid" style="width: 150px;">
-                        <h5 class="my-3">John Smith</h5>
-                        <p class="text-muted mb-1">Full Stack Developer</p>
-                        <p class="text-muted mb-4">Bay Area, San Francisco, CA</p>
+                        <h5 class="my-3">@Model.Student.FirstName @Model.Student.MiddleName @Model.Student.LastName</h5>
+                        <p class="text-muted mb-1">@Model.Student.Status</p>
+                        <p class="text-muted mb-4">Grade @Model.Student.Grade</p>
+                        <p class="text-muted mb-4">@Model.Student.age years old</p>
+                        @if (Model.Student.lrn == null)
+                        {
+                            <p class="text-muted mb-4">
+                                LRN  not set.
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-4">
+                                @Model.Student.lrn
+                            </p>
+                        }
+
                         <div class="d-flex justify-content-center mb-2">
                             <button type="button" class="btn btn-danger">Form-138</button>
                             <button type="button" class="btn btn-outline-danger ms-1">Report Card</button>
@@ -26,181 +45,214 @@
                 </div>
               </div>
             <div class="col-lg-8 grid-margin stretch-card">
-                <div class="tab">
+                <div class="tab">                    
                     <button class="tablinks" onclick="tabs(event, 'Grades')" id="defaultOpen">Grades</button>
                     <button class="tablinks" onclick="tabs(event, 'Values')">Values</button>
+                    <button class="tablinks" onclick="tabs(event, 'Attendance')">Attendance</button>
                 </div>
-
                 <div id="Grades" class="tabcontent">
-                    <h3>Grades</h3>
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Grades Records</h4>
-                            <p class="card-description">
-                                Basic table with card
-                            </p>
+                            <p>Select a School Year. Note that after selecting a school year, the page will reload thus going back to the grades tab.</p>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    School Year
+                                </button>
+                                <ul class="dropdown-menu">
+                                    @foreach (var schoolyear in Model.School_Years)
+                                    {
+                                        <li><a class="dropdown-item" asp-action="StudentInfo" asp-route-student_Id="@Model.Student.Student_ID" asp-route-school_year="@schoolyear">@schoolyear</a></li>
+                                    }
+
+                                </ul>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>ID No.</th>
-                                            <th>Created On</th>
-                                            <th>Status</th>
+                                            <th>Subject</th>
+                                            <th>1</th>
+                                            <th>2</th>
+                                            <th>3</th>
+                                            <th>4</th>
+                                            <th>Final</th>
+                                            <th>Remarks</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Samso Park</td>
-                                            <td>34424433</td>
-                                            <td>12 May 2017</td>
-                                            <td><label class="badge badge-danger">Pending</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Marlo Sanki</td>
-                                            <td>53425532</td>
-                                            <td>15 May 2015</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>John ryte</td>
-                                            <td>53275533</td>
-                                            <td>14 May 2017</td>
-                                            <td><label class="badge badge-info">Fixed</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Peter mark</td>
-                                            <td>53275534</td>
-                                            <td>16 May 2017</td>
-                                            <td><label class="badge badge-success">Completed</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
+                                        @foreach(var subject in Model.Subjects)
+                                        {
+                                            <tr>
+                                                <td>@subject.Subject_Name</td>
+                                                @{var SubjectWithGrades = Model.grades.FirstOrDefault(p => p.SubjectId == subject.Subject_Id);}
+                                                @if(SubjectWithGrades != null)
+                                                {
+                                                    @foreach (var grade in SubjectWithGrades.Grades)
+                                                    {
+                                                        <td>@grade.Grade</td>
+                                                        if (grade.Quarter == 5 && grade.Grade >= 75)
+                                                        {
+                                                            
+                                                            avg += grade.Grade;
+                                                            <td>Passed</td>
+                                                        }
+                                                        else if (grade.Quarter == 5 && grade.Grade < 75)
+                                                        {
+                                                            
+                                                            avg += grade.Grade;
+                                                            <td>Failed</td>
+                                                        }
+                                                    }                                                   
+                                                }
+                                           </tr>
+                                        }
                                     </tbody>
                                 </table>
+                                <p class="lead">General Average: @Math.Floor(avg / Model.TotalHeadSubjectCount)</p>
+                                @if (Math.Floor(avg / Model.TotalHeadSubjectCount) >= 75)
+                                {
+                                    <p class="lead">Promoted</p>
+                                }
+                                @{avg = 0;}
                             </div>
-                            <!--Pagination-->
-                            <nav aria-label="...">
-                                <ul class="pagination pagination-lg justify-content-center">
-                                    <li class="page-item" aria-current="page">
-                                        <span class="page-link text-danger">1</span>
-                                    </li>
-                                    <li class="page-item "><a class="page-link text-danger" href="#">2</a></li>
-                                    <li class="page-item "><a class="page-link text-danger" href="#">3</a></li>
+                        </div>
+                    </div>
+                </div>                
+                <div id="Values" class="tabcontent">                   
+                    <div class="card">
+                        <div class="card-body">   
+                            <p>Select a School Year. Note that after selecting a school year, the page will reload thus going back to the grades tab.</p>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    School Year
+                                </button>
+                                <ul class="dropdown-menu">
+                                    @foreach (var schoolyear in Model.School_Years)
+                                    {
+                                        <li><a class="dropdown-item" asp-action="StudentInfo" asp-route-student_Id="@Model.Student.Student_ID" asp-route-school_year="@schoolyear">@schoolyear</a></li>
+                                    }
+
                                 </ul>
-                            </nav>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                    <thead>
+                                        <tr>
+                                            <th>Core Values</th>
+                                            <th>Behavioral Statement</th>
+                                            <th>1</th>
+                                            <th>2</th>
+                                            <th>3</th>
+                                            <th>4</th>
+                                            <th>Final</th>
+                                        </tr>
+                                    </thead>
+                                        @foreach (var corevalues in Model.learnersValues)
+                                        {
+                                            var grades = Model.valuesGrades.Where(p => p.BehaviouralId == corevalues.behavioural_Statements.ElementAt(0).Id);
+                                        <tr>
+                                            <th rowspan="@corevalues.behavioural_Statements.Count()">
+                                                    @corevalues.Core_Values
+                                            </th>
+                                            <td>
+                                                    @corevalues.behavioural_Statements.ElementAt(0).Statements                                         
+                                            </td>
+                                                @foreach (var grade in grades)
+                                                {
+                                                   
+                                                <td>
+                                                        @grade.Grade
+                                                </td>
+                                                }
+                                        </tr>
+                                            @for (int x = 1; x < @corevalues.behavioural_Statements.Count(); x++)
+                                            {
+                                                var gradesi = Model.valuesGrades.Where(p => p.BehaviouralId == corevalues.behavioural_Statements.ElementAt(x).Id);
+
+                                            <tr>
+                                                <td>
+                                                        @corevalues.behavioural_Statements.ElementAt(x).Statements 
+                                                </td>
+                                                    @for (int y = 0; y < gradesi.Count(); y++)
+                                                    {
+                                                    <td>
+                                                            @gradesi.ElementAt(y).Grade 
+                                                    </td>
+                                                    }
+                                            </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>                          
                         </div>
                     </div>
                 </div>
-
-                <div id="Values" class="tabcontent">
-                    <h3>Values</h3>
+                <div id="Attendance" class="tabcontent">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Values Record</h4>
-                            <p class="card-description">
-                                Basic table with card
-                            </p>
+                            <p>Select a School Year. Note that after selecting a school year, the page will reload thus going back to the grades tab.</p>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    School Year
+                                </button>
+                                <ul class="dropdown-menu">
+                                    @foreach (var schoolyear in Model.School_Years)
+                                    {
+                                        <li><a class="dropdown-item" asp-action="StudentInfo" asp-route-student_Id="@Model.Student.Student_ID" asp-route-school_year="@schoolyear">@schoolyear</a></li>
+                                    }
+
+                                </ul>
+                            </div>
+                            <div class="btn-group">                                
+                            </div>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>ID No.</th>
-                                            <th>Created On</th>
-                                            <th>Status</th>
+                                            <th></th>
+                                            @foreach (var month in Model.StudentAttendance.Months)
+                                            {
+                                                <th>@month</th>
+                                            }
+                                            <th>Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Samso Park</td>
-                                            <td>34424433</td>
-                                            <td>12 May 2017</td>
-                                            <td><label class="badge badge-danger">Pending</label></td>
+                                            <td>Days of School</td>
+                                            @foreach (var attendance in Model.StudentAttendance.Attendances)
+                                            {
+
+                                                <td>@(attendance != null ? attendance.Days_of_Schoool : " ")</td>
+                                            }
                                         </tr>
                                         <tr>
-                                            <td>Marlo Sanki</td>
-                                            <td>53425532</td>
-                                            <td>15 May 2015</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
+                                            <td>Days of Present</td>
+                                            @foreach (var attendance in Model.StudentAttendance.Attendances)
+                                            {
+                                                <td>@(attendance != null ? attendance.Days_of_Present : " ")</td>
+                                            }
                                         </tr>
                                         <tr>
-                                            <td>John ryte</td>
-                                            <td>53275533</td>
-                                            <td>14 May 2017</td>
-                                            <td><label class="badge badge-info">Fixed</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Peter mark</td>
-                                            <td>53275534</td>
-                                            <td>16 May 2017</td>
-                                            <td><label class="badge badge-success">Completed</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dave</td>
-                                            <td>53275535</td>
-                                            <td>20 May 2017</td>
-                                            <td><label class="badge badge-warning">In progress</label></td>
-                                        </tr>
+                                            <td>Time of Tardy</td>
+                                            @foreach (var attendance in Model.StudentAttendance.Attendances)
+                                            {
+                                                <td>@(attendance != null ? attendance.Time_of_Tardy : " ")</td>
+                                            }
+                                        </tr>                                       
                                     </tbody>
                                 </table>
                             </div>
-                            <!--Pagination-->
-                            <nav aria-label="...">
-                                <ul class="pagination pagination-lg justify-content-center">
-                                    <li class="page-item" aria-current="page">
-                                        <span class="page-link text-danger">1</span>
-                                    </li>
-                                    <li class="page-item "><a class="page-link text-danger" href="#">2</a></li>
-                                    <li class="page-item "><a class="page-link text-danger" href="#">3</a></li>
-                                </ul>
-                            </nav>
                         </div>
                     </div>
-                </div>
-
+               </div>
+            </div>
           </div>
     </div>
-        <script src="/js/Tables.js"></script>
+        
 </div>
 </div>

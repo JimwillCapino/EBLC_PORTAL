@@ -10,5 +10,6 @@ namespace Basecode.Services.Interfaces
     public interface IStudentService
     {
         public void AddStudent(Student student);
+        public Student GetStudent(int id);
     }
 }

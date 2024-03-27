@@ -1,0 +1,164 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+@using Basecode.Data.ViewModels
+@model ClassViewModel
+<link rel="stylesheet" href="/css/TableInfo.css" />
+<script>
+    function RemoveStudent(id,classId)
+    {
+        window.location.href = '@Url.Action("RemoveClassStudent", "Registrar")?id=' + id + '&classId=' + classId;
+    }
+    function RemoveClassSubject(id,classId)
+    {
+        window.location.href = '@Url.Action("RemoveClassSubject", "Registrar")?id=' + id + '&classId=' + classId;
+    }
+</script>
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main p-5"> 
+        <h1>
+            Class: @Model.ClassName
+        </h1>
+        <p class="lead">Adviser: @Model.AdviserName</p>
+        <p class="lead">Grade Level: @Model.Grade</p>
+        <p class="lead">Class Size: @Model.ClassSize</p>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="table-responsive overflow-auto">
+                        <table class="table overflow-auto" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Teacher</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach(var classSubject in Model.ClassSubjects)
+                                {
+                                    <tr class="bg-blue">                                    
+                                            <td class="pt-3 mt-1">@classSubject.SubjectName</td>
+                                            <td class="pt-3">@classSubject.TeacherName</td> 
+                                            <td class="pt-3">
+                                            <i class="lni lni-trash-can" onclick="RemoveClassSubject(@classSubject.Id,@Model.Id)"></i>
+                                            </td> 
+                                    </tr>
+                                    <tr id="spacing-row">
+                                        <td> </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Subjects</button>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="table-responsive overflow-auto">
+                        <table class="table overflow-auto" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach(var student in Model.ClassStudents)
+                                {
+                                    <tr class="bg-blue">
+                                        <td class="pt-3 mt-1">@student.FirstName @student.MiddleName @student.LastName</td>
+                                        <td class="pt-3">
+                                            <i class="lni lni-trash-can" onclick="RemoveStudent(@student.Id,@Model.Id)"></i>
+                                        </td>
+                                    </tr>
+                                    <tr id="spacing-row">
+                                        <td> </td>
+                                    </tr>
+                                }                                                         
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal1">Add Students</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Modal for Adding ClassSubjects-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Input Subject Details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                @using (Html.BeginForm("AddClassSubjects", "Registrar", FormMethod.Post))
+                {
+                    <div class="modal-body">   
+                        <input type="hidden" value="@Model.Id" name="classId"/>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Subject:</label>
+                            <select class="form-select" aria-label="Default select example" name="subjectId">
+                                <option selected>Open this select menu</option>
+                                @foreach (var subs in Model.Subjects)
+                                {
+                                    <option value="@subs.Subject_Id">@subs.Subject_Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Teacher:</label>
+                            <select class="form-select" aria-label="Default select example" name="teacherId">
+                                <option selected>Open this select menu</option>
+                                @foreach (var teacher in Model.Teachers)
+                                {
+                                    <option value="@teacher.Id">@teacher.FirstName @teacher.MiddleName @teacher.LastName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Add Subjects</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!--Modal for Adding ClassStudents-->
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Select Student</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                @using (Html.BeginForm("AddClassStudents", "Registrar", FormMethod.Post))
+                {
+                    <div class="modal-body">
+                        <input type="hidden" value="@Model.Id" name="classId" />
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Student Name:</label>
+                            <select class="form-select" aria-label="Default select example" name="studentId">
+                                <option selected>Open this select menu</option>
+                                @foreach (var student in Model.Students)
+                                {
+                                    <option value="@student.Student_Id">@student.FirstName @student.MiddleName, @student.LastName</option>
+                                }
+                            </select>
+                        </div>                   
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Add Student</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/Tables.js"></script>

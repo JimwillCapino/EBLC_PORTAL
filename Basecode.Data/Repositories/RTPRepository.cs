@@ -28,6 +28,20 @@ namespace Basecode.Data.Repositories
                 Console.Write(ex.ToString());
             }
         }
+        public int addRTPCommonsInt(RTPCommons rtpcommons)
+        {
+            try
+            {
+                var a = _context.RTPCommons.Add(rtpcommons);
+                _context.SaveChanges();
+                return a.Entity.Id;
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.ToString());
+                throw new Exception(ex.ToString());
+            }
+        }
         public IEnumerable<RTPCommons> getRTPCommons()
         {
             try

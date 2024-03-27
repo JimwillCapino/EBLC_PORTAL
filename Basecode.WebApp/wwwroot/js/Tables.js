@@ -1,4 +1,18 @@
-﻿function myFunction() {
+﻿//Edit attendance
+function editAttendance(id, daysOfSchool, daysOfPresent, TimeOfTardy, MonthIdx) {
+    var daysOfSchoolTextBox = document.getElementById("dayOfSchool");
+    var daysOfPresentTextBox = document.getElementById("daysOfPresent");
+    var timeOfTardyTextBox = document.getElementById("timeOfTardy");
+    var monthSelect = document.getElementById("month");
+    var idTextBox = document.getElementById("id");
+
+    daysOfSchoolTextBox.value = daysOfSchool;
+    daysOfPresentTextBox.value = daysOfPresent;
+    timeOfTardyTextBox.value = TimeOfTardy;
+    monthSelect.selectedIndex = MonthIdx;
+    idTextBox.value = id;
+}
+function myFunction() {
     var input, filter, table, tr, td, i, txtValue;
     input = document.getElementById("myInput");
     filter = input.value.toUpperCase();
@@ -53,7 +67,5 @@ function tabs(evt, contentName)
 // Get the element with id="defaultOpen" and click on it
 document.getElementById("defaultOpen").click();
 //Modal in the table
-$('#myModal').on('shown.bs.modal', function () {
-    $('#myInput').trigger('focus')
-})
+
 

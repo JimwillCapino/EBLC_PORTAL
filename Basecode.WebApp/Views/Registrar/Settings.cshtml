@@ -1,0 +1,33 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+@using Basecode.Data.Models
+@model Settings
+<div class="wrapper"> 
+   @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main p-5">
+        <form asp-action="UpdateSettings">
+            <div class="row gy-4 gy-xl-5 p-4 p-xl-5">
+                <p class="lead">School Year</p>
+                <div class="col-12 col-md-6">
+                    <label>Date Start</label>
+                    <input class="form-control" id="date" placeholder="MM/DD/YYY" type="date" asp-for="StartofClass"/>
+                </div>
+                <div class="col-12 col-md-6">
+                    <label>End Date</label>
+                    <input class="form-control" id="date" placeholder="MM/DD/YYY" type="date" asp-for="EndofClass" />
+                </div>
+                <div class="col-12 col-md-6">
+                    <button type="submit" class="btn btn-outline-danger">Set Date</button>
+                </div>
+            </div>
+        </form>
+        <div class="list-group gy-4 gy-xl-5 p-4 p-xl-5">           
+            <a asp-action="ManageLearnerValues" class="list-group-item list-group-item-action">Learner's Value</a>
+        </div>
+    </div>
+</div>

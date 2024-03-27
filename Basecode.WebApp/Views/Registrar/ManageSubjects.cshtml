@@ -1,0 +1,92 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{    
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+@using Basecode.Data.Models
+@model List<Subject> 
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main p-5">
+        <h1>Manage Subjects</h1>
+        <div class="d-flex justify-content-between align-items-center mb-3"> 
+            <h1></h1>
+            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Subjects</button>
+        </div>
+        <div class="table-responsive overflow-auto">
+            <table class="table overflow-auto" id="myTable">
+                <thead>
+                    <tr>
+                        <th>Subject Name</th>
+                        <th>Grade</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var subject in Model)
+                    {
+                        <tr class="bg-blue">
+                            <td class="pt-3 mt-1">@subject.Subject_Name</td>
+                            <td class="pt-3">@subject.Grade</td>
+                            <td class="pt-3">
+                                <i class="lni lni-cross-circle px-3"></i>
+                                @if(subject.HasChild)
+                                {
+                                   
+                                        <i class="lni lni-layers" onclick="redirect('@subject.Subject_Id')"></i>
+                                    
+                                }                               
+                            </td>
+                        </tr>
+                        <tr id="spacing-row">
+                            <td> </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>            
+        </div>
+    </div>
+    <!--Modal for Adding Exam Schedule-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Input Subject Details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                @using (Html.BeginForm("AddSubject","Registrar",FormMethod.Post))
+                {
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Subject Name:</label>
+                            <input type="text" class="form-control" id="recipient-name" name="name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Grade:</label>
+                            <input type="text" class="form-control" id="recipient-name" name="grade">
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Has Child Subject:</label>
+                            <select class="form-select" aria-label="Default select example" name="HasChild">
+                                <option selected>Click to open menu</option>
+                                <option value="false">False</option>
+                                <option value="true">True</option>                                
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Add Subject</button>
+                    </div>
+                }                
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function redirect(headId){
+        window.location.href = '@Url.Action("ViewChildSubject", "Registrar")?headId=' + headId;
+    }
+</script>

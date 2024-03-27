@@ -52,6 +52,18 @@ namespace Basecode.Services.Services
             }
 
         }
+        public int AddRTPCommonsInt(RTPCommons commons)
+        {
+            try
+            {
+                return _rtpRepository.addRTPCommonsInt(commons);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
 
     }
 }
