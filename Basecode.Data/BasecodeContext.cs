@@ -44,5 +44,6 @@ namespace Basecode.Data
         public virtual DbSet<ChildSubject> ChildSubject { get; set; }
         public virtual DbSet<HeadSubject> HeadSubject { get; set; }
         public virtual DbSet<Attendance> Attendance { get; set; }
+        public virtual DbSet<AdminUserPortal> AdminUserPortal { get; set; }
     }
 }

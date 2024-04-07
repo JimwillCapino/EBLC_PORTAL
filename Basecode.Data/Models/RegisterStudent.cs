@@ -30,7 +30,7 @@ namespace Basecode.Data.Models
         public string PhoneNumber { get; set; }
         public string Gcash { get; set; }
         public string Address { get; set; }
-        public string email { get; set; }
+        public string Email { get; set; }
         public DateTime ParentBirthday { get; set; }
         public string Parentsex { get; set; }
         

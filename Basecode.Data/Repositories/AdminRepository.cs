@@ -44,5 +44,9 @@ namespace Basecode.Data.Repositories
             }
             
         }
+        public void UpdateAdminProfile()
+        {
+                            
+        }
     }
 }

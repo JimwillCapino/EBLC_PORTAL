@@ -8,6 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Reflection.Metadata;
 using System.Web;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using IronPdf;
+using IronPdf.Extensions.Mvc.Core;
+using iTextSharp.text.pdf;
+using System.Globalization;
+using Wkhtmltopdf.NetCore;
+using AutoMapper;
 //using System.Web.Mvc;
 
 namespace Basecode_WebApp.Controllers
@@ -21,20 +29,25 @@ namespace Basecode_WebApp.Controllers
         private IClassManagementService _classManagementService;
         private IStudentManagementService _studentManagementService;
         private ISettingsService _settingsService;
-        
+        private readonly IRazorViewRenderer _viewRenderService;
+        private readonly IMapper _mapper;   
         public RegistrarController(INewEnrolleeService newEnrolleeService,
             ITeacherService teacherService,
             ISubjectService subjectService,
             IClassManagementService classManagementService,
             IStudentManagementService studentManagementService,
-            ISettingsService settingsService) 
+            ISettingsService settingsService,
+            IRazorViewRenderer viewRenderService,
+            IMapper mapper) 
         { 
             _newEnrolleeService = newEnrolleeService;
             _teacherService = teacherService;
             _subjectService = subjectService;
             _classManagementService = classManagementService;
             _studentManagementService = studentManagementService;
-            _settingsService = settingsService;           
+            _settingsService = settingsService;     
+            _viewRenderService = viewRenderService;
+            _mapper = mapper;
         }
         public IActionResult Index()
         {
@@ -54,7 +67,7 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("Index");
             }
         }
-        public IActionResult StudentInfo(int student_Id, string school_year)
+        public async Task<IActionResult> StudentInfo(int student_Id, string school_year)
         {
             try
             {              
@@ -65,7 +78,7 @@ namespace Basecode_WebApp.Controllers
                     school_year = schoolYear;
                 }
                 
-                return View(_studentManagementService.GetStudentGrades(student_Id, school_year));
+                return View(await _studentManagementService.GetStudentGrades(student_Id, school_year));
             }
             catch (Exception ex)
             {
@@ -412,7 +425,8 @@ namespace Basecode_WebApp.Controllers
         {
             return View(_settingsService.GetSettings());
         }
-        public IActionResult UpdateSettings(Settings settings)
+        [HttpPost]
+        public IActionResult UpdateSettings(SettingsViewModel settings)
         {
             try
             {
@@ -591,6 +605,49 @@ namespace Basecode_WebApp.Controllers
                 _studentManagementService.UpdateCoreValues(cv);
 
                 return RedirectToAction("ViewLearnersValues");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult TestPdf()
+        {            
+            return View();
+        }
+        public async Task<IActionResult> GeneratePdf(int StudentId, string SchoolYear)
+        {
+            try
+            {                
+                ReportCardContents studentCard = new ReportCardContents();
+                studentCard.Settings = _settingsService.GetSettings();
+                studentCard.StudentDetails = await _studentManagementService.GetStudentGrades(StudentId, SchoolYear);
+                var document = new Rotativa.AspNetCore.ViewAsPdf("TestPdf", studentCard) 
+                {
+                    //FileName = studentCard.StudentDetails.Student.LastName+"_"+ studentCard.StudentDetails.Student.FirstName+"Report_Card.pdf",
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
+                    PageMargins = { Left = 10, Bottom = 10, Right = 10, Top = 10 }
+                };
+                return document;
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult UpdateSchoolLogo(SettingsViewModel settingsViewModel)
+        {
+            try
+            {
+                var settings = _settingsService.GetSettingsById(settingsViewModel.Id);
+                var newSettingViewModel = _mapper.Map<SettingsViewModel>(settings);                
+                newSettingViewModel.SchoolLogoRecieve = settingsViewModel.SchoolLogoRecieve;
+                _settingsService.UpdateSettings(newSettingViewModel);
+                return RedirectToAction("Settings");
             }
             catch (Exception ex)
             {

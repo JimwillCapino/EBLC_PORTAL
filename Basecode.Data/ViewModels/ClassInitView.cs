@@ -14,5 +14,6 @@ namespace Basecode.Data.ViewModels
         public int ClassSize { get; set; }
         public string? ClassName { get; set; }
         public string AdviserName { get; set; }
+        public string? SchoolYear { get; set; }
     }
 }

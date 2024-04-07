@@ -27,5 +27,17 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
+        public RTPUsers GetRTPuserByRTPId(int rtpId)
+        {
+            try
+            {
+                return _context.RTPUsers.FirstOrDefault(p => p.RTPId == rtpId);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }

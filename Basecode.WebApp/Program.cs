@@ -2,6 +2,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Basecode.Data;
+using Rotativa.AspNetCore;
 
 namespace Basecode.WebApp
 {
@@ -23,8 +24,7 @@ namespace Basecode.WebApp
         {
             config.Sources.Clear();     // Clears the default configuration options
 
-            IWebHostEnvironment env = builderCtx.HostingEnvironment;
-
+            IWebHostEnvironment env = builderCtx.HostingEnvironment;            
             // Include settings file back to the configuration
             config.SetBasePath(env.ContentRootPath)
                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)

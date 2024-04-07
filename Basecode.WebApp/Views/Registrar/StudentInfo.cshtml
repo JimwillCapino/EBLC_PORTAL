@@ -39,7 +39,7 @@
 
                         <div class="d-flex justify-content-center mb-2">
                             <button type="button" class="btn btn-danger">Form-138</button>
-                            <button type="button" class="btn btn-outline-danger ms-1">Report Card</button>
+                            <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear ="@Model.SchoolYear"><button type="button" class="btn btn-outline-danger ms-1">Report Card</button></a>
                         </div>
                     </div>
                 </div>

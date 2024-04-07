@@ -9,6 +9,9 @@
 
   <ItemGroup>
     <PackageReference Include="FontAwesome" Version="4.7.0" />
+    <PackageReference Include="IronPdf" Version="2024.3.4" />
+    <PackageReference Include="IronPdf.Extensions.Mvc.Core" Version="2024.2.18" />
+    <PackageReference Include="IronPdf.Native.Chrome.Windows" Version="2024.3.24" />
     <PackageReference Include="libphonenumber-csharp" Version="8.9.10" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.7" />
@@ -23,6 +26,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.12" />
+    <PackageReference Include="RazorPDF" Version="1.0.0" />
+    <PackageReference Include="Rotativa" Version="1.7.3" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.3.2" />
+    <PackageReference Include="wkhtmltopdf-x86-win32" Version="0.12.3.6" />
+    <PackageReference Include="wkhtmltopdf.mingw.86.exe" Version="0.12.2.2" />
+    <PackageReference Include="Wkhtmltopdf.NetCore" Version="3.0.2" />
+    <PackageReference Include="WkHtmlToXSharp.Win32" Version="1.2.36" />
   </ItemGroup>
 
   <ItemGroup>

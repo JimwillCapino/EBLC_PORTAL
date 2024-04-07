@@ -19,16 +19,19 @@ namespace Basecode.Services.Services
         private readonly IStudentManagementRepository _studentManagementRepository;
         private readonly IStudentRepository _studentRepository;
         private readonly ISettingsRepository _settingsRepository;
-        private readonly ISubjectRepository _subjectRepository;        
+        private readonly ISubjectRepository _subjectRepository;
+        private readonly IClassManagementRepository _classManagementRepository;
         public StudentManagementService(IStudentManagementRepository studentManagementRepository,
             IStudentRepository studentRepository,
             ISettingsRepository settings,
-            ISubjectRepository subjectRepository) 
+            ISubjectRepository subjectRepository,
+            IClassManagementRepository classManagementRepository) 
         {
             _studentManagementRepository = studentManagementRepository;
             _studentRepository = studentRepository;
             _settingsRepository = settings;
             _subjectRepository = subjectRepository;
+            _classManagementRepository = classManagementRepository;
         }
         public GradesDetail GetStudentGradeBySubject(int student_Id, int subject_Id)
         {
@@ -115,7 +118,7 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
-        public StudentDetailsWithGrade GetStudentGrades(int student_Id, string school_year)
+        public async Task<StudentDetailsWithGrade> GetStudentGrades(int student_Id, string school_year)
         {
             try
             {
@@ -128,7 +131,7 @@ namespace Basecode.Services.Services
                 student.learnersValues = _studentManagementRepository.GetLearnersValues();
                 student.StudentAttendance = this.GetStudentAttendance(student_Id,school_year);
                 student.Subjects = _subjectRepository.GetAllSubjects(student_Id, school_year);
-
+                student.studentClass = await _classManagementRepository.GetClassWhereStudentBelong(student_Id,school_year);
                 var unionHeadSubject = from h in headSubjects
                                        join s in student.Subjects
                                         on h.Subect_Id equals s.Subject_Id
@@ -138,6 +141,7 @@ namespace Basecode.Services.Services
                                        };
 
                 student.TotalHeadSubjectCount = unionHeadSubject.Count();
+                student.SchoolYear = school_year;
                 return student;
             }
             catch
