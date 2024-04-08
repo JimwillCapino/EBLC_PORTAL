@@ -617,20 +617,28 @@ namespace Basecode_WebApp.Controllers
         {            
             return View();
         }
-        public async Task<IActionResult> GeneratePdf(int StudentId, string SchoolYear)
+        public async Task<IActionResult> GeneratePdf(int StudentId, string SchoolYear, int documentType)
         {
             try
             {                
                 ReportCardContents studentCard = new ReportCardContents();
                 studentCard.Settings = _settingsService.GetSettings();
-                studentCard.StudentDetails = await _studentManagementService.GetStudentGrades(StudentId, SchoolYear);
-                var document = new Rotativa.AspNetCore.ViewAsPdf("TestPdf", studentCard) 
+                if(documentType == 0)
                 {
-                    //FileName = studentCard.StudentDetails.Student.LastName+"_"+ studentCard.StudentDetails.Student.FirstName+"Report_Card.pdf",
-                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
-                    PageMargins = { Left = 10, Bottom = 10, Right = 10, Top = 10 }
-                };
-                return document;
+                    studentCard.StudentDetails = await _studentManagementService.GetStudentGrades(StudentId, SchoolYear);
+                    var document = new Rotativa.AspNetCore.ViewAsPdf("PDFView/ReportCardPDF", studentCard)
+                    {
+                        //FileName = studentCard.StudentDetails.Student.LastName+"_"+ studentCard.StudentDetails.Student.FirstName+"Report_Card.pdf",
+                        PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
+                        PageMargins = { Left = 10, Bottom = 10, Right = 10, Top = 10 }
+                    };
+                    return document;
+                }
+                else
+                {
+                    return new Rotativa.AspNetCore.ViewAsPdf("PDFView/Form137PDF");
+                }
+               
             }
             catch (Exception ex)
             {

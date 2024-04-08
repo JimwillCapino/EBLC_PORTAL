@@ -38,8 +38,8 @@
                         }
 
                         <div class="d-flex justify-content-center mb-2">
-                            <button type="button" class="btn btn-danger">Form-138</button>
-                            <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear ="@Model.SchoolYear"><button type="button" class="btn btn-outline-danger ms-1">Report Card</button></a>
+                            <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear="@Model.SchoolYear" asp-route-documentType="1"><button type="button" class="btn btn-danger">Form-138</button></a>
+                            <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear ="@Model.SchoolYear" asp-route-documentType="0"><button type="button" class="btn btn-outline-danger ms-1">Report Card</button></a>
                         </div>
                     </div>
                 </div>
