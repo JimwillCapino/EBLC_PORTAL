@@ -365,5 +365,35 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        public async Task<int> GetStudentYearLevel(int studentId, string schoolYear)
+        {
+            try
+            {
+                var teachers = await _teacherRepository.GetAllTeachersInitViewAsync();
+                var classroom = this.GetDbSet<Class>().Where(s => s.SchoolYear == schoolYear).ToList();
+                var studentsInClasses = this.GetDbSet<ClassStudents>().Where(s => s.Student_Id == studentId).ToList();
+
+                var unionClassDetails = from c in classroom
+                                        join s in studentsInClasses
+                                        on c.Id equals s.Class_Id
+                                        join t in teachers on
+                                        c.Adviser equals t.Id
+                                        select new ClassInitView
+                                        {
+                                            Id = c.Id,
+                                            ClassName = c.ClassName,
+                                            Grade = c.Grade,
+                                            ClassSize = c.ClassSize,
+                                            SchoolYear = c.SchoolYear,
+                                            AdviserName = t.FirstName + " " + t.LastName,
+                                        };
+                return unionClassDetails.ToList().FirstOrDefault().Grade;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }

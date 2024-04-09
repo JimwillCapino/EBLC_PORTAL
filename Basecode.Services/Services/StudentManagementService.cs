@@ -149,6 +149,45 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
+        public async Task<Form137Container> GetStudentForm137(int studentId)
+        {
+            try
+            {
+
+
+                var schoolYears = _studentManagementRepository.GetSchoolYears(studentId);
+                var form137Container = new Form137Container();
+                form137Container.Student = _studentManagementRepository.GetStudent(studentId);
+                form137Container.Settings = _settingsRepository.GetSettings(); 
+                form137Container.StudentForm137 = new List<Form137ViewModel>();
+                
+                foreach (var schoolYear in schoolYears)
+                {
+                    var form137 = new Form137ViewModel();                    
+                    form137.SchoolYear = schoolYear;
+                    form137.GradeLevel = await _classManagementRepository.GetStudentYearLevel(studentId, schoolYear);
+                    form137.grades = _studentManagementRepository.GetStudentGrades(studentId, schoolYear);
+                    form137.Subjects = _subjectRepository.GetAllSubjects(studentId, schoolYear);
+
+                    var headSubjects = _subjectRepository.GetAllHeadSubject();
+                    var unionHeadSubject = from h in headSubjects
+                                           join s in form137.Subjects
+                                            on h.Subect_Id equals s.Subject_Id
+                                           select new
+                                           {
+
+                                           };
+                    form137.TotalHeadSubjectCount = unionHeadSubject.Count();
+                    form137Container.StudentForm137.Add(form137);
+                }
+                return form137Container;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
         public List<StudentViewModel> GetAllStudents()
         {
             try

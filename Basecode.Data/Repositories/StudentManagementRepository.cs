@@ -257,7 +257,7 @@ namespace Basecode.Data.Repositories
                         {
                             Grade = g.Grade,
                             Quarter = g.Quarter,
-                        }).ToList()
+                        }).OrderBy(p => p.Quarter).ToList()
                     });
                 //group the child subject grades
                 var childSubjectGradeGrouped = childSubjectGrade.GroupBy(g => new { g.SubjectName, g.Subject_Id,g.Head_Id })
@@ -270,7 +270,7 @@ namespace Basecode.Data.Repositories
                        {
                            Grade = g.Grade,
                            Quarter = g.Quarter,
-                       }).ToList()
+                       }).OrderBy(p => p.Quarter).ToList()
                    });
                 
                 var container = new List<StudentGrades>();
@@ -330,7 +330,7 @@ namespace Basecode.Data.Repositories
                         {
                             Grade = g.Grade,
                             Quarter = g.Quarter,
-                        }).ToList()
+                        }).OrderBy(p => p.Quarter).ToList()
                     }).ToList();
                 var childSubjectGrades = this.GetChildSubjectGrades(student_Id, school_year).ToList(); // Execute the query to fetch results from the database
 

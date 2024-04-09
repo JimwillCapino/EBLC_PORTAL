@@ -636,7 +636,8 @@ namespace Basecode_WebApp.Controllers
                 }
                 else
                 {
-                    return new Rotativa.AspNetCore.ViewAsPdf("PDFView/Form137PDF");
+                    var form137 =await _studentManagementService.GetStudentForm137(StudentId);
+                    return new Rotativa.AspNetCore.ViewAsPdf("PDFView/Form137PDF", form137);
                 }
                
             }
