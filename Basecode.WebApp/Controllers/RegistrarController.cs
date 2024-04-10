@@ -10,11 +10,7 @@ using System.Reflection.Metadata;
 using System.Web;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using IronPdf;
-using IronPdf.Extensions.Mvc.Core;
-using iTextSharp.text.pdf;
 using System.Globalization;
-using Wkhtmltopdf.NetCore;
 using AutoMapper;
 //using System.Web.Mvc;
 
@@ -28,16 +24,14 @@ namespace Basecode_WebApp.Controllers
         private ISubjectService _subjectService;
         private IClassManagementService _classManagementService;
         private IStudentManagementService _studentManagementService;
-        private ISettingsService _settingsService;
-        private readonly IRazorViewRenderer _viewRenderService;
+        private ISettingsService _settingsService;        
         private readonly IMapper _mapper;   
         public RegistrarController(INewEnrolleeService newEnrolleeService,
             ITeacherService teacherService,
             ISubjectService subjectService,
             IClassManagementService classManagementService,
             IStudentManagementService studentManagementService,
-            ISettingsService settingsService,
-            IRazorViewRenderer viewRenderService,
+            ISettingsService settingsService,           
             IMapper mapper) 
         { 
             _newEnrolleeService = newEnrolleeService;
@@ -45,8 +39,7 @@ namespace Basecode_WebApp.Controllers
             _subjectService = subjectService;
             _classManagementService = classManagementService;
             _studentManagementService = studentManagementService;
-            _settingsService = settingsService;     
-            _viewRenderService = viewRenderService;
+            _settingsService = settingsService;                 
             _mapper = mapper;
         }
         public IActionResult Index()
