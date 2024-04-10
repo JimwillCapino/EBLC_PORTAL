@@ -37,6 +37,75 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
+        public void AddTeacherRegistration(TeacherRegistration teacher)
+        {
+            try
+            {
+                _context.TeacherRegistration.Add(teacher);
+                _context.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                Console.Write(ex);
+                throw;
+            }
+        }
+        public void RemoveTeacherRegistration(int id)
+        {
+            try
+            {
+                var teacher = _context.TeacherRegistration.Find(id);
+                _context.TeacherRegistration.Remove(teacher);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+                throw;
+            }
+        }
+        public TeacherRegistration GetTeacherRegistration(int id)
+        {
+            try
+            {
+                return _context.TeacherRegistration.Find(id);
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+                throw;
+            }
+        }
+        public List<TeacherRegistrarionViewModel> GetAllTeacherApplicants()
+        {
+            try
+            {
+                var usersPortal = this.GetDbSet<UsersPortal>();
+                var teacherRegistration = this.GetDbSet<TeacherRegistration>();
+
+                var teachers = from u in usersPortal join
+                               t in teacherRegistration
+                               on u.UID equals t.UserPortalID
+                               select new TeacherRegistrarionViewModel
+                               {
+                                   Id = t.Id,
+                                   FirstName = u.FirstName,
+                                   MiddleName = u.MiddleName,
+                                   LastName = u.LastName,
+                                   Email = t.Email,
+                                   Password = t.Password,
+                                   ProfilePic = u.ProfilePic,
+                                   sex = u.sex
+                               };
+                return teachers.ToList();
+                               
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+                throw;
+            }
+        }
         public async Task<List<TeacherViewModel>> GetAllTeachersInitViewAsync()
         {
             try
