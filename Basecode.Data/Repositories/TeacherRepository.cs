@@ -63,6 +63,7 @@ namespace Basecode.Data.Repositories
                                   MiddleName = users.MiddleName,
                                   Gender = users.sex,
                                   Id = au.Id,
+                                  Email = au.Email
                               };
                 return teacher.ToList();                             
             }

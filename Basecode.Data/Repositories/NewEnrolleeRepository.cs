@@ -140,7 +140,7 @@ namespace Basecode.Data.Repositories
                     ParentLastName = userParent.LastName,
                     ParentMiddleName = userParent.MiddleName,
                     PhoneNumber = rtpCommons.PhoneNumber,
-                    email = student.Email,
+                    Email = parent.Email,
                     Address = rtpCommons.Address,
                     Gcash = parent.Gcash,
                     ParentBirthday = userParent.Birthday,

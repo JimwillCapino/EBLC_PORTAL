@@ -4,6 +4,7 @@ using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
 using Basecode.Data.ViewModels;
 using Basecode.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -15,18 +16,22 @@ namespace Basecode.Services.Services
 {
     public class NewEnrolleeService:INewEnrolleeService
     {
+        UserManager<IdentityUser> _userManager;
         INewEnrolleeRepository _repository;
         IUsersService _usersService;
         IMapper _mapper;
         IRTPService _rtpService;
         IParentService _parentService;
         IStudentService _studentService;
+        IRTPUsersRepository _rtpUserRepository;
         public NewEnrolleeService(INewEnrolleeRepository repository,
             IMapper mapper,
             IUsersService userService,
             IRTPService rTPService,
             IParentService parentService,
-            IStudentService studentService) 
+            IStudentService studentService,
+            UserManager<IdentityUser> userManager,
+            IRTPUsersRepository rTPUsersRepository) 
         { 
             _repository = repository;
             _mapper = mapper;
@@ -34,6 +39,8 @@ namespace Basecode.Services.Services
             _parentService = parentService;
             _rtpService = rTPService;
             _studentService = studentService;
+            _userManager = userManager;
+            _rtpUserRepository = rTPUsersRepository;
         }
         public void RegisterStudent(RegisterStudent student)
         {
@@ -171,13 +178,13 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
-        public void RejectNewEnrollee(int id)
+        public async void RejectNewEnrollee(int id)
         {
             try
             {
                 var newEnrolle = _repository.GetEnrolleeByID(id);
                 var userNewEnrolle = _usersService.GetUserById(newEnrolle.UID);
-                var parent = _parentService.GetParentById(newEnrolle.ParentID);
+                var parent =  _parentService.GetParentById(newEnrolle.ParentID);
                 var parentUser = _usersService.GetUserById(parent.UID);
                 var parentRTP = _rtpService.GetRTPCommonsByUID(parent.UID);
 

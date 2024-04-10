@@ -5,29 +5,152 @@
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
 }
-@using Basecode.Data.Models
-@model Settings
+@using Basecode.Data.ViewModels
+@model SettingsViewModel
+
+<link rel="stylesheet" href="/css/TeachersPage.css" />
 <div class="wrapper"> 
    @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
-        <form asp-action="UpdateSettings">
-            <div class="row gy-4 gy-xl-5 p-4 p-xl-5">
-                <p class="lead">School Year</p>
-                <div class="col-12 col-md-6">
-                    <label>Date Start</label>
-                    <input class="form-control" id="date" placeholder="MM/DD/YYY" type="date" asp-for="StartofClass"/>
+        <div class="container p-0">
+            <h1 class="h3 mb-3">Settings</h1>
+            <div class="row">
+                <div class="col-md-5 col-xl-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Registrar Settings</h5>
+                        </div>
+
+                        <div class="list-group list-group-flush" role="tablist">
+                            <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account" role="tab">
+                                School Year
+                            </a>
+                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#password" role="tab">
+                                School Information
+                            </a>
+                            <a asp-action="ManageLearnerValues" class="list-group-item list-group-item-action">
+                                Learner's Value
+                            </a>                            
+                        </div>
+                    </div>
                 </div>
-                <div class="col-12 col-md-6">
-                    <label>End Date</label>
-                    <input class="form-control" id="date" placeholder="MM/DD/YYY" type="date" asp-for="EndofClass" />
-                </div>
-                <div class="col-12 col-md-6">
-                    <button type="submit" class="btn btn-outline-danger">Set Date</button>
+
+                <div class="col-md-7 col-xl-8">
+                    <form method="post" enctype="multipart/form-data" asp-action="UpdateSettings">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="account" role="tabpanel">
+                            <div class="card">
+                                <div class="card-header">                                    
+                                    <h5 class="card-title mb-0">Set school year</h5>
+                                </div>
+                                <div class="card-body">                                   
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label for="inputUsername">Start School Date</label>
+                                                    <input type="date" class="form-control" id="inputUsername" placeholder="Username" asp-for="StartofClass">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputUsername">End School Date</label>
+                                                    <input type="date" class="form-control" id="inputUsername" placeholder="Username" asp-for="EndofClass">
+                                                </div>
+                                            </div>                                           
+                                        </div>
+                                        <button type="submit" class="btn btn-danger mt-4">Save changes</button>                                 
+                                </div>
+                            </div>                          
+                        </div>
+
+                        <div class="tab-pane fade" id="password" role="tabpanel">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">School Details</h5>                                   
+                                    <div class="row">
+                                        <div class="col"> 
+                                            <h6>School Logo</h6>
+
+                                            @if (Model.SchoolLogo == null || Model.SchoolLogo.Length <= 0)
+                                            {
+                                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                                                     class="rounded-circle img-fluid" style="width: 150px;">
+                                            }
+                                            else
+                                            {
+                                                    <img src="data:image/png;base64,@Convert.ToBase64String(Model.SchoolLogo)" class="rounded mx-auto d-block" style="width: 100px; height:100px" alt="" />
+                                            }
+                                            <p>Click this button to pick a new photo</p>                                                                                           
+                                            <input type="file" id="newPhotoInput" asp-for="SchoolLogoRecieve" />
+                                            <input type="hidden" asp-for="SchoolLogo"/>
+                                            
+                                        </div>
+                                        <div class="col">
+                                            <h6>DepEd Logo</h6>
+                                            @if ( Model.DepEdLogo == null || Model.DepEdLogo.Length <= 0)
+                                            {
+                                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                                                     class="rounded-circle img-fluid" style="width: 150px;">
+                                            }
+                                            else
+                                            {
+                                                    <img src="data:image/png;base64,@Convert.ToBase64String(Model.DepEdLogo)" class="rounded mx-auto d-block" style="width: 100px; height:100px" alt="" />
+                                            }
+                                            <p>Click this button to pick a new photo</p>                                                                                        
+                                            <input type="file" id="newPhotoInput"  asp-for="DepEdLogoRecieve" />
+                                            <input type="hidden" asp-for="DepEdLogo" />                                        
+                                        </div>
+                                    </div>
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <input type="hidden" asp-for="Id" />
+                                        <div class="form-group">
+                                            <label for="inputPasswordCurrent">School Name</label>
+                                            <input type="text" class="form-control" id="" asp-for="School_Name">
+                                            <span asp-validation-for="School_Name"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputPasswordNew2">School  Administrator</label>
+                                            <input type="text" class="form-control" id="" asp-for="Administrator">
+                                            <span asp-validation-for="Administrator"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputPasswordNew">Region</label>
+                                            <input type="text" class="form-control" id="" asp-for="Region">
+                                            <span asp-validation-for="Region"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputPasswordNew2">Division</label>
+                                            <input type="text" class="form-control" id="" asp-for="Division">
+                                            <span asp-validation-for="Division"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputPasswordNew2">District</label>
+                                            <input type="text" class="form-control" id="" asp-for="District">
+                                            <span asp-validation-for="District"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputPasswordNew2">School ID</label>
+                                            <input type="text" class="form-control" id="" asp-for="SchoolId">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputPasswordNew2">Address</label>
+                                            <input type="text" class="form-control" id="" asp-for="Address">
+                                            <span asp-validation-for="Address"></span>
+                                        </div>
+                                        <button type="submit" class="btn btn-danger mt-4">Save changes</button>                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
                 </div>
             </div>
-        </form>
-        <div class="list-group gy-4 gy-xl-5 p-4 p-xl-5">           
-            <a asp-action="ManageLearnerValues" class="list-group-item list-group-item-action">Learner's Value</a>
+
         </div>
+
     </div>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
 </div>
+<script src="/js/Tables.js"></script>

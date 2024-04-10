@@ -1,0 +1,318 @@
+﻿@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml"; 
+    double avg = 0;
+    int? maxQuarter = 0;
+}
+@using Basecode.Data.ViewModels
+@model ReportCardContents
+<style>
+    .flexrow {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex !important;
+    }
+
+        .flexrow > div {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+        }
+        .container{
+        page-break-inside: avoid;
+        }
+</style>
+<div class="container">
+    <div class="row flexrow">
+        <div class="col">
+            <h2><b>Dear Parents</b></h2>
+            <p>The Education welfare of the child is best served if there is mutual cooperation between the home and the school.</p>
+            <p>This report card is issued to show you the achievement and progress of your child in different learning areas as well as his/her core values.</p>
+            <p>The school welcomes you if you desire to know more about your childs progress.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        @foreach (var month in Model.StudentDetails.StudentAttendance.Months)
+                        {
+                            <th>@month</th>
+                        }                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Days of School</td>
+                        @foreach (var attendance in Model.StudentDetails.StudentAttendance.Attendances)
+                        {
+
+                            <td>@(attendance != null ? attendance.Days_of_Schoool : " ")</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td>Days of Present</td>
+                        @foreach (var attendance in Model.StudentDetails.StudentAttendance.Attendances)
+                        {
+                            <td>@(attendance != null ? attendance.Days_of_Present : " ")</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td>Time of Tardy</td>
+                        @foreach (var attendance in Model.StudentDetails.StudentAttendance.Attendances)
+                        {
+                            <td>@(attendance != null ? attendance.Time_of_Tardy : " ")</td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+            <div class="mt-5">
+                <h2 style="margin-bottom: 50px;">Parent's Signature</h2>
+                <h3 style="margin-bottom: 50px;">1st Grading: _________________________</h3>
+                <h3 style="margin-bottom: 50px;">2nd Grading: _________________________</h3>
+                <h3 style="margin-bottom: 50px;">3rd Grading: _________________________</h3>
+                <h3 style="margin-bottom: 50px;">4th Grading: _________________________</h3>
+                <h4>Train up a child in a way he should go, and when he is old he will not depart from it. <br />Prov. 22:6</h4>
+            </div>
+
+        </div>
+        <div class="col">
+            <div class="row flexrow">
+                <div class="col-auto">
+                    <img src="data:image/png;base64,@Convert.ToBase64String(Model.Settings.SchoolLogo)" class="rounded float-left" style="width: 80px; height:80px" alt="" />
+                    <h2>School ID: <br />@Model.Settings.SchoolId</h2>
+                </div>
+                <div class="col-auto text-center">
+                    <h4>REPUBLIC OF THE PHILIPPINES</h4>
+                    <h3>Department of Education</h3>
+                    <h5>Region @Model.Settings.Region</h5>
+                    <h5>Division of @Model.Settings.Division</h5>
+                    <h5>District @Model.Settings.District</h5>
+                    <h2><b>@Model.Settings.School_Name</b></h2>
+                    <h5>@Model.Settings.Address</h5>
+                </div>
+                <div class="col-auto">
+                    <img src="data:image/png;base64,@Convert.ToBase64String(Model.Settings.DepEdLogo)" class="rounded float-left" style="width: 80px; height:80px" alt="" />
+                </div>
+            </div>
+            <div class="row pt-4">
+                <h2>Name: @Model.StudentDetails.Student.FirstName @Model.StudentDetails.Student.MiddleName @Model.StudentDetails.Student.LastName</h2>
+                <h2>Age: @Model.StudentDetails.Student.age</h2>
+                <h2>LRN: @Model.StudentDetails.Student.lrn</h2>
+                <h2>Grade:@Model.StudentDetails.Student.Grade</h2>
+                <h2>School Year:@Model.StudentDetails.SchoolYear</h2>
+                <h2 class="pt-5">Admitted to Grade @Model.StudentDetails.Student.Grade</h2>                
+                <div class="row flexrow" style="margin-top:190px">
+                    <div class="col">
+                        <h2><u>@Model.Settings.Administrator</u></h2>
+                        <h2><b>School Administrator</b></h2>
+                    </div>
+                    <div class="col">
+                        <h2><u>@Model.StudentDetails.studentClass.AdviserName</u></h2>
+                        <h2><b>Teacher</b></h2>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>    
+</div>
+
+<div class="container">
+    <div class="row flexrow">
+        <div class="col p-3">
+            <h2>Report on Learning Progress and Achievement</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>Final</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var subject in Model.StudentDetails.Subjects)
+                    {
+                        <tr>
+                            <td>@subject.Subject_Name</td>
+                            @{
+                                var SubjectWithGrades = Model.StudentDetails.grades.FirstOrDefault(p => p.SubjectId == subject.Subject_Id);
+                            }
+                            @if (SubjectWithGrades != null)
+                            {
+                                @foreach (var grade in SubjectWithGrades.Grades)
+                                {
+                                    maxQuarter = grade.Quarter;
+                                    <td>@(grade.Grade != null? grade.Grade:"")</td>
+                                    if (grade.Quarter == 5 && grade.Grade >= 75)
+                                    {
+                                        avg += grade.Grade;
+                                        <td>Passed</td>
+                                    }
+                                    else if (grade.Quarter == 5 && grade.Grade < 75)
+                                    {
+
+                                        avg += grade.Grade;
+                                        <td>Failed</td>
+                                    }                                    
+                                }
+                                for(int x = 0; x < (6-maxQuarter); x++)
+                                {
+                                    <td></td>
+                                }
+                            }
+                            else
+                            {
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <p class="lead">General Average: @Math.Floor(avg / Model.StudentDetails.TotalHeadSubjectCount)</p>
+            @if (Math.Floor(avg / Model.StudentDetails.TotalHeadSubjectCount) >= 75)
+            {
+                <p class="lead">Promoted</p>
+            }
+            @{
+                avg = 0;
+            }
+            <h3>Report on Learning Progress and Achievement</h3>
+            <table class="table">
+                <thead>
+                    <th>Description</th>
+                    <th>Grading Scale</th>
+                    <th>Remarks</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Outstanding</td>
+                        <td>90-100</td>
+                        <td>Passed</td>
+                    </tr>
+                    <tr>
+                        <td>Very Satisfactory</td>
+                        <td>85-89</td>
+                        <td>Passed</td>
+                    </tr>
+                    <tr>
+                        <td>Satisfactory</td>
+                        <td>80-84</td>
+                        <td>Passed</td>
+                    </tr>
+                    <tr>
+                        <td>Fairly Satisfactory</td>
+                        <td>75-79</td>
+                        <td>Passed</td>
+                    </tr>
+                    <tr>
+                        <td>Did not meet Expectations</td>
+                        <td>80-84</td>
+                        <td>Failed</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col p-3">
+            <h2>Report on Learner's Observed Values </h2>
+            <table class="table">
+                <thead>
+                </thead>
+                <tbody>
+                <thead>
+                    <tr>
+                        <th>Core Values</th>
+                        <th>Behavioral Statement</th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>Final</th>
+                    </tr>
+                </thead>
+                    @foreach (var corevalues in Model.StudentDetails.learnersValues)
+                    {
+                        var grades = Model.StudentDetails.valuesGrades.Where(p => p.BehaviouralId == corevalues.behavioural_Statements.ElementAt(0).Id);
+                    <tr>
+                        <th rowspan="@corevalues.behavioural_Statements.Count()">
+                                @corevalues.Core_Values
+                        </th>
+                        <td>
+                                @corevalues.behavioural_Statements.ElementAt(0).Statements
+                        </td>
+                            @foreach (var grade in grades)
+                            {
+
+                            <td>
+                                    @grade.Grade
+                            </td>
+                            }
+                    </tr>
+                        @for (int x = 1; x < @corevalues.behavioural_Statements.Count(); x++)
+                        {
+                            var gradesi = Model.StudentDetails.valuesGrades.Where(p => p.BehaviouralId == corevalues.behavioural_Statements.ElementAt(x).Id);
+
+                        <tr>
+                            <td>
+                                    @corevalues.behavioural_Statements.ElementAt(x).Statements
+                            </td>
+                                @for (int y = 0; y < gradesi.Count(); y++)
+                                {
+                                <td>
+                                        @gradesi.ElementAt(y).Grade
+                                </td>
+                                }
+                        </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <table class="table mx-lg-5">
+                <thead>
+                <th>Marking</th>
+                <th>Nom-Numerical Rating</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            AO
+                        </td>
+                        <td>
+                            Always Observed
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            SO
+                        </td>
+                        <td>
+                            Sometimes Observed
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            RO
+                        </td>
+                        <td>
+                            Rarely Observed
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            NO
+                        </td>
+                        <td>
+                            Not Observed
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

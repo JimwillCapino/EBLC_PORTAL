@@ -11,11 +11,12 @@
 <div class ="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
-        <div class="table-responsive overflow-auto">
+        <div class="table-responsive overflow-auto">            
             <table class="table overflow-auto" id="myTable">
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Email</th>
                         <th>Gender</th>
                     </tr>
                 </thead>
@@ -27,6 +28,7 @@
                             else s = "Male";                                      
                                 <tr class="bg-blue" onclick="redirectToIndex(@teacher.Id)">
                                     <td class="pt-3 mt-1">@teacher.FirstName @teacher.MiddleName @teacher.LastName</td>
+                                    <td class="pt-3 mt-1">@teacher.Email</td>
                                     <td class="pt-3">@s</td>                                 
                                 </tr>
                                 <tr id="spacing-row">

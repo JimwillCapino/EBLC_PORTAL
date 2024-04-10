@@ -12,5 +12,6 @@ namespace Basecode.Data.Models
         public int UID { get; set; }
         public string? Gcash { get; set; }
         public string status { get; set; }
+        public string? Email { get; set; }
     }
 }

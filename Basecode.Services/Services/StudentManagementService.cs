@@ -19,16 +19,19 @@ namespace Basecode.Services.Services
         private readonly IStudentManagementRepository _studentManagementRepository;
         private readonly IStudentRepository _studentRepository;
         private readonly ISettingsRepository _settingsRepository;
-        private readonly ISubjectRepository _subjectRepository;        
+        private readonly ISubjectRepository _subjectRepository;
+        private readonly IClassManagementRepository _classManagementRepository;
         public StudentManagementService(IStudentManagementRepository studentManagementRepository,
             IStudentRepository studentRepository,
             ISettingsRepository settings,
-            ISubjectRepository subjectRepository) 
+            ISubjectRepository subjectRepository,
+            IClassManagementRepository classManagementRepository) 
         {
             _studentManagementRepository = studentManagementRepository;
             _studentRepository = studentRepository;
             _settingsRepository = settings;
             _subjectRepository = subjectRepository;
+            _classManagementRepository = classManagementRepository;
         }
         public GradesDetail GetStudentGradeBySubject(int student_Id, int subject_Id)
         {
@@ -115,7 +118,7 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
-        public StudentDetailsWithGrade GetStudentGrades(int student_Id, string school_year)
+        public async Task<StudentDetailsWithGrade> GetStudentGrades(int student_Id, string school_year)
         {
             try
             {
@@ -128,7 +131,7 @@ namespace Basecode.Services.Services
                 student.learnersValues = _studentManagementRepository.GetLearnersValues();
                 student.StudentAttendance = this.GetStudentAttendance(student_Id,school_year);
                 student.Subjects = _subjectRepository.GetAllSubjects(student_Id, school_year);
-
+                student.studentClass = await _classManagementRepository.GetClassWhereStudentBelong(student_Id,school_year);
                 var unionHeadSubject = from h in headSubjects
                                        join s in student.Subjects
                                         on h.Subect_Id equals s.Subject_Id
@@ -138,11 +141,51 @@ namespace Basecode.Services.Services
                                        };
 
                 student.TotalHeadSubjectCount = unionHeadSubject.Count();
+                student.SchoolYear = school_year;
                 return student;
             }
             catch
             {
                 throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public async Task<Form137Container> GetStudentForm137(int studentId)
+        {
+            try
+            {
+
+
+                var schoolYears = _studentManagementRepository.GetSchoolYears(studentId);
+                var form137Container = new Form137Container();
+                form137Container.Student = _studentManagementRepository.GetStudent(studentId);
+                form137Container.Settings = _settingsRepository.GetSettings(); 
+                form137Container.StudentForm137 = new List<Form137ViewModel>();
+                
+                foreach (var schoolYear in schoolYears)
+                {
+                    var form137 = new Form137ViewModel();                    
+                    form137.SchoolYear = schoolYear;
+                    form137.GradeLevel = await _classManagementRepository.GetStudentYearLevel(studentId, schoolYear);
+                    form137.grades = _studentManagementRepository.GetStudentGrades(studentId, schoolYear);
+                    form137.Subjects = _subjectRepository.GetAllSubjects(studentId, schoolYear);
+
+                    var headSubjects = _subjectRepository.GetAllHeadSubject();
+                    var unionHeadSubject = from h in headSubjects
+                                           join s in form137.Subjects
+                                            on h.Subect_Id equals s.Subject_Id
+                                           select new
+                                           {
+
+                                           };
+                    form137.TotalHeadSubjectCount = unionHeadSubject.Count();
+                    form137Container.StudentForm137.Add(form137);
+                }
+                return form137Container;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
             }
         }
         public List<StudentViewModel> GetAllStudents()

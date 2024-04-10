@@ -1,0 +1,135 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+    double avg = 0;
+    int? countRows;
+}
+@using Basecode.Data.ViewModels
+@model Form137Container
+
+<html>
+    <head>
+    <style>
+        .flexrow {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex !important;
+        }
+
+            .flexrow > div {
+                -webkit-box-flex: 1;
+                -webkit-flex: 1;
+                flex: 1;
+            }
+
+        .container {
+            page-break-inside: avoid;
+        }
+
+        th {
+            text-align: left;
+            padding: 8px;
+        }
+    </style>
+    </head>
+    <body>
+    <div style="margin: auto; text-align: center; ">
+        <div class="row flexrow">
+            <div class="col-auto">
+                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Settings.SchoolLogo)" class="rounded float-left" style="width: 80px; height:80px" alt="" />
+                <h2>School ID: <br />@Model.Settings.SchoolId</h2>
+            </div>
+            <div class="col-auto text-center">
+                <h4>REPUBLIC OF THE PHILIPPINES</h4>
+                <h3>Department of Education</h3>
+                <h5>Region @Model.Settings.Region</h5>
+                <h5>Division of @Model.Settings.Division</h5>
+                <h5>District @Model.Settings.District</h5>
+                <h2><b>@Model.Settings.School_Name</b></h2>
+                <h5>@Model.Settings.Address</h5>
+            </div>
+            <div class="col-auto">
+                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Settings.DepEdLogo)" class="rounded float-left" style="width: 80px; height:80px" alt="" />
+            </div>
+        </div>
+    </div>
+    <p class="lead">Name: @Model.Student.FirstName @Model.Student.MiddleName @Model.Student.LastName</p>
+    <p class="lead">LRN: @Model.Student.lrn</p>
+    @foreach(var content in Model.StudentForm137)
+    {
+        <p class="lead">School Year: @content.SchoolYear Grade Level:@content.GradeLevel</p>
+        <div class="container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>Final</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var subject in content.Subjects)
+                    {
+                        countRows = 0;
+                        <tr scope="row">
+                            <td>@subject.Subject_Name</td>
+                            @{
+                                var SubjectWithGrades = content.grades.FirstOrDefault(p => p.SubjectId == subject.Subject_Id);
+                            }
+                            @if (SubjectWithGrades != null)
+                            {
+                                @foreach (var grade in SubjectWithGrades.Grades)
+                                {                                    
+                                    <td>@grade.Grade</td>
+                                    if (grade.Quarter == 5 && grade.Grade >= 75)
+                                    {
+
+                                        avg += grade.Grade;
+                                        <td>Passed</td>
+                                        countRows++;
+                                    }
+                                    else if (grade.Quarter == 5 && grade.Grade < 75)
+                                    {
+
+                                        avg += grade.Grade;
+                                        <td>Failed</td>
+                                        countRows++;
+                                    }
+                                    countRows++;
+                                }                               
+                                for (int x = 0; x < (6 - (countRows)); x++)
+                                {
+                                    <td></td>
+                                }
+                            }
+                            else
+                            {
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        
+        <p class="lead">General Average: @Math.Floor(avg / content.TotalHeadSubjectCount)</p>
+        @if (Math.Floor(avg / content.TotalHeadSubjectCount) >= 75)
+        {
+            <p class="lead">Promoted</p>
+        }
+        avg = 0;                          
+    }
+    </body>
+</html>

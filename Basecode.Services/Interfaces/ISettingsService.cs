@@ -1,4 +1,5 @@
 ﻿using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,10 @@ namespace Basecode.Services.Interfaces
     {
         public void UpdateSchoolYear(DateTime StartofClass, DateTime EndofClass, int Id);
         public void UpdateSettings(Settings settings);
-        public Settings GetSettings();
-        public string GetSchoolYear();      
+        public void UpdateSettings(SettingsViewModel settings);
+        //public Settings GetSettings();
+        public string GetSchoolYear();
+        public SettingsViewModel GetSettings();
+        public Settings GetSettingsById(int id);
     }
 }

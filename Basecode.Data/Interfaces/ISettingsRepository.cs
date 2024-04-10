@@ -9,8 +9,9 @@ namespace Basecode.Data.Interfaces
 {
     public interface ISettingsRepository
     {
-        public void UpdateSchoolYear(Settings settings);
+        public void UpdateSettings(Settings settings);
         public Settings GetSettings();
         public string GetSchoolYear();
+        public Settings GetSettingsById(int id);
     }
 }

@@ -13,7 +13,7 @@ namespace Basecode.Services.Interfaces
         public GradesDetail GetStudentGradeBySubject(int student_Id, int subject_Id);
         public void SubmitGrade(int student_id, int Subject_Id, int grade, int Quarter);
         public void EditGrade(int Grade_Id,int student_id, int Subject_Id, int grade, int Quarter);
-        public StudentDetailsWithGrade GetStudentGrades(int student_Id, string school_year);
+        public Task<StudentDetailsWithGrade> GetStudentGrades(int student_Id, string school_year);
         public List<StudentViewModel> GetAllStudents();
         public void AddCoreValues(Core_Values values);
         public void AddBehavioralStatement(Behavioural_Statement statement);
@@ -31,5 +31,6 @@ namespace Basecode.Services.Interfaces
         public void AddStudentAttendance(int studentId, int Days_of_School, int Days_of_Present, int Time_of_Tardy, string month);
         public AttendanceContainer GetStudentAttendance(int studentId, string schoolYear);
         public void UpdateAttendance(int id, int studentId, int Days_of_School, int Days_of_Present, int Time_of_Tardy, string month);
+        public Task<Form137Container> GetStudentForm137(int studentId);
     }
 }

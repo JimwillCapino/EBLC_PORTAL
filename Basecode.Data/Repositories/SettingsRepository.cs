@@ -15,7 +15,7 @@ namespace Basecode.Data.Repositories
         {
             _context = context;
         }
-        public void UpdateSchoolYear(Settings settings)
+        public void UpdateSettings(Settings settings)
         {
             try
             {
@@ -28,11 +28,23 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        public Settings GetSettingsById(int id)
+        {
+            try
+            {
+                return _context.Settings.Find(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
         public Settings GetSettings()
         {
             try
             {
-                return this.GetDbSet<Settings>().First();
+                return _context.Settings.FirstOrDefault();
             }
             catch(Exception ex)
             {

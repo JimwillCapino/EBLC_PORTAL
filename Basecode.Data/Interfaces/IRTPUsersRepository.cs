@@ -10,5 +10,6 @@ namespace Basecode.Data.Interfaces
     public interface IRTPUsersRepository
     {
         public void AddRTPUsers(RTPUsers rTPUsers);
+        public RTPUsers GetRTPuserByRTPId(int rtpId);
     }
 }
