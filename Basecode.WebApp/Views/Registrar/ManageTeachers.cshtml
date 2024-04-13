@@ -11,6 +11,7 @@
 <div class ="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
+        <button type="button" class="btn btn-outline-danger" onclick="RedirectToRequestPage()">Requests</button>
         <div class="table-responsive overflow-auto">            
             <table class="table overflow-auto" id="myTable">
                 <thead>
@@ -40,3 +41,8 @@
         </div>
     </div>  
 </div>
+<script>
+    function RedirectToRequestPage() {
+        window.location.href = '@Url.Action("TeacherRegistration", "Registrar")';
+    }
+</script>

@@ -1,0 +1,53 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Registrar";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+@using Basecode.Data.ViewModels
+@model List<TeacherRegistrarionViewModel>
+<link rel="stylesheet" href="/css/TableInfo.css" />
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main p-5">
+        <div class="table-responsive overflow-auto">
+            <table class="table overflow-auto" id="myTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Gender</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var teacher in Model)
+                    {
+                        var s = "";
+                        if (teacher.sex == "F") s = "Female";
+                        else s = "Male";
+                        <tr class="bg-blue">
+                            <td class="pt-3 mt-1">@teacher.FirstName @teacher.MiddleName @teacher.LastName</td>
+                            <td class="pt-3 mt-1">@teacher.Email</td>
+                            <td class="pt-3">@s</td>
+                            <td><i class="lni lni-thumbs-up" onclick="AcceptTeacher(@teacher.Id)"></i></td>
+                            <td><i class="lni lni-thumbs-down" onclick="RejectTeacher(@teacher.Id)"></i></td>
+                        </tr>
+                        <tr id="spacing-row">
+                            <td> </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function AcceptTeacher(student_Id) {
+        window.location.href = '@Url.Action("AcceptTeacherRegistration", "Registrar")?id=' + student_Id;
+    }
+    function RejectTeacher(student_Id) {
+        window.location.href = '@Url.Action("RejectTeacherRegistration", "Registrar")?id=' + student_Id;
+    }
+</script>

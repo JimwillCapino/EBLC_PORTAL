@@ -4,6 +4,11 @@ namespace Basecode.Data
 {
     public static class Constants
     {
+        public class ViewDataErrorHandling
+        {
+            public static int Success = -1;
+            public static string ErrorMessage;
+        }
         public class Enrollee
         {
             public static int id;

@@ -2,6 +2,7 @@
 using Basecode.Data;
 using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 using Basecode.Main.Models;
 using Basecode.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -19,11 +20,13 @@ namespace Basecode.Main.Controllers
         IUsersService _usersService;
         IRTPService _rtpService;
         IParentService _parentService;
+        ITeacherService _teacherService;
         public HomeController(ILogger<HomeController> logger, 
             IUsersService usersService,IMapper mapper,
             INewEnrolleeService newEnrolleeService, 
             IRTPService rTPService,
-            IParentService parentService)
+            IParentService parentService,
+            ITeacherService teacherService)
         {
             _logger = logger;
             _newEnrolleeService = newEnrolleeService;
@@ -31,6 +34,7 @@ namespace Basecode.Main.Controllers
             _mapper = mapper;
             _rtpService = rTPService;
             _parentService = parentService;
+            _teacherService = teacherService;
         }
 
         public IActionResult Index()
@@ -65,6 +69,21 @@ namespace Basecode.Main.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        public IActionResult RegisterTeacher(TeacherRegistrarionViewModel teacher)
+        {
+            try
+            {
+                _teacherService.AddTeacherRegistration(teacher);
+                ViewBag.ErrorMessage = "Success";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                Console.WriteLine(ex.Message);
+                return RedirectToAction("Enroll");
+            }
         }
     }
 }

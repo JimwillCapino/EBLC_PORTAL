@@ -11,6 +11,11 @@ namespace Basecode.Data.Interfaces
     public interface ITeacherRepository
     {
         public void AddTeacher(Teacher teacher);
+        public void AddTeacherRegistration(TeacherRegistration teacher);
+        public void RemoveTeacherRegistration(int id);
+        public TeacherRegistration GetTeacherRegistration(int id);
+        public List<TeacherRegistrarionViewModel> GetAllTeacherApplicants();
+
         public Task<List<TeacherViewModel>> GetAllTeachersInitViewAsync();
     }
 }

@@ -178,7 +178,7 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
-        public async void RejectNewEnrollee(int id)
+        public void RejectNewEnrollee(int id)
         {
             try
             {
@@ -186,12 +186,12 @@ namespace Basecode.Services.Services
                 var userNewEnrolle = _usersService.GetUserById(newEnrolle.UID);
                 var parent =  _parentService.GetParentById(newEnrolle.ParentID);
                 var parentUser = _usersService.GetUserById(parent.UID);
-                var parentRTP = _rtpService.GetRTPCommonsByUID(parent.UID);
+                //var parentRTP = _rtpService.GetRTPCommonsByUID(parent.UID);
 
                 _repository.RemoveEnrollee(newEnrolle);
                 _usersService.RemoveUser(userNewEnrolle);
                 _parentService.RemoveParent(parent);
-                _rtpService.RemoveRTP(parentRTP);
+                //_rtpService.RemoveRTP(parentRTP);
                 _usersService.RemoveUser(parentUser);              
             }
             catch (Exception ex)

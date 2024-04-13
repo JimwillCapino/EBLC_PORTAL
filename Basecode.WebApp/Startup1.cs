@@ -1,5 +1,4 @@
-﻿using IronPdf.Extensions.Mvc.Core;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Rotativa.AspNetCore;
 
 namespace Basecode.WebApp
@@ -23,8 +22,7 @@ namespace Basecode.WebApp
             this.ConfigureAuth(services);               // Configuration for Authentication logic
             this.ConfigureMVC(services);                // Configuration for MVC                  
 
-            // Add services to the container.
-            services.AddSingleton<IRazorViewRenderer, RazorViewRenderer>();
+            // Add services to the container.            
             services.AddControllersWithViews();
             services.AddMvc(options => options.EnableEndpointRouting = false);
         }
