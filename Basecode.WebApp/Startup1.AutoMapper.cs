@@ -21,6 +21,12 @@ namespace Basecode.WebApp
                 cfg.CreateMap<UsersPortal, TeacherRegistrarionViewModel>();
                 cfg.CreateMap<TeacherRegistrarionViewModel, TeacherRegistration>();
                 cfg.CreateMap<TeacherRegistrarionViewModel, UsersPortal>();
+                cfg.CreateMap<TeacherRegistrarionViewModel, RTPCommons>();
+                cfg.CreateMap<RTPCommons,TeacherRegistrarionViewModel>();
+                cfg.CreateMap<TeacherRegistrarionViewModel, RTPUsers>();
+                cfg.CreateMap<RTPUsers, TeacherRegistrarionViewModel>();
+                cfg.CreateMap<ProfileViewModel,RTPCommons>();
+                cfg.CreateMap<ProfileViewModel,UsersPortal>();
             });
 
             services.AddSingleton(Config.CreateMapper());

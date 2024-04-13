@@ -2,6 +2,8 @@
     ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/NoLayout.cshtml";
 }
+@using Basecode.Data.ViewModels
+@model TeacherRegistrarionViewModel
     <main class="flex-shrink-0">
         
         <!-- Header-->
@@ -48,11 +50,73 @@
                         </div>
                     </div>
                 </div>
-           
- 
         </div>
+    <div class="container d-flex justify-content-center align-items-center min-vh-100 mt-4">
+        <!----------------------- Login Container -------------------------->
+        <div class="row border rounded-5 p-3 bg-white shadow box-area">
+            <!--------------------------- Left Box ----------------------------->
+            <div class="col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box" style="background: #dc3545">
+                <div class="featured-image mb-3">
+                    <img src="~/signin-image.jpg" class="img-fluid" style="width: 250px;">
+                </div>
+                <p class="text-white fs-2" style="font-weight: 600;">Teachers Registration</p>           
+            </div>
+            <!-------------------- ------ Right Box ---------------------------->
+
+            <div class="col-md-6 right-box">
+                <div class="row align-items-center p-5">
+                    <div class="header-text mb-4">
+                        <h2>Hello, Teacher!</h2>                        
+                    </div>
+                    <form asp-action="RegisterTeacher">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="exampleInputEmail1" asp-for="FirstName">                            
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Middle Name</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" asp-for="MiddleName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" asp-for="LastName">
+                        </div>                        
+                        <div class="mb-3">
+                            <label for="disabledSelect" class="form-label">Gender</label>
+                            <select id="disabledSelect" class="form-select" asp-for="sex">
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                        </div>
+                         <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" asp-for="PhoneNumber">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" asp-for="Address">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Birthday</label>
+                            <input type="date" class="form-control" id="exampleInputPassword1" asp-for="Birthday">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" asp-for="Email">
+                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1" asp-for="Password">
+                        </div>
+                        <button type="submit" class="btn btn-danger">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
         <!-- Features section-->
-        <section class="py-5" id="features">
+@*         <section class="py-5" id="features">
             <div class="container px-5 my-5">
                 <div class="row gx-5">
                     <div class="col-lg-4 mb-5 mb-lg-0"><h2 class="fw-bolder mb-0">A better way to Learn.</h2></div>
@@ -82,7 +146,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> *@
         <!-- Testimonial section-->
         <div class="py-5 bg-light">
             <div class="container px-5 my-5">

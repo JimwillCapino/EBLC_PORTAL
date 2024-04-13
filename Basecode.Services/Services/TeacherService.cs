@@ -19,21 +19,25 @@ namespace Basecode.Services.Services
         IUsersRepository _UsersRepository;
         IMapper _Mapper;
         UserManager<IdentityUser> _UserManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        IUserStore<IdentityUser> _userStore;
+        RoleManager<IdentityRole> _roleManager;
+        IRTPRepository _rtpCommons;
+        IRTPUsersRepository _rtpusers;
         public TeacherService(ITeacherRepository teacherRepository,
             IMapper mapper,
             IUsersRepository usersRepository,
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IUserStore<IdentityUser> userStore,) 
+            IRTPRepository rtpRepoistory,
+            IRTPUsersRepository rtpusers
+            ) 
         {
             _TeacherRepository = teacherRepository;
             _Mapper = mapper;
             _UsersRepository = usersRepository;
             _UserManager = userManager;
             _roleManager = roleManager;
-            _userStore = userStore;
+            _rtpCommons = rtpRepoistory;
+            _rtpusers = rtpusers;
         }
         private IdentityUser CreateUser()
         {
@@ -65,9 +69,13 @@ namespace Basecode.Services.Services
             try
             {
                 var teacherToRegister = _Mapper.Map<TeacherRegistration>(teacher);
-                var userPortal = _Mapper.Map<UsersPortal>(teacher);
+                var userPortal = _Mapper.Map<UsersPortal>(teacher); 
+                var rtpCommons = _Mapper.Map<RTPCommons>(teacher);                
+                var uid =_UsersRepository.AddUser(userPortal);
+                rtpCommons.UID = uid;
+                teacherToRegister.UserPortalID = uid;              
                 _TeacherRepository.AddTeacherRegistration(teacherToRegister);
-                _UsersRepository.AddUser(userPortal);
+                _rtpCommons.addRTPCommons(rtpCommons);                
             }
             catch (Exception ex)
             {
@@ -75,26 +83,34 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
-        public async void ApproveTeacherRegistration(int id)
+        public async Task ApproveTeacherRegistration(int id)
         {
             try
             {
-                var teacher = _TeacherRepository.GetTeacherRegistration(id);
-                var user = CreateUser();
+                var teacher = _TeacherRepository.GetTeacherRegistration(id);                
+                var rtpCommons = _rtpCommons.GetRTPCommonsByUID(teacher.UserPortalID);
+                var rtpusers = new RTPUsers();
+                rtpusers.RTPId = rtpCommons.Id;
+                var teacherUser = new IdentityUser
+                {
+                    UserName = teacher.Email, // Set the teacher's email address
+                    Email = teacher.Email
+                    // Add other properties as needed
+                };                
 
-                await _userStore.SetUserNameAsync(user, teacher.Email, CancellationToken.None);
-                var result = await _UserManager.CreateAsync(user, teacher.Password);
+                var result = await _UserManager.CreateAsync(teacherUser, teacher.Password);
                 if(result.Succeeded)
                 {
                     var userRole = _roleManager.FindByNameAsync("Teacher").Result;
-
+                    rtpusers.AspUserId = teacherUser.Id;
                     if (userRole != null)
-                        await _UserManager.AddToRoleAsync(user, userRole.Name);
+                        await _UserManager.AddToRoleAsync(teacherUser, userRole.Name);
                     _TeacherRepository.RemoveTeacherRegistration(id);
+                    _rtpusers.AddRTPUsers(rtpusers);
                 }
                 else
                 {
-                    throw new Exception("Registration of the teacher failed!");
+                    throw new Exception(result.Errors.ToString());
                 }
             }
             catch (Exception ex)
@@ -122,6 +138,18 @@ namespace Basecode.Services.Services
             try
             {
                 return await _TeacherRepository.GetAllTeachersInitViewAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public List<TeacherRegistrarionViewModel> GetAllTeacherRegistration()
+        {
+            try
+            {
+                return _TeacherRepository.GetAllTeacherApplicants();
             }
             catch (Exception ex)
             {

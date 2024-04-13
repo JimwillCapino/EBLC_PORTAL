@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Globalization;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 //using System.Web.Mvc;
 
 namespace Basecode_WebApp.Controllers
@@ -19,20 +20,27 @@ namespace Basecode_WebApp.Controllers
     [Authorize(Roles = "Registrar")]
     public class RegistrarController : Controller
     {
+        private bool succededOperation = true;
+        private string ErrorMessage;
         private INewEnrolleeService _newEnrolleeService;
         private ITeacherService _teacherService;
         private ISubjectService _subjectService;
         private IClassManagementService _classManagementService;
         private IStudentManagementService _studentManagementService;
         private ISettingsService _settingsService;        
-        private readonly IMapper _mapper;   
+        private readonly IMapper _mapper;
+        private readonly IUsersService _usersService;
+        private readonly UserManager<IdentityUser> _userManager;
         public RegistrarController(INewEnrolleeService newEnrolleeService,
             ITeacherService teacherService,
             ISubjectService subjectService,
             IClassManagementService classManagementService,
             IStudentManagementService studentManagementService,
             ISettingsService settingsService,           
-            IMapper mapper) 
+            IMapper mapper,
+            IUsersService usersService,
+            UserManager<IdentityUser> userManager
+            ) 
         { 
             _newEnrolleeService = newEnrolleeService;
             _teacherService = teacherService;
@@ -41,6 +49,8 @@ namespace Basecode_WebApp.Controllers
             _studentManagementService = studentManagementService;
             _settingsService = settingsService;                 
             _mapper = mapper;
+            _usersService = usersService;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
@@ -656,6 +666,98 @@ namespace Basecode_WebApp.Controllers
                 ViewBag.Success = false;
                 Console.WriteLine(ex);
                 return RedirectToAction("Index");
+            }
+        }
+        public IActionResult TeacherRegistration()
+        {
+            try
+            {
+                return View(_teacherService.GetAllTeacherRegistration());
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+
+        }
+        public IActionResult RejectTeacherRegistration(int id)
+        {
+            try
+            {
+                _teacherService.RejectTeacherRegistration(id);
+                return RedirectToAction("TeacherRegistration");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public async Task<IActionResult> AcceptTeacherRegistration(int id)
+        {
+            try
+            {
+                await _teacherService.ApproveTeacherRegistration(id);
+                return RedirectToAction("TeacherRegistration");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public  async Task<IActionResult> Profile()
+        {
+            try
+            {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
+                return View(await _usersService.GetUserPortal(_userManager.GetUserId(User)));
+            }
+            catch (Exception ex)
+            {                
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdatePorfile(ProfileViewModel profile)
+        {
+            try
+            {
+                await _usersService.UpdateUserProfile(profile);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Profile Updated Successfully!";
+
+                return RedirectToAction("Profile");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("Profile");
+            }
+        }
+        public async Task<IActionResult> ChangePassword(ProfileViewModel profile)
+        {
+            try
+            {
+                await _usersService.ChangePassword(profile);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Passoword changed successfully!";
+                return RedirectToAction("Profile");
+            }
+            catch (Exception ex)
+            {   
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("Profile");
             }
         }
     }

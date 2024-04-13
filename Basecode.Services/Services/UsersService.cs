@@ -1,7 +1,10 @@
-﻿using Basecode.Data;
+﻿using AutoMapper;
+using Basecode.Data;
 using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 using Basecode.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +16,18 @@ namespace Basecode.Services.Services
     public class UsersService: IUsersService 
     {
         IUsersRepository _userRepository;
-        public UsersService(IUsersRepository userRepository)
+        IMapper _mapper;
+        IRTPRepository _rtpRepository;
+        UserManager<IdentityUser> _userManager;
+        public UsersService(IUsersRepository userRepository,
+            IMapper mapper,
+            UserManager<IdentityUser> userManager,
+            IRTPRepository rtpRepository)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
+            _userManager = userManager;
+            _rtpRepository = rtpRepository;
         }
         public int AddUser(UsersPortal user) 
         {
@@ -48,6 +60,72 @@ namespace Basecode.Services.Services
             try
             {
                 return _userRepository.GetUserById(id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public async Task UpdateUserProfile(ProfileViewModel profile)
+        {
+            try
+            {
+                var userPortal =  _mapper.Map<UsersPortal>(profile);
+                var rtpCommons = _mapper.Map<RTPCommons>(profile);
+
+                rtpCommons.Id = profile.RTPCommonsId;
+                var user = await _userManager.FindByIdAsync(profile.AspUserId);
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                await _userManager.ChangeEmailAsync(user, profile.Email, token);
+                if(profile.ProfilePicRecieve != null)
+                {
+                    using(MemoryStream stream = new MemoryStream()) 
+                    {
+                        profile.ProfilePicRecieve.CopyTo(stream);
+                        userPortal.ProfilePic = stream.ToArray();
+                    }
+                }
+                else
+                {
+                    userPortal.ProfilePic = profile.ProfilePic;
+                }
+                await _userRepository.UpdateUserPortal(userPortal);
+                await _rtpRepository.UpdateCommonsAsync(rtpCommons);               
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public async Task ChangePassword(ProfileViewModel profile)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(profile.AspUserId);
+                var changePasswordResult = _userManager.ChangePasswordAsync(user, profile.CurrentPassword, profile.NewPassword).Result;
+                if(!changePasswordResult.Succeeded)
+                {
+                    string errors = "";
+                    foreach(var error in changePasswordResult.Errors)
+                    {
+                        errors += error.Description+" ";
+                    }
+                    throw new Exception(errors);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception(e.Message);
+            }
+        }
+        public async Task<ProfileViewModel> GetUserPortal(string AspUserId)
+        {
+            try
+            {
+                return await _userRepository.GetUserPortal(AspUserId);
             }
             catch (Exception e)
             {

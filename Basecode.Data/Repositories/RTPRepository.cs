@@ -79,5 +79,22 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
+        public Task UpdateCommonsAsync(RTPCommons commons)
+        {
+            return Task.Run(() => UpdateRTPCommons(commons));
+        }
+        public void UpdateRTPCommons(RTPCommons commons)
+        {
+            try
+            {
+                _context.RTPCommons.Update(commons);
+                _context.SaveChanges();              
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }
