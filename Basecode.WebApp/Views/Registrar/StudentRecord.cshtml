@@ -5,8 +5,9 @@
 @{
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
-    
+    int successValue = (int)ViewData["Success"];
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model List<StudentViewModel>
 
@@ -19,10 +20,32 @@
                 Student Record
             </h1>
         </div>
+        @if (successValue == 0)
+        {
+            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-exclamation-octagon-fill"></i>
+                <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+        }
+        else if (successValue == 1)
+        {
+            <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-check-circle-fill"></i>
+                <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @{
+            Constants.ViewDataErrorHandling.Success = -1;
+            Constants.ViewDataErrorHandling.ErrorMessage = null;
+        }
         <div class="container rounded mt-4 bg-white p-md-5">
             <div class="row">
                 <div class="col">
                     <div class="h2 font-weight-bold"></div>
+                    <a asp-action="AddNewEnrollee"><button type="button" class="btn btn-outline-danger">Add Student</button></a>
                 </div>
                 <div class="col-md-6 d-flex justify-content-end">
                     <div class="input-group rounded w-50">

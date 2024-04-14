@@ -64,7 +64,7 @@ namespace Basecode.Services.Services
 
                 //Add Parents Detail to the Parents Table
                 parentDetails.UID = id;                
-                var parentid = _parentService.AddParent(parentDetails, "Not Enrolled");
+                var parentid = _parentService.AddParent(parentDetails);
 
                 //Add another info to the RTPCommons table
                 rtpcommons.UID = id;
@@ -75,8 +75,9 @@ namespace Basecode.Services.Services
                     && (student.CGMFile == null && student.CGMFile.Length == 0)
                     && (student.TORFile == null && student.TORFile.Length == 0))
                 {
-                    Console.WriteLine("File empty");
-                    throw new Exception(Constants.Attachment.FileEmpty);
+                    enrollee.BirthCertificate = null;
+                    enrollee.CGM = null;
+                    enrollee.TOR = null;
                 }
                 else
                 {
@@ -113,14 +114,11 @@ namespace Basecode.Services.Services
                     {
                         student.TORFile.CopyTo(torMemory);
                         enrollee.TOR = torMemory.ToArray();
-                    }
-
-                enrollee.ParentID = parentid;
-                    if (!_repository.RegisterStudent(enrollee))
-                        throw new Exception(Constants.Exception.DB);
-
-                }          
-
+                    }              
+                }
+               enrollee.ParentID = parentid;
+               if (!_repository.RegisterStudent(enrollee))
+                   throw new Exception(Constants.Exception.DB);
         }
         public IEnumerable<RegisterStudent> GetAllEnrollees()
         {

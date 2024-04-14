@@ -31,6 +31,7 @@ namespace Basecode_WebApp.Controllers
         private readonly IMapper _mapper;
         private readonly IUsersService _usersService;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IStudentService _studentService;
         public RegistrarController(INewEnrolleeService newEnrolleeService,
             ITeacherService teacherService,
             ISubjectService subjectService,
@@ -39,7 +40,8 @@ namespace Basecode_WebApp.Controllers
             ISettingsService settingsService,           
             IMapper mapper,
             IUsersService usersService,
-            UserManager<IdentityUser> userManager
+            UserManager<IdentityUser> userManager,
+            IStudentService studentService
             ) 
         { 
             _newEnrolleeService = newEnrolleeService;
@@ -51,6 +53,7 @@ namespace Basecode_WebApp.Controllers
             _mapper = mapper;
             _usersService = usersService;
             _userManager = userManager;
+            _studentService = studentService;
         }
         public IActionResult Index()
         {
@@ -60,6 +63,8 @@ namespace Basecode_WebApp.Controllers
         {
             try
             {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
                 var studentList = _studentManagementService.GetAllStudents();
                 return View(studentList);
             }
@@ -758,6 +763,35 @@ namespace Basecode_WebApp.Controllers
                 Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
                 return RedirectToAction("Profile");
+            }
+        }
+        public IActionResult AddNewEnrollee()
+        {
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {                
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public IActionResult AddNewStudent(RegisterStudent newStudent)
+        {
+            try
+            {
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully added new student!";
+                _studentService.AddStudent(newStudent);
+                return RedirectToAction("StudentRecord");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("StudentRecord");
             }
         }
     }

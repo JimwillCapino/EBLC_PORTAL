@@ -1,0 +1,96 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+
+@using Basecode.Data.Models
+@model RegisterStudent
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main p-5">
+        <form asp-action="AddNewStudent">
+            <h2>Student Information</h2>
+            <div class="row">
+                <div class="form-group col">
+                    <label for="inputEmail4">First Name</label>
+                    <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="FirstName">
+                </div>
+                <div class="form-group col">
+                    <label for="inputPassword4">Middle Name</label>
+                    <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="MiddleName">
+                </div>
+                <div class="form-group col">
+                    <label for="inputPassword4">Last Name</label>
+                    <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="LastName">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col">
+                    <label for="inputEmail4">Birthday</label>
+                    <input type="date" class="form-control" id="inputEmail4" placeholder="" asp-for="Birthday">
+                </div>
+                <div class="form-group col">
+                    <label for="inputState">Sex</label>
+                    <select id="inputState" class="form-control" asp-for="sex">
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                </div>
+                <div class="form-group col">
+                    <label for="inputEmail4">Grade to Enroll</label>
+                    <input type="number" class="form-control" id="inputEmail4" placeholder="" asp-for="GradeEnrolled">
+                </div>
+            </div>
+            <h2 class="mt-4">Guardian Information</h2>
+            <div class="row">
+                <div class="form-group col">
+                    <label for="inputEmail4">First Name</label>
+                    <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="ParentFirstName">
+                </div>
+                <div class="form-group col">
+                    <label for="inputPassword4">Middle Name</label>
+                    <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="ParentMiddleName">
+                </div>
+                <div class="form-group col">
+                    <label for="inputPassword4">Last Name</label>
+                    <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="ParentLastName">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col">
+                    <label for="inputEmail4">Phone Number</label>
+                    <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="PhoneNumber">
+                </div>
+                <div class="form-group col">
+                    <label for="inputEmail4">Birthday</label>
+                    <input type="date" class="form-control" id="inputEmail4" placeholder="" asp-for="ParentBirthday">
+                </div>
+                <div class="form-group col">
+                    <label for="inputPassword4">Address</label>
+                    <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="Address">
+                </div>                           
+            </div>
+            <div class="row">
+                <div class="form-group col">
+                    <label for="inputPassword4">Email</label>
+                    <input type="email" class="form-control" id="inputEmail4" placeholder="" asp-for="Email">
+                </div>    
+                <div class="form-group col">
+                    <label for="inputPassword4">Sex</label>
+                    <select id="inputState" class="form-control" asp-for="Parentsex">
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-sm-5">
+                    <button type="submit" class="btn btn-outline-danger">Submit</button>
+                </div>              
+            </div>           
+        </form>
+    </div>
+</div>

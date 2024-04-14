@@ -141,8 +141,7 @@ namespace Basecode.Data.Repositories
                     ParentMiddleName = userParent.MiddleName,
                     PhoneNumber = rtpCommons.PhoneNumber,
                     Email = parent.Email,
-                    Address = rtpCommons.Address,
-                    Gcash = parent.Gcash,
+                    Address = rtpCommons.Address,                    
                     ParentBirthday = userParent.Birthday,
                     Parentsex = userParent.sex,
                 };

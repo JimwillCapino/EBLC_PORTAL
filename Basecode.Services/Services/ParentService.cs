@@ -18,9 +18,8 @@ namespace Basecode.Services.Services
         {
             _parentRepository = parentRepository;
         }
-        public int AddParent(Parent parent, string status)
-        {
-            parent.status = status;
+        public int AddParent(Parent parent)
+        {            
             return _parentRepository.AddParent(parent);
         }
         public IEnumerable<Parent> GetAllParents()

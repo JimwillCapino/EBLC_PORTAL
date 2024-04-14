@@ -9,7 +9,7 @@ namespace Basecode.Services.Interfaces
 {
     public interface IParentService
     {
-        public int AddParent(Parent parent, string status);
+        public int AddParent(Parent parent);
         public IEnumerable<Parent> GetAllParents();
         public void RemoveParent(Parent parent);
         public Parent GetParentById(int id);
