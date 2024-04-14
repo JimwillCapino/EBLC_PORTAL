@@ -14,6 +14,6 @@ namespace Basecode.Data.Interfaces
         public IEnumerable<Parent> GetAllParents();
         public void RemoveParent(Parent parent);
         public Parent GetParentById(int id);
-        public ParentDetails GetParentDetailById(int studentId);
+        public  Task<ParentDetails> GetParentDetailById(int studentId);
     }
 }

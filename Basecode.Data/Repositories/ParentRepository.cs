@@ -1,6 +1,7 @@
 ﻿using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
 using Basecode.Data.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System;
 using System.Collections.Generic;
@@ -66,14 +67,14 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
-        public ParentDetails GetParentDetailById(int studentId)
+        public async Task<ParentDetails> GetParentDetailById(int studentId)
         {
             try
             {
-                var student = _context.Student.Find(studentId);
-                var parent = _context.Parent.Find(student.ParentId);
-                var parentUserPortal = _context.UsersPortal.Find(parent.UID);
-                var rtpCommons = _context.RTPCommons.FirstOrDefault(p => p.UID == parent.UID);
+                var student = await _context.Student.FindAsync(studentId);
+                var parent = await _context.Parent.FindAsync(student.ParentId);
+                var parentUserPortal = await _context.UsersPortal.FindAsync(parent.UID);
+                var rtpCommons = await _context.RTPCommons.FirstOrDefaultAsync(p => p.UID == parent.UID);
                 var parentDetails = new ParentDetails()
                 {
                     UID = parent.UID,

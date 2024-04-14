@@ -52,11 +52,11 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
-        public ParentDetails GetParentDetailsById(int studentId)
+        public async Task<ParentDetails> GetParentDetailsById(int studentId)
         {
             try
             {
-                return _parentRepository.GetParentDetailById(studentId);
+                return await _parentRepository.GetParentDetailById(studentId);
             }
             catch (Exception ex)
             {

@@ -145,7 +145,7 @@ namespace Basecode.Services.Services
 
                 student.TotalHeadSubjectCount = unionHeadSubject.Count();
                 student.SchoolYear = school_year;
-                student.Parent = _parentRepository.GetParentDetailById(student_Id);
+                student.Parent = await _parentRepository.GetParentDetailById(student_Id);
                 return student;
             }
             catch
