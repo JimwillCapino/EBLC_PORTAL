@@ -1,5 +1,6 @@
 ﻿using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,36 @@ namespace Basecode.Data.Repositories
             catch (Exception ex)
             {
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+        }
+        public ParentDetails GetParentDetailById(int studentId)
+        {
+            try
+            {
+                var student = _context.Student.Find(studentId);
+                var parent = _context.Parent.Find(student.ParentId);
+                var parentUserPortal = _context.UsersPortal.Find(parent.UID);
+                var rtpCommons = _context.RTPCommons.FirstOrDefault(p => p.UID == parent.UID);
+                var parentDetails = new ParentDetails()
+                {
+                    UID = parent.UID,
+                    ParentId = parent.Id,
+                    RTPCommonsId = rtpCommons.Id,
+                    ParentFirstName = parentUserPortal.FirstName,
+                    ParentMiddleName = parentUserPortal.MiddleName,
+                    ParentLastName = parentUserPortal.LastName,
+                    ParentBirthday = parentUserPortal.Birthday,
+                    Parentsex = parentUserPortal.sex,
+                    PhoneNumber = rtpCommons.PhoneNumber,
+                    Address = rtpCommons.Address,
+                    Email = parent.Email
+                };
+                return parentDetails;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw new Exception(ex.ToString());
             }
         }
     }
