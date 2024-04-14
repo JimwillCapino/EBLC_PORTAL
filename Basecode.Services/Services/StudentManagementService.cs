@@ -21,17 +21,20 @@ namespace Basecode.Services.Services
         private readonly ISettingsRepository _settingsRepository;
         private readonly ISubjectRepository _subjectRepository;
         private readonly IClassManagementRepository _classManagementRepository;
+        private readonly IParentRepository _parentRepository;
         public StudentManagementService(IStudentManagementRepository studentManagementRepository,
             IStudentRepository studentRepository,
             ISettingsRepository settings,
             ISubjectRepository subjectRepository,
-            IClassManagementRepository classManagementRepository) 
+            IClassManagementRepository classManagementRepository,
+            IParentRepository parentRepository) 
         {
             _studentManagementRepository = studentManagementRepository;
             _studentRepository = studentRepository;
             _settingsRepository = settings;
             _subjectRepository = subjectRepository;
             _classManagementRepository = classManagementRepository;
+            _parentRepository = parentRepository;
         }
         public GradesDetail GetStudentGradeBySubject(int student_Id, int subject_Id)
         {
@@ -142,6 +145,7 @@ namespace Basecode.Services.Services
 
                 student.TotalHeadSubjectCount = unionHeadSubject.Count();
                 student.SchoolYear = school_year;
+                student.Parent = _parentRepository.GetParentDetailById(student_Id);
                 return student;
             }
             catch

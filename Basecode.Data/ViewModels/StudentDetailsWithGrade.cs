@@ -19,5 +19,6 @@ namespace Basecode.Data.ViewModels
         public List<Learners_Values_Report> learnersValues { get; set; }
         public AttendanceContainer StudentAttendance { get; set; }
         public string SchoolYear { get; set; }
+        public ParentDetails Parent { get; set; }
     }
 }
