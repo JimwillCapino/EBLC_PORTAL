@@ -137,7 +137,8 @@ namespace Basecode.Data.Repositories
                     age = DateTime.Now.Year - userstudent.Birthday.Year,
                     lrn = student.LRN,
                     Status = student.status,
-                    Grade = student.CurrGrade
+                    Grade = student.CurrGrade,
+                    Birthday = userstudent.Birthday
                 };
                 return studentdetails;
             }
@@ -584,5 +585,6 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        
     }
 }

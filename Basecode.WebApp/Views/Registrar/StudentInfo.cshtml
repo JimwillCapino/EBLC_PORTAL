@@ -6,6 +6,9 @@
     Layout = "~/Views/Shared/NoLayout.cshtml";
     double avg = 0;
     int monthIdx = 1;
+    var parentsex = "";
+    if (Model.Parent.Parentsex == "F") parentsex = "Female";
+    else parentsex = "Male";
 }
 @using Basecode.Data.ViewModels
 @model StudentDetailsWithGrade
@@ -41,6 +44,39 @@
                             <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear="@Model.SchoolYear" asp-route-documentType="1"><button type="button" class="btn btn-danger">Form-138</button></a>
                             <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear ="@Model.SchoolYear" asp-route-documentType="0"><button type="button" class="btn btn-outline-danger ms-1">Report Card</button></a>
                         </div>
+                    </div>
+                </div>
+                                <div class="card mb-4 mb-lg-0">
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush rounded-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <p class="lead">Parents/Guardian Information</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-hands-holding-child"></i>
+                                <p class="mb-0">@Model.Parent.ParentFirstName @Model.Parent.ParentMiddleName, @Model.Parent.ParentLastName</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-phone" style="color:#555555;"></i>
+                                <p class="mb-0">@Model.Parent.PhoneNumber</p>
+                            </li>                            
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-location-dot fa-lg" style="color: #ac2bac;"></i>
+                                <p class="mb-0">@Model.Parent.Address</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-regular fa-envelope fa-lg" style="color: #3b5998;"></i>
+                                <p class="mb-0">@Model.Parent.Email</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-cake-candles fa-lg" style="color: #3b5998;"></i>
+                                <p class="mb-0">@Model.Parent.ParentBirthday.ToLongDateString()</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-venus-mars fa-lg" style="color: #3b5998;"></i>
+                                <p class="mb-0">@parentsex</p>
+                            </li>
+                        </ul>
                     </div>
                 </div>
               </div>

@@ -3,6 +3,7 @@ using AutoMapper;
 using Basecode.Data;
 using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 using Basecode.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -81,7 +82,7 @@ namespace Basecode.Services.Services
                 {
                     UID = studentUID,
                     CurrGrade = newStudent.GradeEnrolled,
-                    LRN = null,
+                    LRN = newStudent.LRN,
                     ParentId = parentId,
                     status = "not enrolled",
                 };
@@ -92,6 +93,6 @@ namespace Basecode.Services.Services
                 Console.WriteLine(ex);
                 throw new Exception(Constants.Exception.DB);
             }
-        }
+        }       
     }
 }

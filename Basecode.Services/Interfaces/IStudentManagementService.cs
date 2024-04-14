@@ -32,5 +32,7 @@ namespace Basecode.Services.Interfaces
         public AttendanceContainer GetStudentAttendance(int studentId, string schoolYear);
         public void UpdateAttendance(int id, int studentId, int Days_of_School, int Days_of_Present, int Time_of_Tardy, string month);
         public Task<Form137Container> GetStudentForm137(int studentId);
+        public Task UpdateStudentDetails(StudentDetailsWithGrade studentDetails);
+        public Task<StudentDetailsContainer> GetStudentDetails(int studentId);
     }
 }

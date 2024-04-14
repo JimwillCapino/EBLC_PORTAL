@@ -1,5 +1,6 @@
 ﻿using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,26 @@ namespace Basecode.Data.Repositories
                 return  _context.Student.Find(id);
             }
             catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public Task UpdateStudentAsync(Student student)
+        {
+           
+             return Task.Run(() => UpdateStudent(student));
+            
+        }
+
+        public void UpdateStudent(Student student)
+        {
+            try
+            {
+                _context.Student.Update(student);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 throw;

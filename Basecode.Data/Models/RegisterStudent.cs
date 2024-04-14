@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -11,26 +12,43 @@ namespace Basecode.Data.Models
     public class RegisterStudent
     {
         public int Id { get; set; }
+        [Required(ErrorMessage = "First Name is Required.")]
         public string FirstName { get; set; }
+        [Required(ErrorMessage = "Middle Name is Required.")]
         public string MiddleName { get; set; }
+        [Required(ErrorMessage = "Last Name is Required.")]
         public string LastName { get; set;}
+        [Required(ErrorMessage = "First Name is Required.")]
         public DateTime Birthday { get; set; }
         public IFormFile? BirthCertificateFile { get; set; }
+        [Required(ErrorMessage = "Gender is Required.")]
         public string sex { get; set; }
-        public  int GradeEnrolled { get; set; } 
+        [Required(ErrorMessage = "Grade is Required.")]
+        public  int GradeEnrolled { get; set; }        
+        public string? LRN { get; set; }
         public IFormFile? CGMFile { get; set; }
         public IFormFile? TORFile { get; set; }
         public byte[]? BirthCertificateRecieve { get; set; }
         public byte[]? CGMRecieve { get; set; }
         public byte[]? TORRecieve { get; set; }
         public DateTime? ExamSchedule { get; set; }
+        [Required(ErrorMessage = "First Name is Required.")]
         public string ParentFirstName { get; set; }
+        [Required(ErrorMessage = "Middle Name is Required.")]
         public string ParentMiddleName { get; set; }
+        [Required(ErrorMessage = "Last Name is Required.")]
         public string ParentLastName { get; set; }
-        public string PhoneNumber { get; set; }      
+        [Required(ErrorMessage = "Phone number is Required.")]
+        [StringLength(11)]
+        public string PhoneNumber { get; set; }
+        [Required(ErrorMessage = "Address is Required.")]
         public string Address { get; set; }
+        [Required(ErrorMessage = "Email is Required.")]
+        [EmailAddress]
         public string Email { get; set; }
+        [Required(ErrorMessage = "Birthday is Required.")]
         public DateTime ParentBirthday { get; set; }
+        [Required(ErrorMessage = "Gender is Required.")]
         public string Parentsex { get; set; }                  
     }
 }

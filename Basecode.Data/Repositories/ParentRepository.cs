@@ -97,5 +97,18 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.ToString());
             }
         }
+        public async Task UpdateParentAsyn(Parent parent)
+        {
+            try
+            {
+                _context.Parent.Update(parent);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw new Exception(ex.ToString());
+            }
+        }
     }
 }

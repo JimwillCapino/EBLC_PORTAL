@@ -17,22 +17,27 @@
                     Enter Student Details
                 </div>
                 <div class="card-body p-4">
-                    <form role="form" class="row">
+                    <form role="form" class="row" asp-action="AddNewStudent">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group col-lg-4">
                             <label for="inputEmail4">First Name</label>
                             <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="FirstName">
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputPassword4">Middle Name</label>
                             <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="MiddleName">
+                            <span asp-validation-for="MiddleName" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputPassword4">Last Name</label>
                             <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="LastName">
+                            <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputEmail4">Birthday</label>
                             <input type="date" class="form-control" id="inputEmail4" placeholder="" asp-for="Birthday">
+                            <span asp-validation-for="Birthday" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputState">Sex</label>
@@ -40,39 +45,53 @@
                                 <option value="M">Male</option>
                                 <option value="F">Female</option>
                             </select>
+                            <span asp-validation-for="sex" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputEmail4">Grade to Enroll</label>
                             <input type="number" class="form-control" id="inputEmail4" placeholder="" asp-for="GradeEnrolled">
+                            <span asp-validation-for="GradeEnrolled" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputPassword4">LRN</label>
+                            <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="LRN">
+                            <span asp-validation-for="LRN" class="text-danger"></span>
                         </div>
                         <h3 class="mt-4">Guardian Information</h3>
                         <div class="form-group col-lg-4">
                             <label for="inputEmail4">First Name</label>
                             <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="ParentFirstName">
+                            <span asp-validation-for="ParentFirstName" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputPassword4">Middle Name</label>
                             <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="ParentMiddleName">
+                            <span asp-validation-for="ParentMiddleName" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputPassword4">Last Name</label>
                             <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="ParentLastName">
+                            <span asp-validation-for="ParentLastName" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputEmail4">Birthday</label>
                             <input type="date" class="form-control" id="inputEmail4" placeholder="" asp-for="ParentBirthday">
+                            <span asp-validation-for="ParentBirthday" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputEmail4">Phone Number</label>
                             <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="PhoneNumber">
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputPassword4">Address</label>
                             <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="Address">
+                            <span asp-validation-for="Address" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputPassword4">Email</label>
                             <input type="email" class="form-control" id="inputEmail4" placeholder="" asp-for="Email">
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputPassword4">Sex</label>
@@ -80,94 +99,19 @@
                                 <option value="M">Male</option>
                                 <option value="F">Female</option>
                             </select>
+                            <span asp-validation-for="Parentsex" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-12">
                             <button type="submit" class="btn btn-warning float-end mt-2" for="form-group-input">Submit</button>
                         </div>
                     </form>
+                    @section Scripts {
+                        @{
+                            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+                        }
+                    }
                 </div>
             </div>
-        </div>
-       @*  <form asp-action="AddNewStudent">
-            <h2>Student Information</h2>
-            <div class="row">
-                <div class="form-group col">
-                    <label for="inputEmail4">First Name</label>
-                    <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="FirstName">
-                </div>
-                <div class="form-group col">
-                    <label for="inputPassword4">Middle Name</label>
-                    <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="MiddleName">
-                </div>
-                <div class="form-group col">
-                    <label for="inputPassword4">Last Name</label>
-                    <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="LastName">
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col">
-                    <label for="inputEmail4">Birthday</label>
-                    <input type="date" class="form-control" id="inputEmail4" placeholder="" asp-for="Birthday">
-                </div>
-                <div class="form-group col">
-                    <label for="inputState">Sex</label>
-                    <select id="inputState" class="form-control" asp-for="sex">
-                        <option value="M">Male</option>
-                        <option value="F">Female</option>
-                    </select>
-                </div>
-                <div class="form-group col">
-                    <label for="inputEmail4">Grade to Enroll</label>
-                    <input type="number" class="form-control" id="inputEmail4" placeholder="" asp-for="GradeEnrolled">
-                </div>
-            </div>
-            <h2 class="mt-4">Guardian Information</h2>
-            <div class="row">
-                <div class="form-group col">
-                    <label for="inputEmail4">First Name</label>
-                    <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="ParentFirstName">
-                </div>
-                <div class="form-group col">
-                    <label for="inputPassword4">Middle Name</label>
-                    <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="ParentMiddleName">
-                </div>
-                <div class="form-group col">
-                    <label for="inputPassword4">Last Name</label>
-                    <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="ParentLastName">
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col">
-                    <label for="inputEmail4">Phone Number</label>
-                    <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="PhoneNumber">
-                </div>
-                <div class="form-group col">
-                    <label for="inputEmail4">Birthday</label>
-                    <input type="date" class="form-control" id="inputEmail4" placeholder="" asp-for="ParentBirthday">
-                </div>
-                <div class="form-group col">
-                    <label for="inputPassword4">Address</label>
-                    <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="Address">
-                </div>                           
-            </div>
-            <div class="row">
-                <div class="form-group col">
-                    <label for="inputPassword4">Email</label>
-                    <input type="email" class="form-control" id="inputEmail4" placeholder="" asp-for="Email">
-                </div>    
-                <div class="form-group col">
-                    <label for="inputPassword4">Sex</label>
-                    <select id="inputState" class="form-control" asp-for="Parentsex">
-                        <option value="M">Male</option>
-                        <option value="F">Female</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col-sm-5">
-                    <button type="submit" class="btn btn-outline-danger">Submit</button>
-                </div>              
-            </div>           
-        </form> *@
+        </div>      
     </div>
 </div>

@@ -22,12 +22,16 @@ namespace Basecode.Services.Services
         private readonly ISubjectRepository _subjectRepository;
         private readonly IClassManagementRepository _classManagementRepository;
         private readonly IParentRepository _parentRepository;
+        private readonly IUsersRepository _usersRepository;
+        private readonly IRTPRepository _rtpRepository;
         public StudentManagementService(IStudentManagementRepository studentManagementRepository,
             IStudentRepository studentRepository,
             ISettingsRepository settings,
             ISubjectRepository subjectRepository,
             IClassManagementRepository classManagementRepository,
-            IParentRepository parentRepository) 
+            IParentRepository parentRepository,
+            IUsersRepository usersRepository,
+            IRTPRepository rtpRepository) 
         {
             _studentManagementRepository = studentManagementRepository;
             _studentRepository = studentRepository;
@@ -35,6 +39,8 @@ namespace Basecode.Services.Services
             _subjectRepository = subjectRepository;
             _classManagementRepository = classManagementRepository;
             _parentRepository = parentRepository;
+            _usersRepository = usersRepository;
+            _rtpRepository = rtpRepository;
         }
         public GradesDetail GetStudentGradeBySubject(int student_Id, int subject_Id)
         {
@@ -147,6 +153,20 @@ namespace Basecode.Services.Services
                 student.SchoolYear = school_year;
                 student.Parent = await _parentRepository.GetParentDetailById(student_Id);
                 return student;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public async Task<StudentDetailsContainer> GetStudentDetails(int studentId)
+        {
+            try
+            {
+                var studentDetails = new StudentDetailsContainer();
+                studentDetails.Student = _studentManagementRepository.GetStudent(studentId);
+                studentDetails.Parent = await _parentRepository.GetParentDetailById(studentId);
+                return studentDetails;
             }
             catch
             {
@@ -422,6 +442,49 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
+        public async Task UpdateStudentDetails(StudentDetailsWithGrade studentDetails)
+        {
+            try
+            {
+                var student = _studentRepository.GetStudent(studentDetails.Student.Student_ID);
+                var studentUserPortal = _usersRepository.GetUserById(student.UID);
+                var parent = _parentRepository.GetParentById(student.ParentId);
+                var parentUserPortal = _usersRepository.GetUserById(parent.UID);
+                var parentRTP = _rtpRepository.GetRTPCommonsByUID(parent.UID);
 
+                studentUserPortal.FirstName = studentDetails.Student.FirstName;
+                studentUserPortal.MiddleName = studentDetails.Student.MiddleName;
+                studentUserPortal.LastName = studentDetails.Student.LastName;
+                studentUserPortal.Birthday = studentDetails.Student.Birthday;
+                studentUserPortal.sex = studentDetails.Student.sex;
+                studentUserPortal.ProfilePic = studentDetails.Student.profilePicture;
+
+                student.LRN = studentDetails.Student.lrn;
+                student.status = studentDetails.Student.Status;
+                student.CurrGrade = studentDetails.Student.Grade;
+
+                await _usersRepository.UpdateUserPortal(studentUserPortal);
+                await _studentRepository.UpdateStudentAsync(student);
+
+                parent.Email = studentDetails.Parent.Email;
+                parentRTP.Address = studentDetails.Parent.Address;
+                parentRTP.PhoneNumber = studentDetails.Parent.PhoneNumber;
+
+                parentUserPortal.FirstName = studentDetails.Parent.ParentFirstName;
+                parentUserPortal.MiddleName = studentDetails.Parent.ParentMiddleName;
+                parentUserPortal.LastName = studentDetails.Parent.ParentLastName;
+                parentUserPortal.Birthday = studentDetails.Parent.ParentBirthday;
+                parentUserPortal.sex = studentDetails.Parent.Parentsex;
+
+                await _usersRepository.UpdateUserPortal(parentUserPortal);
+                await _parentRepository.UpdateParentAsyn(parent);
+                await _rtpRepository.UpdateCommonsAsync(parentRTP);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
     }
 }

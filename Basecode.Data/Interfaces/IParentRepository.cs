@@ -15,5 +15,6 @@ namespace Basecode.Data.Interfaces
         public void RemoveParent(Parent parent);
         public Parent GetParentById(int id);
         public  Task<ParentDetails> GetParentDetailById(int studentId);
+        public Task UpdateParentAsyn(Parent parent);
     }
 }
