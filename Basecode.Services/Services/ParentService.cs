@@ -1,6 +1,7 @@
 ﻿using Basecode.Data;
 using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 using Basecode.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -44,6 +45,18 @@ namespace Basecode.Services.Services
             try
             {
                 return _parentRepository.GetParentById(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public ParentDetails GetParentDetailsById(int studentId)
+        {
+            try
+            {
+                return _parentRepository.GetParentDetailById(studentId);
             }
             catch (Exception ex)
             {
