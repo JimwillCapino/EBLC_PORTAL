@@ -78,7 +78,9 @@ namespace Basecode_WebApp.Controllers
         public async Task<IActionResult> StudentInfo(int student_Id, string school_year)
         {
             try
-            {              
+            {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
                 if (school_year == null)
                 {
                     var schoolYear = _settingsService.GetSettings().StartofClass.Value.Year.ToString() + "-" +
@@ -785,6 +787,36 @@ namespace Basecode_WebApp.Controllers
                 Constants.ViewDataErrorHandling.ErrorMessage = "Successfully added new student!";
                 _studentService.AddStudent(newStudent);
                 return RedirectToAction("StudentRecord");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("StudentRecord");
+            }
+        }
+        public async Task<IActionResult> UpdateStudentDetailsPage(int studentId)
+        {
+            try
+            {
+                var studentContainer = await _studentManagementService.GetStudentDetails(studentId);
+                return View(studentContainer);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return RedirectToAction("StudentRecord");
+            }
+        }
+        public async Task<IActionResult> UpdateStudentDetails(StudentDetailsContainer studentDetails)
+        {
+            try
+            {
+                await _studentManagementService.UpdateStudentDetails(studentDetails);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully updated the student!";
+                return RedirectToAction("StudentInfo", new {  student_Id = studentDetails.Student.Student_ID });
             }
             catch (Exception ex)
             {

@@ -9,7 +9,9 @@
     var parentsex = "";
     if (Model.Parent.Parentsex == "F") parentsex = "Female";
     else parentsex = "Male";
+    int successValue = (int)ViewData["Success"];
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model StudentDetailsWithGrade
 <link rel="stylesheet" href="/css/TableInfo.css" />
@@ -17,7 +19,28 @@
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
-          <div class="row">
+        @if (successValue == 0)
+        {
+            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-exclamation-octagon-fill"></i>
+                <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+        }
+        else if (successValue == 1)
+        {
+            <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-check-circle-fill"></i>
+                <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @{
+            Constants.ViewDataErrorHandling.Success = -1;
+            Constants.ViewDataErrorHandling.ErrorMessage = null;
+        }
+        <div class="row">
             <div class="col-lg-4">
                 <div class="card mb-4">
                     <div class="card-body text-center">
@@ -41,12 +64,20 @@
                         }
 
                         <div class="d-flex justify-content-center mb-2">
-                            <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear="@Model.SchoolYear" asp-route-documentType="1"><button type="button" class="btn btn-danger">Form-138</button></a>
-                            <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear ="@Model.SchoolYear" asp-route-documentType="0"><button type="button" class="btn btn-outline-danger ms-1">Report Card</button></a>
+                            <a asp-action="UpdateStudentDetailsPage" asp-route-studentId="@Model.Student.Student_ID"><button type="button" class="btn btn-danger">Edit</button></a>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn btn-outline-danger ms-1 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                   Document
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">                             
+                                    <li> <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear="@Model.SchoolYear" asp-route-documentType="1"><button type="button" class="dropdown-item">Form-138</button></a></li>
+                                    <li><a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear="@Model.SchoolYear" asp-route-documentType="0"><button type="button" class="dropdown-item">Report Card</button></a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
-                                <div class="card mb-4 mb-lg-0">
+                <div class="card mb-4 mb-lg-0">
                     <div class="card-body p-0">
                         <ul class="list-group list-group-flush rounded-3">
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
@@ -284,8 +315,13 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </div>                   
                </div>
+                <div class="d-flex justify-content-center mb-2">
+                    
+                </div>
+                </div>
+                </div>
             </div>
           </div>
     </div>

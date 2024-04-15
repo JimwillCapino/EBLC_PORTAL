@@ -442,7 +442,7 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
-        public async Task UpdateStudentDetails(StudentDetailsWithGrade studentDetails)
+        public async Task UpdateStudentDetails(StudentDetailsContainer studentDetails)
         {
             try
             {
