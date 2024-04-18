@@ -486,5 +486,17 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
+        public IEnumerable<StudentPreviewInformation> GetStudentPreviewInformation()
+        {
+            try
+            {
+                return _studentManagementRepository.GetAllStudentPreview();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
     }
 }

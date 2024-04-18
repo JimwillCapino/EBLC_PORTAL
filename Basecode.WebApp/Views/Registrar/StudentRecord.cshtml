@@ -10,7 +10,81 @@
 @using Basecode.Data
 @using Basecode.Data.ViewModels
 @model List<StudentViewModel>
+<script>
+    $(document).ready(function () {
+        var table = $("#table").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": true, // for disable multiple column at once
+            "ajax": {
+                "url": "/Registrar/StudentRecordTest",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columnDefs": [{
+                "targets": [0],
+                "orderable": true
+            },
+            {
+                "targets": [1],
+                "orderable": true
+            },
+            {
+                "targets": [2],
+                "orderable": true
+            },
+            {
+                "targets": [3],
+                "orderable": true
+            },
+            {
+                "targets": [4],
+                "orderable": true
+            }],
 
+            "columns": [
+                { "data": "fullname", "name": "fullname" },
+                { "data": "status", "name": "status" },
+                { "data": "age", "name": "age" },
+                { "data": "lrn", "name": "lrn" },
+                { "data": "grade", "name": "grade" }
+            ]
+        });
+
+        $('#table tbody').on('click', 'tr', function () {
+            // Get data for the clicked row
+            var rowData = table.row(this).data();
+
+            // Redirect to another page with the row data
+            window.location.href = '@Url.Action("StudentInfo", "Registrar")?student_Id=' + rowData.studentid; // Adjust the URL as per your MVC route
+        });
+    });
+
+
+    function DeleteData(CustomerID) {
+        if (confirm("Are you sure you want to delete ...?")) {
+            Delete(CustomerID);
+        } else {
+            return false;
+        }
+    }
+
+
+    function Delete(CustomerID) {
+        var url = '@Url.Content("~/")' + "DemoGrid/Delete";
+
+        $.post(url, { ID: CustomerID }, function (data) {
+            if (data) {
+                oTable = $('#example').DataTable();
+                oTable.draw();
+            } else {
+                alert("Something Went Wrong!");
+            }
+        });
+    }
+
+</script>
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-3">
@@ -41,63 +115,23 @@
             Constants.ViewDataErrorHandling.Success = -1;
             Constants.ViewDataErrorHandling.ErrorMessage = null;
         }
-        <div class="container rounded mt-4 bg-white p-md-5">
-            <div class="row">
-                <div class="col">
-                    <div class="h2 font-weight-bold"></div>
-                    <a asp-action="AddNewEnrollee"><button type="button" class="btn btn-outline-danger">Add Student</button></a>
-                </div>
-                <div class="col-md-6 d-flex justify-content-end">
-                    <div class="input-group rounded w-50">
-                        <input type="search" onkeyup="myFunction()" id="myInput" class=" form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-                    </div>
-                </div>
-            </div>
-             
-            <div class="table-responsive">
-                
-                <table class="table" id="myTable">
+        <div class="container">
+            <br />
+            <div style="width:90%; margin:0 auto;">
+                <table id="table" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Age</th>
-                            <th scope="col">LRN</th>                           
+                            <th>Full Name</th>
+                            <th>Status</th>
+                            <th>Age</th>
+                            <th>LRN</th>
+                            <th>Grade</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(var student in Model)
-                        {
-                            <tr class="bg-blue" onclick="redirectToStudentInfo(@student.Student_ID)">
-                                <td class="pt-2">
-                                    <div class="pl-lg-5 pl-md-3 pl-1 name">@student.FirstName @student.MiddleName @student.LastName</div>
-                                </td>
-                                <td class="pt-3 mt-1">@student.Status</td>
-                                <td class="pt-3">@student.age</td>
-                                <td class="pt-3">@student.lrn</td>                          
-                            </tr>
-                            <tr id="spacing-row">
-                                <td></td>
-                            </tr>
-                        }                                          
                     </tbody>
                 </table>
-                <nav aria-label="...">
-                    <ul class="pagination pagination-lg justify-content-center">
-                        <li class="page-item" aria-current="page">
-                            <span class="page-link text-danger">1</span>
-                        </li>
-                        <li class="page-item "><a class="page-link text-danger" href="#">2</a></li>
-                        <li class="page-item "><a class="page-link text-danger" href="#">3</a></li>
-                    </ul>
-                </nav>
             </div>
         </div>
     </div>
 </div>
-<script>
-    function redirectToStudentInfo(student_Id)
-    {
-        window.location.href = '@Url.Action("StudentInfo", "Registrar")?student_Id=' + student_Id;
-    }  
-</script>

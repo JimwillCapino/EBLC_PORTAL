@@ -393,6 +393,33 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        public IEnumerable<StudentPreviewInformation> GetAllStudentPreview()
+        {
+            try
+            {
+                var user = this.GetDbSet<UsersPortal>();
+                var student = this.GetDbSet<Student>();
+
+                var studentlist = from u in user
+                                  join s in student
+                                  on u.UID equals s.UID
+                                  select new StudentPreviewInformation
+                                  {
+                                      studentid = s.Student_Id,
+                                      fullname = u.FirstName+ " "+u.MiddleName+" "+u.LastName,                                    
+                                      age = (DateTime.Today.Year - u.Birthday.Year),
+                                      lrn = s.LRN,
+                                      grade = s.CurrGrade,
+                                      status = s.status
+                                  };
+                return studentlist;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
         public List<Learners_Values_Report> GetLearnersValues()
         {
             try

@@ -34,5 +34,6 @@ namespace Basecode.Services.Interfaces
         public Task<Form137Container> GetStudentForm137(int studentId);
         public Task UpdateStudentDetails(StudentDetailsContainer studentDetails);
         public Task<StudentDetailsContainer> GetStudentDetails(int studentId);
+        public IEnumerable<StudentPreviewInformation> GetStudentPreviewInformation();
     }
 }

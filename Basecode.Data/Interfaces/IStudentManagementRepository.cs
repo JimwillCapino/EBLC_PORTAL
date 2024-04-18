@@ -37,5 +37,6 @@ namespace Basecode.Data.Interfaces
         public List<Attendance> GetStudentAtendance(int student_Id, string schoolYear);
         public bool isDateExisting(int month, string schoolYear);
         public List<string> GetAttendanceSchoolYear(int student_Id);
+        public IEnumerable<StudentPreviewInformation> GetAllStudentPreview();
     }
 }

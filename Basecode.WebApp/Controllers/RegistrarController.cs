@@ -826,5 +826,82 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("StudentRecord");
             }
         }
+        [HttpPost]
+        public IActionResult StudentRecordTest()
+        {
+            try
+            {
+                var draw = int.Parse(Request.Form["draw"]);
+                var start = int.Parse(Request.Form["start"]);
+                var length = int.Parse(Request.Form["length"]);
+                var searchValue = Request.Form["search[value]"];
+
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                // Sort Column Direction (asc, desc)  
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+
+                //Paging Size (10,25,50,100)  
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int recordsTotal = 0;
+
+                // Getting all Customer data  
+                var customerData = _studentManagementService.GetStudentPreviewInformation();
+
+                //Sorting
+                if(!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    if(sortColumn.Equals("fullname"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc"? customerData.OrderBy(p => p.fullname): 
+                            customerData.OrderByDescending(p => p.fullname);
+                    }
+                    else if(sortColumn.Equals("status"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.status) :
+                            customerData.OrderByDescending(p => p.status);
+                    }
+                    else if(sortColumn.Equals("age"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.age) :
+                           customerData.OrderByDescending(p => p.age);
+                    }
+                    else if(sortColumn.Equals("lrn"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.lrn) :
+                           customerData.OrderByDescending(p => p.lrn);
+                    }
+                    else if(sortColumn.Equals("grade"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.grade) :
+                          customerData.OrderByDescending(p => p.grade);
+                    }
+
+                }
+                //Search  
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    customerData = customerData.Where(m => m.fullname.ToLower().Contains(searchValue.ToString().ToLower())                   
+                     || m.grade.ToString().Equals(searchValue) || m.age.ToString().Equals(searchValue));
+                }
+
+                //total number of rows count   
+                recordsTotal = customerData.Count();
+                //Paging   
+                var data = customerData.Skip(skip).Take(pageSize).ToList();
+                //Returning Json Data  
+                var test = Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
+                return test;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+        public IActionResult TestDataTable()
+        {
+            return View();
+        }
     }
 }
