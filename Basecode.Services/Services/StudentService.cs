@@ -84,7 +84,7 @@ namespace Basecode.Services.Services
                     CurrGrade = newStudent.GradeEnrolled,
                     LRN = newStudent.LRN,
                     ParentId = parentId,
-                    status = "not enrolled",
+                    status = "Enrolled",
                 };
                 _studentRepository.AddStudent(student);
             }
@@ -93,6 +93,18 @@ namespace Basecode.Services.Services
                 Console.WriteLine(ex);
                 throw new Exception(Constants.Exception.DB);
             }
-        }       
+        }
+        public async Task UpdateStudentAsync(Student student)
+        {
+            try
+            {
+                 await _studentRepository.UpdateStudentAsync(student);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
     }
 }

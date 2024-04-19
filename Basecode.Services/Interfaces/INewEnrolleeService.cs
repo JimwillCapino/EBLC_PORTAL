@@ -18,6 +18,6 @@ namespace Basecode.Services.Interfaces
         public void AddSchedule(int id, DateTime Schedule);
         public void RemoveNewEnrollee(NewEnrollee enrollee);
         public void RejectNewEnrollee(int id);
-        public void AdmitNewEnrollee(int uid);
+        public void AdmitNewEnrollee(int uid, string lrn);
     }
 }

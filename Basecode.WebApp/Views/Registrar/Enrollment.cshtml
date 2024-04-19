@@ -85,7 +85,7 @@
                                     <td class="pt-3">@student.GradeEnrolled</td>
                                     <td class="pt-3">@age</td>
                                     <td class="pt-3">
-                                        <a asp-action="AdmitNewEnrollee" asp-route-id="@student.Id"><i class="fa-solid fa-check-to-slot fa-lg px-3"></i></a>
+                                        <a href="" onclick="admitStudent(@student.Id)" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-check-to-slot fa-lg px-3"></i></a>
                                         <a asp-action="RejectNewEnrollee" asp-route-id="@student.Id"><i class="fa-solid fa-x fa-lg"></i></a>
                                     </td>
                                 </tr>
@@ -99,10 +99,40 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Set LRN</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                @using (Html.BeginForm("AdmitNewEnrollee", "Registrar", FormMethod.Post))
+                {
+                    <div class="modal-body">
+                        <input type="hidden" id="studentId" name="studentId"/>
+                        <div class="mb-3">                           
+                            <label for="recipient-name" class="col-form-label">LRN:</label>
+                            <input type="text" class="form-control" id="lrn" name="lrn" required>
+                        </div>                        
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Enroll Student</button>
+                    </div>
+                }                                   
+            </div>
+        </div>
+    </div>
 </div>
 <script src="/js/Tables.js"></script>
 <script>
-    function redirectToIndex(studentId) {
+    function redirectToIndex(studentId) 
+    {
         window.location.href = '@Url.Action("NewEnrolleeInfo", "Registrar")?studentId=' + studentId;
+    }    
+    function admitStudent(studentId)
+    {
+        document.getElementById('studentId').value = studentId;
     }
 </script>

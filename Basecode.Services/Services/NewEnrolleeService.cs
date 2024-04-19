@@ -198,7 +198,7 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
-        public void AdmitNewEnrollee(int id)
+        public void AdmitNewEnrollee(int id, string lrn)
         {
             try
             {
@@ -207,7 +207,8 @@ namespace Basecode.Services.Services
                 student.UID = newenrollee.UID;
                 student.ParentId = newenrollee.ParentID;
                 student.CurrGrade = newenrollee.GradeEnrolled;
-                student.status = "Not Enrolled";
+                student.status = "Enrolled";
+                student.LRN = lrn;
                 _studentService.AddStudent(student);
                 _repository.RemoveEnrollee(newenrollee);
             }

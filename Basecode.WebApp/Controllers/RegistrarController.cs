@@ -97,6 +97,26 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("Index");
             }         
         }
+        public async Task<IActionResult> EnrollAndPromoteStudent(int id)
+        {
+            try
+            {
+                var student = _studentService.GetStudent(id);
+                student.status = "Enrolled";
+                student.CurrGrade += 1;
+                await _studentService.UpdateStudentAsync(student);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully Enrolled and Promoted Student";
+                return RedirectToAction("StudentInfo", new { student_Id = id});
+            }
+            catch(Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("StudentInfo", new { student_Id = id });
+            }
+        }
         public IActionResult MonthlyFee()
         {
             return View();
@@ -159,11 +179,14 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("NewEnrolleeInfo", id);
             }
         }
-        public IActionResult AdmitNewEnrollee(int id)
+        [HttpPost]
+        public IActionResult AdmitNewEnrollee()
         {
             try
             {
-                _newEnrolleeService.AdmitNewEnrollee(id);
+                var id = Int32.Parse(Request.Form["studentId"]);
+                var lrn = Request.Form["lrn"];
+                 _newEnrolleeService.AdmitNewEnrollee(id, lrn);
                 ViewBag.Success = true;
                 return RedirectToAction("Enrollment");
             }
@@ -882,7 +905,8 @@ namespace Basecode_WebApp.Controllers
                 if (!string.IsNullOrEmpty(searchValue))
                 {
                     customerData = customerData.Where(m => m.fullname.ToLower().Contains(searchValue.ToString().ToLower())                   
-                     || m.grade.ToString().Equals(searchValue) || m.age.ToString().Equals(searchValue));
+                     || m.grade.ToString().Equals(searchValue) || m.age.ToString().Equals(searchValue) 
+                     || m.status.ToLower().Contains(searchValue.ToString().ToLower()) || m.lrn.ToLower().Contains(searchValue.ToString().ToLower()));
                 }
 
                 //total number of rows count   
