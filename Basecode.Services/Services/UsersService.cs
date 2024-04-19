@@ -19,15 +19,24 @@ namespace Basecode.Services.Services
         IMapper _mapper;
         IRTPRepository _rtpRepository;
         UserManager<IdentityUser> _userManager;
+        INewEnrolleeRepository _newEnrolleeRepository;
+        ITeacherRepository _teacherRepository;
+        IStudentRepository _studentRepository;
         public UsersService(IUsersRepository userRepository,
             IMapper mapper,
             UserManager<IdentityUser> userManager,
-            IRTPRepository rtpRepository)
+            IRTPRepository rtpRepository,
+            INewEnrolleeRepository newEnrolleeRepository,
+            ITeacherRepository teacherRepository,
+            IStudentRepository studentRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _userManager = userManager;
             _rtpRepository = rtpRepository;
+            _newEnrolleeRepository = newEnrolleeRepository;
+            _teacherRepository = teacherRepository;
+            _studentRepository = studentRepository;
         }
         public int AddUser(UsersPortal user) 
         {
@@ -126,6 +135,24 @@ namespace Basecode.Services.Services
             try
             {
                 return await _userRepository.GetUserPortal(AspUserId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public async Task<RegistrarDashboard> SetRegisrarDashBoard()
+        {
+            try
+            {
+                var registrarDashboard = new RegistrarDashboard();
+                registrarDashboard.NewEnrolleeCount = _newEnrolleeRepository.GetAllEnrollees().Count();
+                registrarDashboard.TeacherCount = _teacherRepository.GetAllTeachersInitViewAsync().Result.Count();
+                registrarDashboard.StudentEnrolledCount = _studentRepository.GetAllStudent().Where(p => p.status == "Enrolled").Count();
+                registrarDashboard.StudentNotEnrolledCount = _studentRepository.GetAllStudent().Where(p => p.status == "Not Enrolled").Count();
+                registrarDashboard.NewEnrolleeList = _newEnrolleeRepository.GetNewEnrolleeInitView().Where(P => P.ExamSchedule != null).ToList();
+                return registrarDashboard;
             }
             catch (Exception e)
             {
