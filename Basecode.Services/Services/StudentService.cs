@@ -106,5 +106,22 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
+        public async Task UnEnrollStudents()
+        {
+            try
+            {
+                var students = _studentRepository.GetAllStudent();
+                foreach(var student in students)
+                {
+                    student.status = "Not Enrolled";
+                    await _studentRepository.UpdateStudentAsync(student);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
     }
 }

@@ -13,5 +13,6 @@ namespace Basecode.Services.Interfaces
         public Student GetStudent(int id);
         public void AddStudent(RegisterStudent newStudent);
         public Task UpdateStudentAsync(Student student);
+        public  Task UnEnrollStudents();
     }
 }

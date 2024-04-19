@@ -61,5 +61,17 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        public IEnumerable<Student> GetAllStudent()
+        {
+            try
+            {
+                return this.GetDbSet<Student>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }

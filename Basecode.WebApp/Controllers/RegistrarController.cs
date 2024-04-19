@@ -54,6 +54,12 @@ namespace Basecode_WebApp.Controllers
             _usersService = usersService;
             _userManager = userManager;
             _studentService = studentService;
+
+            //un enroll student if this date is at the end of the school year
+            var datToday = DateTime.Now;
+            var endSchoolDate = _settingsService.GetSettings().EndofClass;
+            if(datToday.CompareTo( endSchoolDate ) == 0 )
+                _studentService.UnEnrollStudents();
         }
         public IActionResult Index()
         {

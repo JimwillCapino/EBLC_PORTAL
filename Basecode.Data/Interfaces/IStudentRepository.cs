@@ -12,5 +12,6 @@ namespace Basecode.Data.Interfaces
         public void AddStudent(Student student);
         public Student GetStudent(int id);
         public Task UpdateStudentAsync(Student student);
+        public IEnumerable<Student> GetAllStudent();
     }
 }
