@@ -49,18 +49,26 @@ else if (successValue == 1)
                     <div class="header-text mb-4">
                         <h2>Hello, Teacher!</h2>
                     </div>
-                    <form asp-action="UserSetUpTeacher" class="row">                        
+                    <form asp-action="UserSetUpTeacher" enctype="multipart/form-data" class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputEmail1" class="form-label">Profile Picture</label>
+                            <input type="file" class="form-control" id="exampleInputEmail1" asp-for="ProfilePicRecieve">
+                        </div>
                         <div class="mb-3 col-lg-6">
                             <label for="exampleInputEmail1" class="form-label">First Name</label>
                             <input type="text" class="form-control" id="exampleInputEmail1" asp-for="FirstName">
+                            <span asp-validation-for="FirstName"></span>
                         </div>
                         <div class="mb-3 col-lg-6">
                             <label for="exampleInputPassword1" class="form-label">Middle Name</label>
                             <input type="text" class="form-control" id="exampleInputPassword1" asp-for="MiddleName">
+                            <span asp-validation-for="MiddleName"></span>
                         </div>
                         <div class="mb-3 col-lg-6">
                             <label for="exampleInputPassword1" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="exampleInputPassword1" asp-for="LastName">
+                            <input type="text" class="form-control" id="exampleInputPassword1" asp-for="LastName">\
+                            <span asp-validation-for="LastName"></span>
                         </div>
                         <div class="mb-3 col-lg-6">
                             <label for="disabledSelect" class="form-label">Gender</label>
@@ -68,18 +76,22 @@ else if (successValue == 1)
                                 <option value="M">Male</option>
                                 <option value="F">Female</option>
                             </select>
+                            <span asp-validation-for="sex"></span>
                         </div>
                         <div class="mb-3 col-lg-6">
                             <label for="exampleInputPassword1" class="form-label">Phone Number</label>
                             <input type="text" class="form-control" id="exampleInputPassword1" asp-for="PhoneNumber">
+                            <span asp-validation-for="PhoneNumber"></span>
                         </div>
                         <div class="mb-3 col-lg-6">
                             <label for="exampleInputPassword1" class="form-label">Address</label>
                             <input type="text" class="form-control" id="exampleInputPassword1" asp-for="Address">
+                            <span asp-validation-for="Address"></span>
                         </div>
                         <div class="mb-3 col-lg-6">
                             <label for="exampleInputPassword1" class="form-label">Birthday</label>
                             <input type="date" class="form-control" id="exampleInputPassword1" asp-for="Birthday">
+                            <span asp-validation-for="Birthday"></span>
                         </div>
                         <div class="mb-3 col-lg-6">
                             <label for="exampleInputPassword1" class="form-label">Current Password</label>
@@ -98,4 +110,8 @@ else if (successValue == 1)
         </div>
     </div>
 </div>
-
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

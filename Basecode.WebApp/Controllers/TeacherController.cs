@@ -45,6 +45,55 @@ namespace Basecode.WebApp.Controllers
             }
             return View();
         }
+        public async Task<IActionResult> Profile()
+        {
+            try
+            {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
+                return View(await _usersService.GetUserPortal(_userManager.GetUserId(User)));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        public async Task<IActionResult> UpdatePorfile(ProfileViewModel profile)
+        {
+            try
+            {
+                await _usersService.UpdateUserProfile(profile);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Profile Updated Successfully!";
+
+                return RedirectToAction("Profile");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("Profile");
+            }
+        }
+        public async Task<IActionResult> ChangePassword(ProfileViewModel profile)
+        {
+            try
+            {
+                await _usersService.ChangePassword(profile);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Passoword changed successfully!";
+                return RedirectToAction("Profile");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("Profile");
+            }
+        }
         public IActionResult TeacherProfileRegistration()
         {
             ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
