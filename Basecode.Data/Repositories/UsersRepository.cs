@@ -72,12 +72,28 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
+        public async Task<bool> IsNewUser(string AspUserId)
+        {
+            try
+            {
+                var aspuser = await _userManager.FindByIdAsync(AspUserId);
+                var RTPUser = _context.RTPUsers.FirstOrDefault(p => p.AspUserId == AspUserId);
+                return RTPUser == null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
         public async Task<ProfileViewModel> GetUserPortal(string AspUserId)
         {
             try
             {
                 var aspuser = await _userManager.FindByIdAsync(AspUserId);
                 var RTPUser = _context.RTPUsers.FirstOrDefault(p => p.AspUserId == AspUserId);
+                if (RTPUser == null)
+                    throw new NullReferenceException();
                 var RTPCommons = _context.RTPCommons.Find(RTPUser.RTPId);
                 var user = _context.UsersPortal.Find(RTPCommons.UID);
                 var completeDetails = new ProfileViewModel()

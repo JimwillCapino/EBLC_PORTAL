@@ -1,0 +1,101 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Teacher";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
+}
+@using Basecode.Data.ViewModels
+@using Basecode.Data
+@model ProfileViewModel
+
+@if (successValue == 0)
+{
+    <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+        <i class="bi-exclamation-octagon-fill"></i>
+        <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+}
+else if (successValue == 1)
+{
+    <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+        <i class="bi-check-circle-fill"></i>
+        <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@{
+    Constants.ViewDataErrorHandling.Success = -1;
+    Constants.ViewDataErrorHandling.ErrorMessage = null;
+}
+<div class="wrapper"> 
+    <div class="container d-flex justify-content-center align-items-center min-vh-100 mt-4">
+        <!----------------------- Login Container -------------------------->
+        <div class="row border rounded-5 p-3 bg-white shadow box-area">
+            <!--------------------------- Left Box ----------------------------->
+            <div class="col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box" style="background: #dc3545">
+                <div class="featured-image mb-3">
+                    <img src="~/signin-image.jpg" class="img-fluid" style="width: 250px;">
+                </div>
+                <p class="text-white fs-2" style="font-weight: 600;">Teachers Registration</p>
+            </div>
+            <!-------------------- ------ Right Box ---------------------------->
+
+            <div class="col-md-6 right-box">
+                <div class="row align-items-center p-5">
+                    <div class="header-text mb-4">
+                        <h2>Hello, Teacher!</h2>
+                    </div>
+                    <form asp-action="UserSetUpTeacher" class="row">                        
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputEmail1" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="exampleInputEmail1" asp-for="FirstName">
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputPassword1" class="form-label">Middle Name</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" asp-for="MiddleName">
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputPassword1" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" asp-for="LastName">
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="disabledSelect" class="form-label">Gender</label>
+                            <select id="disabledSelect" class="form-select" asp-for="sex">
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputPassword1" class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" asp-for="PhoneNumber">
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputPassword1" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" asp-for="Address">
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputPassword1" class="form-label">Birthday</label>
+                            <input type="date" class="form-control" id="exampleInputPassword1" asp-for="Birthday">
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputPassword1" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1" asp-for="CurrentPassword">
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputPassword1" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1" asp-for="NewPassword">
+                            <span asp-validation-for="NewPassword"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

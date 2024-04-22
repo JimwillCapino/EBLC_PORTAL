@@ -4,15 +4,39 @@
 @{
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
 }
+}
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model List<TeacherViewModel>
 <link rel="stylesheet" href="/css/TableInfo.css" />
 <div class ="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
-        <button type="button" class="btn btn-outline-danger" onclick="RedirectToRequestPage()">Requests</button>
-        <div class="table-responsive overflow-auto">            
+        <button type="button" class="btn btn-outline-danger" onclick="RedirectToRequestPage()">Add</button>
+        <div class="table-responsive overflow-auto">
+            @if (successValue == 0)
+            {
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-exclamation-octagon-fill"></i>
+                    <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+            }
+            else if (successValue == 1)
+            {
+                <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-check-circle-fill"></i>
+                    <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @{
+                Constants.ViewDataErrorHandling.Success = -1;
+                Constants.ViewDataErrorHandling.ErrorMessage = null;
+            }
             <table class="table overflow-auto" id="myTable">
                 <thead>
                     <tr>

@@ -6,48 +6,50 @@
     Layout = "~/Views/Shared/NoLayout.cshtml";
 }
 @using Basecode.Data.ViewModels
-@model List<TeacherRegistrarionViewModel>
+@model UsersRegistration
 <link rel="stylesheet" href="/css/TableInfo.css" />
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main p-5">
-        <div class="table-responsive overflow-auto">
-            <table class="table overflow-auto" id="myTable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Gender</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var teacher in Model)
-                    {
-                        var s = "";
-                        if (teacher.sex == "F") s = "Female";
-                        else s = "Male";
-                        <tr class="bg-blue">
-                            <td class="pt-3 mt-1">@teacher.FirstName @teacher.MiddleName @teacher.LastName</td>
-                            <td class="pt-3 mt-1">@teacher.Email</td>
-                            <td class="pt-3">@s</td>
-                            <td><i class="lni lni-thumbs-up" onclick="AcceptTeacher(@teacher.Id)"></i></td>
-                            <td><i class="lni lni-thumbs-down" onclick="RejectTeacher(@teacher.Id)"></i></td>
-                        </tr>
-                        <tr id="spacing-row">
-                            <td> </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    <div class="main">
+        <div class="container d-flex justify-content-center align-items-center min-vh-100 mt-4">
+        <!----------------------- Login Container -------------------------->
+        <div class="row border rounded-5 p-3 bg-white shadow box-area">
+            <!--------------------------- Left Box ----------------------------->
+            <div class="col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box" style="background: #dc3545">
+                <div class="featured-image mb-3">
+                    <img src="~/signin-image.jpg" class="img-fluid" style="width: 250px;">
+                </div>
+                <p class="text-white fs-2" style="font-weight: 600;">Add Teacher</p>           
+            </div>
+            <!-------------------- ------ Right Box ---------------------------->
+
+            <div class="col-md-6 right-box">
+                <div class="row align-items-center p-5">
+                    <div class="header-text mb-4">
+                        <h2>Create Teacher Account</h2>                        
+                    </div>
+                    <form asp-action="RegisterTeacher">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">User Name</label>
+                            <input type="text" class="form-control" id="exampleInputEmail1" asp-for="UserName">                            
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Email</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" asp-for="EmailAddress">
+                        </div>                                          
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1" asp-for="Password">
+                        </div>
+                         <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="exampleInputPassword1" asp-for="ConfirmPassword">
+                        </div>                                                                      
+                        <button type="submit" class="btn btn-danger">Submit</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+    </div>
 </div>
-<script>
-    function AcceptTeacher(student_Id) {
-        window.location.href = '@Url.Action("AcceptTeacherRegistration", "Registrar")?id=' + student_Id;
-    }
-    function RejectTeacher(student_Id) {
-        window.location.href = '@Url.Action("RejectTeacherRegistration", "Registrar")?id=' + student_Id;
-    }
-</script>

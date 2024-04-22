@@ -83,6 +83,34 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
+        public async Task AddTeacherUserAccount(UsersRegistration account)
+        {
+            try
+            {
+                var teacherUser = new IdentityUser
+                {
+                    UserName = account.UserName, 
+                    Email = account.EmailAddress                    
+                };
+
+                var result = await _UserManager.CreateAsync(teacherUser, account.Password);
+                if (result.Succeeded)
+                {
+                    var userRole = _roleManager.FindByNameAsync("Teacher").Result;                  
+                    if (userRole != null)
+                        await _UserManager.AddToRoleAsync(teacherUser, userRole.Name);                   
+                }
+                else
+                {
+                    throw new Exception(result.Errors.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
         public async Task ApproveTeacherRegistration(int id)
         {
             try

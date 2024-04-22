@@ -2,6 +2,8 @@
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
 }
+@using Basecode.Data.ViewModels
+@model RegistrarDashboard
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 
     <div class="wrapper">
@@ -17,37 +19,90 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="card-counter primary">
-                        <i class="fas fa-code-fork"></i>
-                        <span class="count-numbers">12</span>
-                        <span class="count-name">Flowz</span>
+                        <i class="fa-solid fa-users-line"></i>
+                        <span class="count-numbers">@Model.NewEnrolleeCount</span>
+                        <span class="count-name">New Enrollees</span>
                     </div>
                 </div>
 
                 <div class="col-md-3">
                     <div class="card-counter danger">
-                        <i class="fas fa-ticket"></i>
-                        <span class="count-numbers">599</span>
-                        <span class="count-name">Instances</span>
+                        <i class="fa-solid fa-person-chalkboard"></i>
+                        <span class="count-numbers">@Model.TeacherCount</span>
+                        <span class="count-name">Teachers</span>
                     </div>
                 </div>
 
                 <div class="col-md-3">
                     <div class="card-counter success">
-                        <i class="fas fa-database"></i>
-                        <span class="count-numbers">6875</span>
-                        <span class="count-name">Data</span>
+                        <i class="fa-solid fa-universal-access"></i>
+                        <span class="count-numbers">@Model.StudentEnrolledCount</span>
+                        <span class="count-name">Enrolled</span>
                     </div>
                 </div>
 
                 <div class="col-md-3">
                     <div class="card-counter info">
-                        <i class="fas fa-users"></i>
-                        <span class="count-numbers">35</span>
-                        <span class="count-name">Users</span>
+                        <i class="fa-solid fa-user-xmark"></i>
+                        <span class="count-numbers">@Model.StudentNotEnrolledCount</span>
+                        <span class="count-name">Not Enrolled</span>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-9 col-xl-8">
+                    <div class="card widget-card border-light shadow-sm">
+                        <div class="card-body p-4">
+                            <h5 class="card-title widget-card-title mb-4">Upcomming Student Screening</h5>
+                            <div class="table-responsive">
+                                <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0">                                                                       
+                                        @if(Model.NewEnrolleeList.Count != 0)
+                                        {
+                                        <thead>
+                                            <tr>
+                                                <th>Full name</th>
+                                                <th>Sex</th>
+                                                <th>Grade</th>
+                                                <th>Schedule</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var enrollee in Model.NewEnrolleeList)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @enrollee.FirstName @enrollee.Middlename @enrollee.LastName
+                                                    </td>
+                                                    @if (enrollee.sex.Equals('F'))
+                                                    {
+                                                        <td>Female</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>Male</td>
+                                                    }
+                                                    <td>@enrollee.GradeEnrolled</td>
+                                                    <td>@enrollee.ExamSchedule</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        }
+                                        else
+                                        {
+                                            <p>No Scheduled Examination for new Enrollee's</p>
+                                        }
+                                   
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         </div> 
     </div>
    

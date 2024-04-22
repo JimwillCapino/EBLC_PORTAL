@@ -61,9 +61,9 @@ namespace Basecode_WebApp.Controllers
             if(datToday.CompareTo( endSchoolDate ) == 0 )
                 _studentService.UnEnrollStudents();
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return View(await _usersService.SetRegisrarDashBoard());
         }
         public IActionResult StudentRecord()
         {
@@ -203,10 +203,12 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("Enrollee");
             }
         }
-        public async Task<IActionResult> ManageTeachersAsync()
+        public async Task<IActionResult>ManageTeachersList()
         {
             try
             {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
                 var teachers = await _teacherService.GetTeacherinitView();
                 return View(teachers);
             }
@@ -708,7 +710,9 @@ namespace Basecode_WebApp.Controllers
         {
             try
             {
-                return View(_teacherService.GetAllTeacherRegistration());
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
+                return View();
             }
             catch (Exception ex)
             {
@@ -717,6 +721,23 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("Index");
             }
 
+        }
+        public async Task<IActionResult> RegisterTeacher(UsersRegistration account)
+        {
+            try
+            {
+                await _teacherService.AddTeacherUserAccount(account);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Teacher's account created successfully!";
+                return RedirectToAction("ManageTeachersList");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("TeacherRegistration");
+            }
         }
         public IActionResult RejectTeacherRegistration(int id)
         {

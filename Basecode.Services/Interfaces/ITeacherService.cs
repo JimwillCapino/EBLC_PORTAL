@@ -16,5 +16,6 @@ namespace Basecode.Services.Interfaces
         public void RejectTeacherRegistration(int id);
         public  Task<List<TeacherViewModel>> GetTeacherinitView();
         public List<TeacherRegistrarionViewModel> GetAllTeacherRegistration();
+        public Task AddTeacherUserAccount(UsersRegistration account);
     }
 }

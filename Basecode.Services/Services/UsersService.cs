@@ -22,13 +22,15 @@ namespace Basecode.Services.Services
         INewEnrolleeRepository _newEnrolleeRepository;
         ITeacherRepository _teacherRepository;
         IStudentRepository _studentRepository;
+        IRTPUsersRepository _rtpUsersRepository;
         public UsersService(IUsersRepository userRepository,
             IMapper mapper,
             UserManager<IdentityUser> userManager,
             IRTPRepository rtpRepository,
             INewEnrolleeRepository newEnrolleeRepository,
             ITeacherRepository teacherRepository,
-            IStudentRepository studentRepository)
+            IStudentRepository studentRepository,
+            IRTPUsersRepository rtpUsersRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -37,6 +39,7 @@ namespace Basecode.Services.Services
             _newEnrolleeRepository = newEnrolleeRepository;
             _teacherRepository = teacherRepository;
             _studentRepository = studentRepository;
+            _rtpUsersRepository = rtpUsersRepository;           
         }
         public int AddUser(UsersPortal user) 
         {
@@ -69,6 +72,63 @@ namespace Basecode.Services.Services
             try
             {
                 return _userRepository.GetUserById(id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public async Task NewUserDetailsRegistration(ProfileViewModel profile)
+        {
+            try
+            {
+                var userPortal = _mapper.Map<UsersPortal>(profile);
+                var rtpCommons = _mapper.Map<RTPCommons>(profile);
+                RTPUsers rtpUsers = new RTPUsers();
+                var user = await _userManager.FindByIdAsync(profile.AspUserId);
+                var changePasswordResult = _userManager.ChangePasswordAsync(user, profile.CurrentPassword, profile.NewPassword).Result;
+
+                if (!changePasswordResult.Succeeded)
+                {
+                    string errors = "";
+                    foreach (var error in changePasswordResult.Errors)
+                    {
+                        errors += error.Description + " ";
+                    }
+                    throw new Exception(errors);
+                }
+
+                if (profile.ProfilePicRecieve != null)
+                {
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        profile.ProfilePicRecieve.CopyTo(stream);
+                        userPortal.ProfilePic = stream.ToArray();
+                    }
+                }
+                else
+                {
+                    userPortal.ProfilePic = profile.ProfilePic;
+                }               
+                int uid = _userRepository.AddUser(userPortal);
+                rtpCommons.UID = uid;
+                int RTPCommonsId =  _rtpRepository.addRTPCommonsInt(rtpCommons);
+                rtpUsers.AspUserId = profile.AspUserId;
+                rtpUsers.RTPId = RTPCommonsId;
+                _rtpUsersRepository.AddRTPUsers(rtpUsers);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public async Task<bool> IsNewUser(string AspUserId)
+        {
+            try
+            {
+                return await _userRepository.IsNewUser(AspUserId);
             }
             catch (Exception e)
             {
@@ -135,8 +195,12 @@ namespace Basecode.Services.Services
             try
             {
                 return await _userRepository.GetUserPortal(AspUserId);
+            }            
+            catch(NullReferenceException e)
+            {
+                throw new NullReferenceException(e.Message);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 Console.WriteLine(e);
                 throw new Exception(Constants.Exception.DB);

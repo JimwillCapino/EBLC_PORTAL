@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Basecode.Services.Interfaces;
 using Basecode.Data.Models;
 using Basecode.Data.ViewModels;
+using Basecode.Data;
 namespace Basecode.WebApp.Controllers
 {
     [Authorize(Roles = "Teacher")]
@@ -16,12 +17,14 @@ namespace Basecode.WebApp.Controllers
         private readonly ISettingsService _settingsService;
         private readonly ISubjectService _subjectService;
         private readonly IStudentService _studentService;
+        private readonly IUsersService _usersService;
         public TeacherController(UserManager<IdentityUser> userManager, 
             IClassManagementService classManagementService,
             IStudentManagementService studentManagementService,
             ISettingsService settingsService,
             ISubjectService subjectService,
-            IStudentService studentService)
+            IStudentService studentService,
+            IUsersService usersService)
         {
             _userManager = userManager;
             _classManagementService = classManagementService;
@@ -29,11 +32,41 @@ namespace Basecode.WebApp.Controllers
             _settingsService = settingsService;
             _subjectService = subjectService;
             _studentService = studentService;
+            _usersService = usersService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+            ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
             //var id = _userManager.GetUserId(User);
+            if (await _usersService.IsNewUser(_userManager.GetUserId(User)))
+            {
+                return RedirectToAction("TeacherProfileRegistration");
+            }
             return View();
+        }
+        public IActionResult TeacherProfileRegistration()
+        {
+            ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+            ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
+            return View();
+        }
+        public async Task <IActionResult> UserSetUpTeacher(ProfileViewModel profile)
+        {
+            try
+            {
+                profile.AspUserId = _userManager.GetUserId(User);
+                await _usersService.NewUserDetailsRegistration(profile);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Teacher's Profile created successfully!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                return RedirectToAction("TeacherProfileRegistration");
+            }
         }
         public IActionResult StudentList()
         {
