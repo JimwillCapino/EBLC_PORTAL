@@ -328,25 +328,11 @@ namespace Basecode_WebApp.Controllers
         {
             var classes = await _classManagementService.GetAllClass();
             return View(classes);
-        }
-        [HttpPost]
-        public IActionResult AddClass()
+        }       
+        public IActionResult AddClass(Class inputclass)
         {
             try
-            {
-                string classname = Request.Form["className"];
-                string adviser = Request.Form["Adviser"];
-                int grade = Int32.Parse(Request.Form["grade"]);
-                int classSize = Int32.Parse(Request.Form["classsize"]);
-
-                var inputclass = new Class
-                {
-                    ClassName = classname,
-                    Adviser = adviser,
-                    ClassSize = classSize,
-                    Grade = grade
-                };
-
+            {              
                 _classManagementService.AddClass(inputclass);
                 return RedirectToAction("ManageClass");
             }

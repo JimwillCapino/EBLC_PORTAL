@@ -57,37 +57,41 @@
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Input Subject Details</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                @using (Html.BeginForm("AddClass", "Registrar", FormMethod.Post))
-                {
+                <form asp-action="AddClass">
                     <div class="modal-body">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="mb-3">
                             <label for="recipient-name" class="col-form-label">Class Name:</label>
-                            <input type="text" class="form-control" id="recipient-name" name="className">
+                            <input type="text" class="form-control" id="recipient-name" asp-for="ClassName" >
+                            <span asp-validation-for="ClassName" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Grade:</label>
-                            <input type="text" class="form-control" id="recipient-name" name="grade">
+                            <input type="text" class="form-control" id="recipient-name" asp-for="Grade" >
+                            <span asp-validation-for="Grade" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Class Size:</label>
-                            <input type="text" class="form-control" id="recipient-name" name="classsize">
+                            <input type="text" class="form-control" id="recipient-name" asp-for="ClassSize" >
+                            <span asp-validation-for="ClassSize" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Adviser:</label>
-                            <select class="form-select" aria-label="Default select example" name="Adviser">
+                            <select class="form-select" aria-label="Default select example" asp-for="Adviser" >
                                 <option selected>Open this select menu</option>
-                                @foreach(var teacher in Model.Teachers)
+                                @foreach (var teacher in Model.Teachers)
                                 {
                                     <option value="@teacher.Id">@teacher.FirstName @teacher.MiddleName @teacher.LastName</option>
                                 }
                             </select>
+                            <span asp-validation-for="Adviser" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-danger">Add Class</button>
                     </div>
-                }
+                </form>                
             </div>
         </div>
     </div>
@@ -100,3 +104,8 @@
         }
     </script>
 </div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
