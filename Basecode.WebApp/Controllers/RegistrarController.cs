@@ -223,6 +223,63 @@ namespace Basecode_WebApp.Controllers
         {
             return View(_subjectService.GetSubjects());
         }
+        [HttpPost]
+        public IActionResult ManageSubjectsDataTable()
+        {
+            try
+            {
+                var draw = int.Parse(Request.Form["draw"]);
+                var start = int.Parse(Request.Form["start"]);
+                var length = int.Parse(Request.Form["length"]);
+                var searchValue = Request.Form["search[value]"];
+
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                // Sort Column Direction (asc, desc)  
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+
+                //Paging Size (10,25,50,100)  
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int recordsTotal = 0;
+
+                // Getting all Customer data  
+                var customerData = _subjectService.GetSubjects();
+
+                //Sorting
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    if (sortColumn.Equals("subjectname"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.Subject_Name).ToList() :
+                            customerData.OrderByDescending(p => p.Subject_Name).ToList();
+                    }
+                    else if (sortColumn.Equals("grade"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.Grade).ToList() :
+                            customerData.OrderByDescending(p => p.Grade).ToList();
+                    }
+                    
+                }
+                //Search  
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    customerData = customerData.Where(m => m.Subject_Name.ToLower().Contains(searchValue.ToString().ToLower())
+                     || m.Grade.ToString().Equals(searchValue)).ToList();
+                }
+
+                //total number of rows count   
+                recordsTotal = customerData.Count();
+                //Paging   
+                var data = customerData.Skip(skip).Take(pageSize).ToList();
+                //Returning Json Data  
+                var test = Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
+                return test;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         [HttpPost]
         public IActionResult AddSubject()

@@ -7,6 +7,58 @@
 }
 @using Basecode.Data.Models
 @model List<Subject> 
+<script>
+    $(document).ready(function () {
+        var table = $("#table").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": true, // for disable multiple column at once
+            "ajax": {
+                "url": "/Registrar/ManageClassDataTable",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columnDefs": [{
+                "targets": [0],
+                "orderable": true
+            },
+            {
+                "targets": [1],
+                "orderable": true
+            },
+            {
+                "targets": [2],
+                "orderable": true
+            },
+            {
+                "targets": [3],
+                "orderable": true
+            },
+            {
+                "targets": [4],
+                "orderable": true
+            }],
+
+            "columns": [
+                { "data": "classname", "name": "classname" },
+                { "data": "advisername", "name": "advisername" },
+                { "data": "grade", "name": "grade" },
+                { "data": "classsize", "name": "classsize" },
+                { "data": "schoolyear", "name": "schoolyear" },
+                {
+                    data: null, render: function (data, type, row) {
+                        return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.CustomerID + "'); >Delete</a>";
+                    }
+                }
+            ]
+        });
+
+    });
+
+
+
+</script>
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
@@ -33,10 +85,8 @@
                             <td class="pt-3">
                                 <i class="lni lni-cross-circle px-3"></i>
                                 @if(subject.HasChild)
-                                {
-                                   
-                                        <i class="lni lni-layers" onclick="redirect('@subject.Subject_Id')"></i>
-                                    
+                                {                                  
+                                    <i class="lni lni-layers" onclick="redirect('@subject.Subject_Id')"></i>                                   
                                 }                               
                             </td>
                         </tr>
