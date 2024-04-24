@@ -19,6 +19,7 @@ namespace Basecode.Services.Interfaces
         public void RemoveSubject(int id);
         public ChildSubjectContainer GetChildSubject(int headId);
         public Subject GetSubject(int id);
+        public List<SubjectViewModel> GetSubjectsForDataTable();
     }
 
 }

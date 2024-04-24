@@ -15,7 +15,7 @@
             "filter": true, // this is for disable filter (search box)
             "orderMulti": true, // for disable multiple column at once
             "ajax": {
-                "url": "/Registrar/ManageClassDataTable",
+                "url": "/Registrar/ManageSubjectsDataTable",
                 "type": "POST",
                 "datatype": "json"
             },
@@ -26,26 +26,12 @@
             {
                 "targets": [1],
                 "orderable": true
-            },
-            {
-                "targets": [2],
-                "orderable": true
-            },
-            {
-                "targets": [3],
-                "orderable": true
-            },
-            {
-                "targets": [4],
-                "orderable": true
-            }],
+            }
+            ],
 
             "columns": [
                 { "data": "classname", "name": "classname" },
-                { "data": "advisername", "name": "advisername" },
-                { "data": "grade", "name": "grade" },
-                { "data": "classsize", "name": "classsize" },
-                { "data": "schoolyear", "name": "schoolyear" },
+                { "data": "advisername", "name": "advisername" },                
                 {
                     data: null, render: function (data, type, row) {
                         return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.CustomerID + "'); >Delete</a>";

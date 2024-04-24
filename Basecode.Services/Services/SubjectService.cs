@@ -130,5 +130,17 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
+        public List<SubjectViewModel> GetSubjectsForDataTable()
+        {
+            try
+            {
+                return _subjectRepository.GetsSubjectsForDataTables();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
     }
 }

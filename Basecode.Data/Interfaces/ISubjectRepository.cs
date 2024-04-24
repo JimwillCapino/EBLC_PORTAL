@@ -21,5 +21,6 @@ namespace Basecode.Data.Interfaces
         public List<ChildSubjectView> GetChildSubject(int headId);
         public List<Subject> GetAllSubjects(int studentId, string schoolYear);
         public List<HeadSubject> GetAllHeadSubject();
+        public List<SubjectViewModel> GetsSubjectsForDataTables();
     }
 }

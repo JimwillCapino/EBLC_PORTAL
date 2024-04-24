@@ -243,28 +243,28 @@ namespace Basecode_WebApp.Controllers
                 int recordsTotal = 0;
 
                 // Getting all Customer data  
-                var customerData = _subjectService.GetSubjects();
+                var customerData = _subjectService.GetSubjectsForDataTable();
 
                 //Sorting
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
                     if (sortColumn.Equals("subjectname"))
                     {
-                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.Subject_Name).ToList() :
-                            customerData.OrderByDescending(p => p.Subject_Name).ToList();
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.subjectname).ToList() :
+                            customerData.OrderByDescending(p => p.subjectname).ToList();
                     }
                     else if (sortColumn.Equals("grade"))
                     {
-                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.Grade).ToList() :
-                            customerData.OrderByDescending(p => p.Grade).ToList();
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.grade).ToList() :
+                            customerData.OrderByDescending(p => p.grade).ToList();
                     }
                     
                 }
                 //Search  
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    customerData = customerData.Where(m => m.Subject_Name.ToLower().Contains(searchValue.ToString().ToLower())
-                     || m.Grade.ToString().Equals(searchValue)).ToList();
+                    customerData = customerData.Where(m => m.subjectname.ToLower().Contains(searchValue.ToString().ToLower())
+                     || m.grade.ToString().Equals(searchValue)).ToList();
                 }
 
                 //total number of rows count   

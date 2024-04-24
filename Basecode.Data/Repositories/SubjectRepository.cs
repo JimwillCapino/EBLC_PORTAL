@@ -109,6 +109,30 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        public List<SubjectViewModel> GetsSubjectsForDataTables()
+        {
+            try
+            {
+                var headSubject = this.GetDbSet<HeadSubject>();
+                var subject = this.GetDbSet<Subject>();
+
+                var viewSubject = from h in headSubject
+                                  join s in subject
+                                  on h.Subect_Id equals s.Subject_Id
+                                  select new SubjectViewModel
+                                  {
+                                      subjectid = s.Subject_Id,
+                                      subjectname = s.Subject_Name,
+                                      grade = s.Grade,
+                                      haschild = s.HasChild,
+                                  };
+                return viewSubject.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+        }
         public List<Subject> GetSubjects()
         {
             try
