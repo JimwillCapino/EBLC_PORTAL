@@ -139,7 +139,7 @@ namespace Basecode.WebApp.Controllers
         {
             var student_id = Int32.Parse(Request.Form["Student_Id"]);
             var subject_Id = Int32.Parse(Request.Form["Subject_Id"]);
-            var grade = Int32.Parse(Request.Form["Grade"]);
+            var grade = Int32.Parse(Request.Form["grade"]);
             var quarter = Int32.Parse(Request.Form["Quarter"]);           
 
             _studentManagementService.SubmitGrade(student_id, subject_Id, grade, quarter);
@@ -151,7 +151,7 @@ namespace Basecode.WebApp.Controllers
             var Grade_Id = Int32.Parse(Request.Form["Grade_Id"]);
             var student_id = Int32.Parse(Request.Form["Student_Id"]);
             var subject_Id = Int32.Parse(Request.Form["Subject_Id"]);
-            var grade = Int32.Parse(Request.Form["Grade"]);
+            var grade = Int32.Parse(Request.Form["grade"]);
             var quarter = Int32.Parse(Request.Form["Quarter"]);
 
             _studentManagementService.EditGrade(Grade_Id, student_id, subject_Id, grade, quarter);

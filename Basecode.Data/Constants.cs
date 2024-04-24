@@ -164,7 +164,7 @@ namespace Basecode.Data
             public const string FilePath = "{0}://{1}:{2}{3}";
             public const string FormData = "form-data";
             public const string Slash = "\\";
-            public const string Id = "Id";
+            public const string Id = "id";
             public const string ModuleName = "ModuleName";
             public const string RemovedFileList = "RemovedFileList";
             public const string AttachmentPath = "Attachment";

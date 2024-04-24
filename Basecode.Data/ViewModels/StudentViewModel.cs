@@ -26,7 +26,7 @@ namespace Basecode.Data.ViewModels
         public byte[]? profilePicture { get; set; }
         [Required(ErrorMessage = "First Name is Required.")]
         public int age { get; set; }
-        [Required(ErrorMessage = "Grade Level Name is Required.")]
+        [Required(ErrorMessage = "grade Level Name is Required.")]
         public int Grade { get; set; }
         [Required(ErrorMessage = "LRN is Required.")]
         public string lrn { get; set; }

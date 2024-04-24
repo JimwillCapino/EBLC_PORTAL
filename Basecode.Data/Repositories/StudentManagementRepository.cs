@@ -201,7 +201,7 @@ namespace Basecode.Data.Repositories
         {
             try
             {
-                //Get the Grade(S) of a particular student along with the choosen school Year
+                //Get the grade(S) of a particular student along with the choosen school Year
                 var grades = this.GetDbSet<Grades>().Where(g => g.Student_Id == student_Id)
                    .Where(g => g.School_Year == school_year);
                 var subjects = this.GetDbSet<Subject>();
@@ -234,7 +234,7 @@ namespace Basecode.Data.Repositories
                                        Grade = g.Grade
                                    };
                 //Join the child subject to the grade table to get its grades.
-                //The Subject Id holds the head Id value instead of the child subject Id.
+                //The Subject id holds the head id value instead of the child subject id.
                 //This is to make sure that the placement in viewing the grades of the head subject and the child subject
                 //are adjacent to one another.
                 var childSubjectGrade = from g in grades join c in childSubjectsUnion

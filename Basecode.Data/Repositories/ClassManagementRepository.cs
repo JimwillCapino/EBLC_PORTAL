@@ -230,13 +230,13 @@ namespace Basecode.Data.Repositories
                                  on c.Adviser equals t.Id
                                  select new ClassInitView
                                  {
-                                     Id = c.Id,
-                                     AdviserId = t.Id,
-                                     Grade = c.Grade,
-                                     ClassSize = c.ClassSize,
-                                     ClassName = c.ClassName,
-                                     AdviserName = t.FirstName + " " + t.LastName,
-                                     SchoolYear = c.SchoolYear,
+                                     id = c.Id,
+                                     adviserid = t.Id,
+                                     grade = c.Grade,
+                                     classsize = c.ClassSize,
+                                     classname = c.ClassName,
+                                     advisername = t.FirstName + " " + t.LastName,
+                                     schoolyear = c.SchoolYear,
                                  };
             return classesdetails.ToList();
         }
@@ -350,12 +350,12 @@ namespace Basecode.Data.Repositories
                                         c.Adviser equals t.Id
                                         select new ClassInitView
                                         {
-                                            Id = c.Id,
-                                            ClassName = c.ClassName,
-                                            Grade = c.Grade,
-                                            ClassSize = c.ClassSize,
-                                            SchoolYear = c.SchoolYear,
-                                            AdviserName = t.FirstName + " " + t.LastName,
+                                            id = c.Id,
+                                            classname = c.ClassName,
+                                            grade = c.Grade,
+                                            classsize = c.ClassSize,
+                                            schoolyear = c.SchoolYear,
+                                            advisername = t.FirstName + " " + t.LastName,
                                         };
                 return unionClassDetails.ToList().FirstOrDefault();
             }
@@ -380,14 +380,14 @@ namespace Basecode.Data.Repositories
                                         c.Adviser equals t.Id
                                         select new ClassInitView
                                         {
-                                            Id = c.Id,
-                                            ClassName = c.ClassName,
-                                            Grade = c.Grade,
-                                            ClassSize = c.ClassSize,
-                                            SchoolYear = c.SchoolYear,
-                                            AdviserName = t.FirstName + " " + t.LastName,
+                                            id = c.Id,
+                                            classname = c.ClassName,
+                                            grade = c.Grade,
+                                            classsize = c.ClassSize,
+                                            schoolyear = c.SchoolYear,
+                                            advisername = t.FirstName + " " + t.LastName,
                                         };
-                return unionClassDetails.ToList().FirstOrDefault().Grade;
+                return unionClassDetails.ToList().FirstOrDefault().grade;
             }
             catch (Exception ex)
             {

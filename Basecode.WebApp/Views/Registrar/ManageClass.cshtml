@@ -4,10 +4,87 @@
 @{
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model ClassDetailsViewModel
 <link rel="stylesheet" href="/css/TableInfo.css" />
+<script>
+    $(document).ready(function () {
+        var table = $("#table").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": true, // for disable multiple column at once
+            "ajax": {
+                "url": "/Registrar/ManageClassDataTable",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columnDefs": [{
+                "targets": [0],
+                "orderable": true
+            },
+            {
+                "targets": [1],
+                "orderable": true
+            },
+            {
+                "targets": [2],
+                "orderable": true
+            },
+            {
+                "targets": [3],
+                "orderable": true
+            },
+            {
+                "targets": [4],
+                "orderable": true
+            }],
+
+            "columns": [
+                { "data": "classname", "name": "classname" },
+                { "data": "advisername", "name": "advisername" },
+                { "data": "grade", "name": "grade" },
+                { "data": "classsize", "name": "classsize" },
+                { "data": "schoolyear", "name": "schoolyear" }
+            ]
+        });
+
+        $('#table tbody').on('click', 'tr', function () {
+            // Get data for the clicked row
+            var rowData = table.row(this).data();
+
+            // Redirect to another page with the row data
+            window.location.href = '@Url.Action("ClassDetails", "Registrar")?classId=' + rowData.id; // Adjust the URL as per your MVC route
+        });
+    });
+
+
+    function DeleteData(CustomerID) {
+        if (confirm("Are you sure you want to delete ...?")) {
+            Delete(CustomerID);
+        } else {
+            return false;
+        }
+    }
+
+
+    function Delete(CustomerID) {
+        var url = '@Url.Content("~/")' + "DemoGrid/Delete";
+
+        $.post(url, { ID: CustomerID }, function (data) {
+            if (data) {
+                oTable = $('#example').DataTable();
+                oTable.draw();
+            } else {
+                alert("Something Went Wrong!");
+            }
+        });
+    }
+
+</script>
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
@@ -16,37 +93,44 @@
             <h1></h1>
             <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Class</button>
         </div>
-        <div class="table-responsive overflow-auto">
-            <table class="table overflow-auto" id="myTable">
-                <thead>
-                    <tr>
-                        <th>Class Name</th>
-                        <th>Grade</th>
-                        <th>Adviser</th>
-                        <th>Class Size</th>
-                        <th>School Year</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(var classes in Model.Classes)
-                    {
-                        <tr class="bg-blue" onclick="redirectToIndex(@classes.Id)">
-                            <td class="pt-3 mt-1">@classes.ClassName</td>
-                            <td class="pt-3">@classes.Grade</td>
-                            <td class="pt-3">@classes.ClassSize</td>
-                            <td class="pt-3">@classes.AdviserName</td>
-                            <td class="pt-3">@classes.SchoolYear</td>
-                            <td class="pt-3">
-                                <i class="lni lni-trash-can" onclick="RemoveClass(@classes.Id)"></i>
-                            </td>
+        @if (successValue == 0)
+        {
+            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-exclamation-octagon-fill"></i>
+                <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+        }
+        else if (successValue == 1)
+        {
+            <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-check-circle-fill"></i>
+                <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @{
+            Constants.ViewDataErrorHandling.Success = -1;
+            Constants.ViewDataErrorHandling.ErrorMessage = null;
+        }
+        <div class="container">
+            <br />
+            <div style="width:90%; margin:0 auto;">               
+                <table id="table" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Class Name</th>
+                            <th>Adviser</th>
+                            <th>Grade</th>
+                            <th>Class Size</th>
+                            <th>School Year</th>
                         </tr>
-                        <tr id="spacing-row">
-                            <td> </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <!--Modal for Adding Class-->
@@ -62,29 +146,29 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="mb-3">
                             <label for="recipient-name" class="col-form-label">Class Name:</label>
-                            <input type="text" class="form-control" id="recipient-name" asp-for="ClassName" >
-                            <span asp-validation-for="ClassName" class="text-danger"></span>
+                            <input type="text" class="form-control" id="recipient-name" asp-for="classname" >
+                            <span asp-validation-for="classname" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Grade:</label>
-                            <input type="text" class="form-control" id="recipient-name" asp-for="Grade" >
-                            <span asp-validation-for="Grade" class="text-danger"></span>
+                            <input type="text" class="form-control" id="recipient-name" asp-for="grade" >
+                            <span asp-validation-for="grade" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Class Size:</label>
-                            <input type="text" class="form-control" id="recipient-name" asp-for="ClassSize" >
-                            <span asp-validation-for="ClassSize" class="text-danger"></span>
+                            <input type="text" class="form-control" id="recipient-name" asp-for="classsize" >
+                            <span asp-validation-for="classsize" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Adviser:</label>
-                            <select class="form-select" aria-label="Default select example" asp-for="Adviser" >
+                            <select class="form-select" aria-label="Default select example" asp-for="adviser" >
                                 <option selected>Open this select menu</option>
-                                @foreach (var teacher in Model.Teachers)
+                                @foreach (var teacher in Model.teachers)
                                 {
                                     <option value="@teacher.Id">@teacher.FirstName @teacher.MiddleName @teacher.LastName</option>
                                 }
                             </select>
-                            <span asp-validation-for="Adviser" class="text-danger"></span>
+                            <span asp-validation-for="adviser" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -23,7 +23,7 @@ namespace Basecode.Data.Models
         public IFormFile? BirthCertificateFile { get; set; }
         [Required(ErrorMessage = "Gender is Required.")]
         public string sex { get; set; }
-        [Required(ErrorMessage = "Grade is Required.")]
+        [Required(ErrorMessage = "grade is Required.")]
         public  int GradeEnrolled { get; set; }        
         public string? LRN { get; set; }
         public IFormFile? CGMFile { get; set; }

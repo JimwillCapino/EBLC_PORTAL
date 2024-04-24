@@ -8,12 +8,12 @@ namespace Basecode.Data.ViewModels
 {
     public class ClassInitView
     {
-        public int Id { get; set; }
-        public string AdviserId { get; set; }
-        public int Grade { get; set; }
-        public int ClassSize { get; set; }
-        public string? ClassName { get; set; }
-        public string AdviserName { get; set; }
-        public string? SchoolYear { get; set; }
+        public int id { get; set; }
+        public string adviserid { get; set; }
+        public int grade { get; set; }
+        public int classsize { get; set; }
+        public string? classname { get; set; }
+        public string advisername { get; set; }
+        public string? schoolyear { get; set; }
     }
 }

@@ -157,7 +157,7 @@ namespace Basecode_WebApp.Controllers
         {
             var Schedule = Request.Form["datetime"];
             DateTime parseSched = DateTime.Parse(Schedule);
-            int id = Int32.Parse(Request.Form["Id"]);
+            int id = Int32.Parse(Request.Form["id"]);
             try
             {
                 _newEnrolleeService.AddSchedule(id, parseSched);
@@ -323,21 +323,102 @@ namespace Basecode_WebApp.Controllers
                 Console.WriteLine(ex);
                 return RedirectToAction("Index");
             }
-        }
+        }       
         public async Task<IActionResult> ManageClass()
         {
+            ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+            ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
             var classes = await _classManagementService.GetAllClass();
             return View(classes);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ManageClassDataTable()
+        {
+            //var classes = await _classManagementService.GetAllClass();
+            //return View(classes);
+            try
+            {
+                var draw = int.Parse(Request.Form["draw"]);
+                var start = int.Parse(Request.Form["start"]);
+                var length = int.Parse(Request.Form["length"]);
+                var searchValue = Request.Form["search[value]"];
+
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                // Sort Column Direction (asc, desc)  
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+
+                //Paging Size (10,25,50,100)  
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int recordsTotal = 0;
+
+                // Getting all Customer data  
+                var customerData = await _classManagementService.GetAllClass();
+
+                //Sorting
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    if (sortColumn.Equals("classname"))
+                    {
+                        customerData.classes = sortColumnDirection.ToLower() == "asc" ? customerData.classes.OrderBy(p => p.classname).ToList() :
+                            customerData.classes.OrderByDescending(p => p.classname).ToList();
+                    }
+                    else if (sortColumn.Equals("advisername"))
+                    {
+                        customerData.classes = sortColumnDirection.ToLower() == "asc" ? customerData.classes.OrderBy(p => p.advisername).ToList():
+                            customerData.classes.OrderByDescending(p => p.advisername).ToList();
+                    }
+                    else if (sortColumn.Equals("grade"))
+                    {
+                        customerData.classes = sortColumnDirection.ToLower() == "asc" ? customerData.classes.OrderBy(p => p.grade).ToList() :
+                           customerData.classes.OrderByDescending(p => p.grade).ToList();
+                    }
+                    else if (sortColumn.Equals("classsize"))
+                    {
+                        customerData.classes = sortColumnDirection.ToLower() == "asc" ? customerData.classes.OrderBy(p => p.classsize).ToList() :
+                           customerData.classes.OrderByDescending(p => p.grade).ToList();
+                    }
+                    else if (sortColumn.Equals("schoolyear"))
+                    {
+                        customerData.classes = sortColumnDirection.ToLower() == "asc" ? customerData.classes.OrderBy(p => p.schoolyear).ToList():
+                          customerData.classes.OrderByDescending(p => p.schoolyear).ToList();
+                    }
+
+                }
+                //Search  
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    customerData.classes = customerData.classes.Where(m => m.classname.ToLower().Contains(searchValue.ToString().ToLower())
+                     || m.grade.ToString().Equals(searchValue) || m.grade.ToString().Equals(searchValue)
+                     || m.schoolyear.ToLower().Contains(searchValue.ToString().ToLower()) || m.advisername.ToLower().Contains(searchValue.ToString().ToLower())).ToList();
+                }
+
+                //total number of rows count   
+                recordsTotal = customerData.classes.Count();
+                //Paging   
+                var data = customerData.classes.Skip(skip).Take(pageSize).ToList();
+                //Returning Json Data  
+                var test = Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
+                return test;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }       
         public IActionResult AddClass(Class inputclass)
         {
             try
-            {              
+            {
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Class created successfully!";
                 _classManagementService.AddClass(inputclass);
                 return RedirectToAction("ManageClass");
             }
             catch (Exception ex)
             {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 ViewBag.Success = false;
                 Console.WriteLine(ex);
                 return RedirectToAction("Index");
@@ -653,6 +734,12 @@ namespace Basecode_WebApp.Controllers
                 if(documentType == 0)
                 {
                     studentCard.StudentDetails = await _studentManagementService.GetStudentGrades(StudentId, SchoolYear);
+                    if(studentCard.StudentDetails.studentClass == null)
+                    {
+                        Constants.ViewDataErrorHandling.Success = 0;
+                        Constants.ViewDataErrorHandling.ErrorMessage = "The student is currently not added to any class.";
+                        return RedirectToAction("StudentInfo", new { student_Id = StudentId });
+                    }
                     var document = new Rotativa.AspNetCore.ViewAsPdf("PDFView/ReportCardPDF", studentCard)
                     {
                         //FileName = studentCard.StudentDetails.Student.LastName+"_"+ studentCard.StudentDetails.Student.FirstName+"Report_Card.pdf",

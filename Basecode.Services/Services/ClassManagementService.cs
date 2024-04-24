@@ -124,8 +124,8 @@ namespace Basecode.Services.Services
                 ClassDetailsViewModel classDetailsViewModel = new ClassDetailsViewModel();
                 var classes = await _repository.GetAllClass();
                 var teachers = await _repository.GetAllTeachers();
-                classDetailsViewModel.Classes = classes;
-                classDetailsViewModel.Teachers = teachers;
+                classDetailsViewModel.classes = classes;
+                classDetailsViewModel.teachers = teachers;
                 return classDetailsViewModel;
             }
             catch (Exception ex)
