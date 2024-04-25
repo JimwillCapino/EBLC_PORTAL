@@ -223,7 +223,7 @@ namespace Basecode_WebApp.Controllers
         {
             ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
             ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
-            return View(_subjectService.GetSubjects());
+            return View();
         }
         [HttpPost]
         public IActionResult ManageSubjectsDataTable()
