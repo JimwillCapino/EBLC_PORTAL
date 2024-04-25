@@ -281,21 +281,15 @@ namespace Basecode_WebApp.Controllers
             {
                 throw;
             }
-        }
-
-        [HttpPost]
-        public IActionResult AddSubject()
+        }        
+        public IActionResult AddSubject(SubjectViewModel subjectview)
         {
             try
-            {
-                var subname = Request.Form["name"];
-                var grade = Int32.Parse(Request.Form["grade"]);
-                var HasChildValue = Request.Form["HasChild"];
-                bool HasChild = bool.Parse(HasChildValue);
+            {                
                 var subject = new Subject {
-                    Subject_Name = subname,
-                    Grade = grade,
-                    HasChild = HasChild
+                    Subject_Name = subjectview.subjectname,
+                    Grade = subjectview.grade,
+                    HasChild = subjectview.haschild
                 };                
                 var id = _subjectService.AddSubject(subject);
                 var headSubject = new HeadSubject
@@ -304,9 +298,9 @@ namespace Basecode_WebApp.Controllers
                 };
                 _subjectService.AddHeadSubejct(headSubject);
 
-                if(HasChild)
+                if(subjectview.haschild)
                 {
-                    return RedirectToAction("AddChildSubjectForm", new { headId =id, grade =grade});
+                    return RedirectToAction("AddChildSubjectForm", new { headId =id, grade = subjectview.grade });
                 }
                 _subjectService.SaveDbChanges();
                 return RedirectToAction("ManageSubjects");
