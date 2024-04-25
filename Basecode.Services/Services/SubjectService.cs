@@ -142,13 +142,13 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
-        public void AddChildSubject(ChildSubjectView childSubject)
+        public void AddChildSubject(ChildSubjectContainer childSubject)
         {
             try
             {
                 Subject subject = new Subject();
                 ChildSubject childSub = new ChildSubject();
-                var HeadSub = _subjectRepository.GetSubjectById(childSubject.Id);
+                var HeadSub = _subjectRepository.GetSubjectById(childSubject.HeadId);
                 subject.Subject_Name = childSubject.Name;
                 subject.Grade = HeadSub.Grade;
                 subject.HasChild = false;
@@ -158,6 +158,21 @@ namespace Basecode.Services.Services
                 childSub.HeadSubjectId = HeadSub.Subject_Id;
                 childSub.Subject_Id = id;
                 _subjectRepository.AddChildSubject(childSub);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public void UpdateChildSubject(ChildSubjectView subject)
+        {
+            try
+            {
+                var updateSubject = _subjectRepository.GetSubjectById(subject.Id);
+                updateSubject.Subject_Name = subject.Name;
+                _subjectRepository.UdpateSubject(updateSubject);
+                _subjectRepository.SaveDbChanges();
             }
             catch (Exception ex)
             {
