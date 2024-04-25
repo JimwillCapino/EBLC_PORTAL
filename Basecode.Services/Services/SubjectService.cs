@@ -142,5 +142,28 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
+        public void AddChildSubject(ChildSubjectView childSubject)
+        {
+            try
+            {
+                Subject subject = new Subject();
+                ChildSubject childSub = new ChildSubject();
+                var HeadSub = _subjectRepository.GetSubjectById(childSubject.Id);
+                subject.Subject_Name = childSubject.Name;
+                subject.Grade = HeadSub.Grade;
+                subject.HasChild = false;
+
+                int id = _subjectRepository.AddSubject(subject);
+
+                childSub.HeadSubjectId = HeadSub.Subject_Id;
+                childSub.Subject_Id = id;
+                _subjectRepository.AddChildSubject(childSub);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
     }
 }

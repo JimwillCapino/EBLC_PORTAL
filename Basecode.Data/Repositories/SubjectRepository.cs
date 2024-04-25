@@ -266,5 +266,17 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        public void UdpateSubject(Subject subject)
+        {
+            try
+            {
+                _context.Subject.Update(subject);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }

@@ -20,6 +20,7 @@ namespace Basecode.Services.Interfaces
         public ChildSubjectContainer GetChildSubject(int headId);
         public Subject GetSubject(int id);
         public List<SubjectViewModel> GetSubjectsForDataTable();
+        public void AddChildSubject(ChildSubjectView childSubject);
     }
 
 }

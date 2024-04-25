@@ -9,8 +9,8 @@ namespace Basecode.Data.ViewModels
     public class SubjectViewModel
     {
         public int subjectid { get; set; }
-        public string? subjectname { get; set; }
-        public int? grade { get; set; }
+        public string subjectname { get; set; }
+        public int grade { get; set; }
         public bool haschild { get; set; }
     }
 }

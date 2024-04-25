@@ -243,20 +243,20 @@ namespace Basecode_WebApp.Controllers
                 int recordsTotal = 0;
 
                 // Getting all Customer data  
-                var customerData = _subjectService.GetSubjectsForDataTable();
+                var customerData = _subjectService.GetSubjectsForDataTable().AsEnumerable();
 
                 //Sorting
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
                     if (sortColumn.Equals("subjectname"))
                     {
-                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.subjectname).ToList() :
-                            customerData.OrderByDescending(p => p.subjectname).ToList();
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.subjectname) :
+                            customerData.OrderByDescending(p => p.subjectname);
                     }
                     else if (sortColumn.Equals("grade"))
                     {
-                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.grade).ToList() :
-                            customerData.OrderByDescending(p => p.grade).ToList();
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.grade):
+                            customerData.OrderByDescending(p => p.grade);
                     }
                     
                 }
@@ -264,13 +264,13 @@ namespace Basecode_WebApp.Controllers
                 if (!string.IsNullOrEmpty(searchValue))
                 {
                     customerData = customerData.Where(m => m.subjectname.ToLower().Contains(searchValue.ToString().ToLower())
-                     || m.grade.ToString().Equals(searchValue)).ToList();
+                     || m.grade.ToString().Equals(searchValue));
                 }
 
                 //total number of rows count   
                 recordsTotal = customerData.Count();
                 //Paging   
-                var data = customerData.Skip(skip).Take(pageSize).ToList();
+                var data = customerData.Skip(skip).Take(pageSize);
                 //Returning Json Data  
                 var test = Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
                 return test;
