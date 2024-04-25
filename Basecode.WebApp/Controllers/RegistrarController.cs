@@ -221,6 +221,8 @@ namespace Basecode_WebApp.Controllers
         }
         public IActionResult ManageSubjects()
         {
+            ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+            ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
             return View(_subjectService.GetSubjects());
         }
         [HttpPost]
@@ -372,6 +374,8 @@ namespace Basecode_WebApp.Controllers
         {
             try
             {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
                 return View(_subjectService.GetChildSubject(headId));
             }
             catch (Exception ex)
@@ -380,7 +384,85 @@ namespace Basecode_WebApp.Controllers
                 Console.WriteLine(ex);
                 return RedirectToAction("Index");
             }
-        }       
+        } 
+        public IActionResult AddSingleChildSubject(ChildSubjectContainer childSubject)
+        {
+
+            try
+            {
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Subject created successfully!";
+                _subjectService.AddChildSubject(childSubject);
+                return RedirectToAction("ViewChildSubject", new { headId = childSubject.HeadId });
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("ViewChildSubject", new { headId = childSubject.HeadId });
+            }
+        }
+        public IActionResult UpdateChildSubject(ChildSubjectContainer childSubject)
+        {
+            try
+            {
+                var sub = new ChildSubjectView()
+                {
+                    Id = childSubject.ChildSubId,
+                    Name = childSubject.Name
+                };
+                _subjectService.UpdateChildSubject(sub);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Subject updated!";
+                return RedirectToAction("ViewChildSubject", new { headId = childSubject.HeadId});
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("ViewChildSubject", new { headId = childSubject.HeadId });
+            }
+        }
+        public IActionResult RemoveSubject(int id, int headid)
+        {
+            try
+            {
+                _subjectService.RemoveSubject(id);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Subject Removed!";
+                return RedirectToAction("ViewChildSubject", new { headId = headid });
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("ViewChildSubject", new { headId = headid });
+            }
+        }
+        public IActionResult RemoveSubjectHead(int id)
+        {
+            try
+            {
+                _subjectService.RemoveSubject(id);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Subject Removed!";
+                return RedirectToAction("ManageSubjects");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("ManageSubjects");
+            }
+        }
         public async Task<IActionResult> ManageClass()
         {
             ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
