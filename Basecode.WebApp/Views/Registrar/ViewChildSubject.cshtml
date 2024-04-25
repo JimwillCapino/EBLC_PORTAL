@@ -4,7 +4,9 @@
 @{
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model ChildSubjectContainer
 <div class="wrapper">
@@ -15,7 +17,28 @@
         <div class="row">
             <div class="col">
                 <div class="table-responsive overflow-auto">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    @if (successValue == 0)
+                    {
+                        <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                            <i class="bi-exclamation-octagon-fill"></i>
+                            <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+
+                    }
+                    else if (successValue == 1)
+                    {
+                        <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                            <i class="bi-check-circle-fill"></i>
+                            <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    @{
+                        Constants.ViewDataErrorHandling.Success = -1;
+                        Constants.ViewDataErrorHandling.ErrorMessage = null;
+                    }
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
                        Add Child Subject
                     </button>
 
@@ -32,8 +55,8 @@
                                 <tr class="bg-blue">
                                     <td class="pt-3 mt-1">@subject.Name</td>
                                     <td class="pt-3">
-                                        <i class="lni lni-cross-circle px-3"></i>
-
+                                        <a asp-action="RemoveSubject" asp-route-id="@subject.Id" asp-route-headid="@Model.HeadId" class='btn btn-danger'>Delete</a>
+                                        <a href='#' class='btn btn-success' data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="setValues('@subject.Id','@subject.Name')">Edit</a>
                                     </td>
                                 </tr>
                                 <tr id="spacing-row">
@@ -54,18 +77,50 @@
                     <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form>
+                <form asp-action="AddSingleChildSubject">
                     <div class="modal-body">
+                        <input type="hidden" asp-for="HeadId"/>
                         <div class="mb-3">
                             <label for="recipient-name" class="col-form-label">Subject Name:</label>
-                            <input type="text" class="form-control" id="recipient-name" asp-for="">
+                            <input type="text" class="form-control" id="recipient-name" asp-for="Name">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn btn-warning">Save changes</button>
                     </div>
                 </form>                
             </div>
         </div>
     </div>
+    <!-- Edit Modal -->
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="UpdateChildSubject">
+                    <div class="modal-body">
+                        <input type="hidden" id ="hidden" asp-for="ChildSubId" />
+                        <input type="hidden" asp-for="HeadId" />
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Subject Name:</label>
+                            <input type="text" class="form-control" id="name" asp-for="Name">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-warning">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function setValues(subId, name) {
+            document.getElementById("hidden").value = subId;
+            document.getElementById("name").value = name;
+        }
+    </script>
