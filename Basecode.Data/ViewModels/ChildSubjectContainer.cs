@@ -12,6 +12,7 @@ namespace Basecode.Data.ViewModels
         public int HeadId { get; set; }
         [Required]
         public string Name { get; set; }
+        public int ChildSubId { get; set; }
         public List<ChildSubjectView> ChildSubjects { get; set; }
     }
 }
