@@ -10,6 +10,19 @@
 @using Basecode.Data.ViewModels
 @model ClassDetailsViewModel
 <link rel="stylesheet" href="/css/TableInfo.css" />
+<style>
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px; /* Adjust vertical spacing */
+        table-layout: fixed;
+    }
+
+    th, td {
+        padding: 10px; /* Adjust padding as needed */
+        text-align: center; /* Center align content */
+    }
+</style>
 <script>
     $(document).ready(function () {
         var table = $("#table").DataTable({
@@ -89,10 +102,7 @@
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
         <h1>Manage Class</h1>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1></h1>
-            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Class</button>
-        </div>
+
         @if (successValue == 0)
         {
             <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
@@ -116,7 +126,11 @@
         }
         <div class="container">
             <br />
-            <div style="width:90%; margin:0 auto;">               
+            <div style="width:90%; margin:0 auto;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1></h1>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Class</button>
+                </div>
                 <table id="table" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
                     <thead>
                         <tr>
@@ -162,7 +176,7 @@
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Adviser:</label>
                             <select class="form-select" aria-label="Default select example" asp-for="adviser" >
-                                <option selected>Open this select menu</option>
+                                <option value="" selected>Open this select menu</option>
                                 @foreach (var teacher in Model.teachers)
                                 {
                                     <option value="@teacher.Id">@teacher.FirstName @teacher.MiddleName @teacher.LastName</option>

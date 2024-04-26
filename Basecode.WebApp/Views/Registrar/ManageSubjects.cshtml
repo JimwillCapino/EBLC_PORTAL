@@ -7,8 +7,8 @@
     int successValue = (int)ViewData["Success"];
 }
 @using Basecode.Data
-@using Basecode.Data.Models
-@model List<Subject> 
+@using Basecode.Data.ViewModels
+@model SubjectViewModel
 <script>
     $(document).ready(function () {
         var table = $("#table").DataTable({
@@ -116,31 +116,34 @@
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Input Subject Details</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                @using (Html.BeginForm("AddSubject","Registrar",FormMethod.Post))
-                {
+                <form asp-action="AddSubject">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="recipient-name" class="col-form-label">Subject Name:</label>
-                            <input type="text" class="form-control" id="recipient-name" name="name">
+                            <input type="text" class="form-control" id="recipient-name" asp-for="subjectname">
+                            <span asp-validation-for="subjectname" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Grade:</label>
-                            <input type="text" class="form-control" id="recipient-name" name="grade">
+                            <input type="text" class="form-control" id="recipient-name" asp-for="grade">
+                            <span asp-validation-for="grade" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Has Child Subject:</label>
-                            <select class="form-select" aria-label="Default select example" name="HasChild">
+                            <select class="form-select" aria-label="Default select example" asp-for="haschild">
                                 <option selected>Click to open menu</option>
                                 <option value="false">False</option>
-                                <option value="true">True</option>                                
+                                <option value="true">True</option>
                             </select>
+                            <span asp-validation-for="haschild" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-danger">Add Subject</button>
                     </div>
-                }                
+                </form>
             </div>
         </div>
     </div>
@@ -153,3 +156,8 @@
         window.location.href = '@Url.Action("RemoveSubjectHead", "Registrar")?id=' + id;
     }
 </script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
