@@ -554,7 +554,7 @@ namespace Basecode_WebApp.Controllers
                 Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 ViewBag.Success = false;
                 Console.WriteLine(ex);
-                return RedirectToAction("Index");
+                return RedirectToAction("ManageClass");
             }
         }
         public async Task<IActionResult> ClassDetails(int classId)
