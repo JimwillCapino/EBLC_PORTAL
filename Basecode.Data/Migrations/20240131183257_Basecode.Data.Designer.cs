@@ -89,15 +89,15 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("firstname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("lastname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MiddleName")
+                    b.Property<string>("middlename")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -105,7 +105,7 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("ProfilePic")
+                    b.Property<byte[]>("profilepic")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("email")
@@ -189,7 +189,7 @@ namespace Basecode.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 

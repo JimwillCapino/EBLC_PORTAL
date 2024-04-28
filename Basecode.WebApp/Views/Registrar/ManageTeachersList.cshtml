@@ -48,11 +48,11 @@
                      @foreach (var teacher in Model)
                         {
                             var s="";
-                            if (teacher.Gender == "F") s = "Female";                              
+                            if (teacher.gender == "F") s = "Female";                              
                             else s = "Male";                                      
-                                <tr class="bg-blue" onclick="redirectToIndex(@teacher.Id)">
-                                    <td class="pt-3 mt-1">@teacher.FirstName @teacher.MiddleName @teacher.LastName</td>
-                                    <td class="pt-3 mt-1">@teacher.Email</td>
+                                <tr class="bg-blue" onclick="redirectToIndex(@teacher.id)">
+                                    <td class="pt-3 mt-1">@teacher.firstname @teacher.middlename @teacher.lastname</td>
+                                    <td class="pt-3 mt-1">@teacher.email</td>
                                     <td class="pt-3">@s</td>                                 
                                 </tr>
                                 <tr id="spacing-row">

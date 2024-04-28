@@ -13,6 +13,7 @@ namespace Basecode.Data.ViewModels
         public List<TeacherViewModel> teachers { get; set; }
         [Required]
         [StringLength(30, MinimumLength = 3, ErrorMessage = "The length of the string must be between 3 and 50 characters.")]
+        public int classid { get; set; }
         public string classname { get; set; }
         [Required]
         public string adviser { get; set; }

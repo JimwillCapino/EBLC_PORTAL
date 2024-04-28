@@ -23,12 +23,12 @@ namespace Basecode.Data.ViewModels
         public string PhoneNumber { get; set; }
         [Required(ErrorMessage = "Address is Required.")]
         public string Address { get; set; }
-        [Required(ErrorMessage = "Email is Required.")]
+        [Required(ErrorMessage = "email is Required.")]
         [EmailAddress]
         public string Email { get; set; }
         [Required(ErrorMessage = "Birthday is Required.")]
         public DateTime ParentBirthday { get; set; }
-        [Required(ErrorMessage = "Gender is Required.")]
+        [Required(ErrorMessage = "gender is Required.")]
         public string Parentsex { get; set; }
     }
 }

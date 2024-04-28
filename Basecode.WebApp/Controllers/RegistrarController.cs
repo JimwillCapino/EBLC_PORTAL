@@ -464,6 +464,42 @@ namespace Basecode_WebApp.Controllers
             var classes = await _classManagementService.GetAllClass();
             return View(classes);
         }
+        public IActionResult RemoveClass(int classId)
+        {
+            try
+            {
+                _classManagementService.RemoveClass(classId);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Class Removed Successfully!";
+                return RedirectToAction("ManageClass");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("ClassDetails", new { classId = classId });
+            }
+        }
+        public IActionResult UpdateClass(ClassViewModel classview)
+        {
+            try
+            {
+                _classManagementService.UpdateClass(classview);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Class updated!";
+                return RedirectToAction("ClassDetails", new { classId = classview.Id });
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("ClassDetails", new { classId = classview.Id });
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> ManageClassDataTable()
         {
@@ -561,12 +597,15 @@ namespace Basecode_WebApp.Controllers
         {
             try
             {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
                 var classdetails = await _classManagementService.GetClassViewModelById(classId);
                 return View(classdetails);
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
                 return RedirectToAction("ManageClass");
             }
@@ -647,21 +686,7 @@ namespace Basecode_WebApp.Controllers
                 Console.WriteLine(ex);
                 return RedirectToAction("ManageClass");
             }
-        }
-        public IActionResult RemoveClass(int classId)
-        {
-            try
-            {
-                _classManagementService.RemoveClass(classId);
-                return RedirectToAction("ManageClass");
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Success = false;
-                Console.WriteLine(ex);
-                return RedirectToAction("ManageClass");
-            }
-        }
+        }       
         public IActionResult Settings()
         {
             return View(_settingsService.GetSettings());
@@ -875,7 +900,7 @@ namespace Basecode_WebApp.Controllers
                     }
                     var document = new Rotativa.AspNetCore.ViewAsPdf("PDFView/ReportCardPDF", studentCard)
                     {
-                        //FileName = studentCard.StudentDetails.Student.LastName+"_"+ studentCard.StudentDetails.Student.FirstName+"Report_Card.pdf",
+                        //FileName = studentCard.StudentDetails.Student.lastname+"_"+ studentCard.StudentDetails.Student.firstname+"Report_Card.pdf",
                         PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
                         PageMargins = { Left = 10, Bottom = 10, Right = 10, Top = 10 }
                     };

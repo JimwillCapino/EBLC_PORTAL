@@ -209,5 +209,26 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
+        public void UpdateClass(ClassViewModel classdetails)
+        {
+            try
+            {
+                var classTable = new Class()
+                {
+                    Id = classdetails.Id,
+                    ClassName = classdetails.ClassName,
+                    Adviser = classdetails.Adviser,
+                    Grade = classdetails.Grade,
+                    SchoolYear = classdetails.SchoolYear,
+                    ClassSize = classdetails.ClassSize
+                };
+                _repository.UpdateClass(classTable);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
     }
 }

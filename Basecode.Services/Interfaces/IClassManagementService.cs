@@ -22,5 +22,6 @@ namespace Basecode.Services.Interfaces
         public void RemoveClass(int id);
         public List<TeacherClassDetails> GetTeacherClassDetails(string teacher_Id);
         public List<HomeRoom> GetTeacherHomeRoom(string teacher_Id);
+        public void UpdateClass(ClassViewModel classdetails);
     }
 }

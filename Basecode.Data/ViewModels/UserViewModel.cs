@@ -26,7 +26,7 @@ namespace Basecode.Data.ViewModels
         [JsonProperty(PropertyName = "last_name")]
         public string LastName { get; set; }
 
-        [Display(Name = "Email")]
+        [Display(Name = "email")]
         [JsonProperty(PropertyName = "email")]
         public string EmailAddress { get; set; }
 

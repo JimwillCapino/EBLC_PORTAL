@@ -64,7 +64,7 @@ namespace Basecode.Data
             // Messages
             public const string BadRequest = "Bad Request";
             public const string InvalidRole = "Invalid Role";
-            public const string EmailSuccess = "Email Successfully Sent!";
+            public const string EmailSuccess = "email Successfully Sent!";
         }
 
         public class Attachment
@@ -146,7 +146,7 @@ namespace Basecode.Data
             {
                 get
                 {
-                    return "JumpStart Email";
+                    return "JumpStart email";
                 }
             }
         }

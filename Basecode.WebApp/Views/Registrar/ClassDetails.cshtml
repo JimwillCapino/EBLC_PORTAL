@@ -4,7 +4,9 @@
 @{
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model ClassViewModel
 <link rel="stylesheet" href="/css/TableInfo.css" />
@@ -20,13 +22,55 @@
 </script>
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main p-5"> 
-        <h1>
-            Class: @Model.ClassName
-        </h1>
-        <p class="lead">Adviser: @Model.AdviserName</p>
-        <p class="lead">Grade Level: @Model.Grade</p>
-        <p class="lead">Class Size: @Model.ClassSize</p>
+    <div class="main p-5">
+        @if (successValue == 0)
+        {
+            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-exclamation-octagon-fill"></i>
+                <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+        }
+        else if (successValue == 1)
+        {
+            <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-check-circle-fill"></i>
+                <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @{
+            Constants.ViewDataErrorHandling.Success = -1;
+            Constants.ViewDataErrorHandling.ErrorMessage = null;
+        }
+        <div class="card">
+            <div class="card-body">
+                <div class="row">                   
+                    <div class="col-sm-2">
+                        @if (Model.ProfilePic == null)
+                        {
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                                 class="rounded-circle img-fluid" style="width: 150px;">
+                        }
+                        else
+                        {
+                            <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProfilePic)" alt="avatar"
+                                 class="rounded-circle img-fluid" style="width: 150px;">
+                        }
+                    </div>
+                    <div class="col">
+                        <h3>
+                            Class: @Model.ClassName
+                        </h3>
+                        <p>Adviser: @Model.AdviserName</p>
+                        <p>Grade Level: @Model.Grade</p>
+                        <p>Class Size: @Model.ClassSize</p>
+                        <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal2">Edit</a>  <a asp-action="RemoveClass" asp-route-classId="@Model.Id" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>     
         <div class="container">
             <div class="row">
                 <div class="col">
@@ -82,7 +126,10 @@
                                 }                                                         
                             </tbody>
                         </table>
-                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal1">Add Students</button>
+                        @if(Model.ClassStudents.Count < Model.ClassSize)
+                        {
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal1">Add Students</button>
+                        }                        
                     </div>
                 </div>
             </div>
@@ -102,8 +149,8 @@
                         <input type="hidden" value="@Model.Id" name="classId"/>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Subject:</label>
-                            <select class="form-select" aria-label="Default select example" name="subjectId">
-                                <option selected>Open this select menu</option>
+                            <select class="form-select" aria-label="Default select example" name="subjectId" required>
+                                <option value="" selected>Open this select menu</option>
                                 @foreach (var subs in Model.Subjects)
                                 {
                                     <option value="@subs.Subject_Id">@subs.Subject_Name</option>
@@ -112,11 +159,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Teacher:</label>
-                            <select class="form-select" aria-label="Default select example" name="teacherId">
+                            <select class="form-select" aria-label="Default select example" name="teacherId" required>
                                 <option selected>Open this select menu</option>
                                 @foreach (var teacher in Model.Teachers)
                                 {
-                                    <option value="@teacher.Id">@teacher.FirstName @teacher.MiddleName @teacher.LastName</option>
+                                    <option value="@teacher.id">@teacher.firstname @teacher.middlename @teacher.lastname</option>
                                 }
                             </select>
                         </div>
@@ -143,8 +190,8 @@
                         <input type="hidden" value="@Model.Id" name="classId" />
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Student Name:</label>
-                            <select class="form-select" aria-label="Default select example" name="studentId">
-                                <option selected>Open this select menu</option>
+                            <select class="form-select" aria-label="Default select example" name="studentId" required>
+                                <option value="" selected>Open this select menu</option>
                                 @foreach (var student in Model.Students)
                                 {
                                     <option value="@student.Student_Id">@student.FirstName @student.MiddleName, @student.LastName</option>
@@ -158,6 +205,54 @@
                     </div>
                 }
             </div>
+        </div>
+    </div>
+</div>
+<!--Modal for Editing Class-->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Class Details</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="UpdateClass">
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id"/>
+                    <input type="hidden" asp-for="SchoolYear" />
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Class Name:</label>
+                        <input type="text" class="form-control" id="recipient-name" asp-for="ClassName">
+                        <span asp-validation-for="ClassName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Grade:</label>
+                        <input type="text" class="form-control" id="recipient-name" asp-for="Grade">
+                        <span asp-validation-for="Grade" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Class Size:</label>
+                        <input type="text" class="form-control" id="recipient-name" asp-for="ClassSize">
+                        <span asp-validation-for="ClassSize" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Adviser:</label>
+                        <select class="form-select" aria-label="Default select example" asp-for="Adviser">
+                            <option value="" selected>Open this select menu</option>
+                            @foreach (var teacher in Model.Teachers)
+                            {
+                                <option value="@teacher.id">@teacher.firstname @teacher.middlename @teacher.lastname</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Adviser" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Edit Class</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

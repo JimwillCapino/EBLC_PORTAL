@@ -101,8 +101,8 @@ namespace Basecode.Data.Repositories
             {
                 Id = userId,
                 UserName = username,
-                //FirstName = firstName,
-                //LastName = lastName,
+                //firstname = firstName,
+                //lastname = lastName,
             };
 
             Create(userEntity);

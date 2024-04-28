@@ -50,6 +50,19 @@ namespace Basecode.Data.Repositories
             {
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
+        }        
+        public void UpdateClass(Class classroom)
+        {
+            try
+            {
+                _context.Class.Update(classroom);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
         }
         public void RemoveClass(Class classroom)
         {
@@ -203,14 +216,14 @@ namespace Basecode.Data.Repositories
 
                 var classSubs = from classsub in classssubjects
                                 join subs in subjects on classsub.Subject_Id equals subs.Subject_Id
-                                join t in teachers on classsub.Teacher_Id equals t.Id
+                                join t in teachers on classsub.Teacher_Id equals t.id
                                 select new ClassSubjectViewModel
                                 {
                                     Id = classsub.Id,
                                     Subject_Id = subs.Subject_Id,
-                                    TeacherId = t.Id,
+                                    TeacherId = t.id,
                                     SubjectName = subs.Subject_Name,
-                                    TeacherName = t.FirstName+ " " +t.LastName
+                                    TeacherName = t.firstname+ " " +t.lastname
                                 };
                 return classSubs.ToList();
                                 
@@ -219,7 +232,7 @@ namespace Basecode.Data.Repositories
             {
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
-        }
+        }        
         public async Task<List<ClassInitView>> GetAllClass()
         {
             var classes = this.GetDbSet<Class>().ToList();
@@ -227,15 +240,15 @@ namespace Basecode.Data.Repositories
 
             var classesdetails = from c in classes
                                  join t in teachers
-                                 on c.Adviser equals t.Id
+                                 on c.Adviser equals t.id
                                  select new ClassInitView
                                  {
                                      id = c.Id,
-                                     adviserid = t.Id,
+                                     adviserid = t.id,
                                      grade = c.Grade,
                                      classsize = c.ClassSize,
                                      classname = c.ClassName,
-                                     advisername = t.FirstName + " " + t.LastName,
+                                     advisername = t.firstname + " " + t.lastname,
                                      schoolyear = c.SchoolYear,
                                  };
             return classesdetails.ToList();
@@ -246,16 +259,18 @@ namespace Basecode.Data.Repositories
             {
                 var selectedClass = this.GetDbSet<Class>().Find(id);
                 var teachers = await _teacherRepository.GetAllTeachersInitViewAsync();
-                var teacher = teachers.Find(t => t.Id == selectedClass.Adviser);
+                var teacher = teachers.Find(t => t.id == selectedClass.Adviser);
                 var studentsByGrade = this.GetStudents(selectedClass.Grade);
                 var classdetails = new ClassViewModel
                 {
                     Id = selectedClass.Id,
-                    Adviser = teacher.Id,
+                    Adviser = teacher.id,
                     ClassName = selectedClass.ClassName,
-                    AdviserName = teacher.FirstName+ " " + teacher.LastName,
+                    AdviserName = teacher.firstname+ " " + teacher.lastname,
                     ClassSize = selectedClass.ClassSize,
-                    Grade = selectedClass.Grade
+                    Grade = selectedClass.Grade,
+                    ProfilePic = teacher.profilepic,
+                    SchoolYear = selectedClass.SchoolYear
                 };
                 var studentExist = this.GetDbSet<ClassStudents>();
                 classdetails.Teachers = teachers;
@@ -347,7 +362,7 @@ namespace Basecode.Data.Repositories
                                         join s in studentsInClasses
                                         on c.Id equals s.Class_Id
                                         join t in teachers on 
-                                        c.Adviser equals t.Id
+                                        c.Adviser equals t.id
                                         select new ClassInitView
                                         {
                                             id = c.Id,
@@ -355,7 +370,7 @@ namespace Basecode.Data.Repositories
                                             grade = c.Grade,
                                             classsize = c.ClassSize,
                                             schoolyear = c.SchoolYear,
-                                            advisername = t.FirstName + " " + t.LastName,
+                                            advisername = t.firstname + " " + t.lastname,
                                         };
                 return unionClassDetails.ToList().FirstOrDefault();
             }
@@ -377,7 +392,7 @@ namespace Basecode.Data.Repositories
                                         join s in studentsInClasses
                                         on c.Id equals s.Class_Id
                                         join t in teachers on
-                                        c.Adviser equals t.Id
+                                        c.Adviser equals t.id
                                         select new ClassInitView
                                         {
                                             id = c.Id,
@@ -385,7 +400,7 @@ namespace Basecode.Data.Repositories
                                             grade = c.Grade,
                                             classsize = c.ClassSize,
                                             schoolyear = c.SchoolYear,
-                                            advisername = t.FirstName + " " + t.LastName,
+                                            advisername = t.firstname + " " + t.lastname,
                                         };
                 return unionClassDetails.ToList().FirstOrDefault().grade;
             }

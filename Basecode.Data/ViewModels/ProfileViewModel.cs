@@ -27,7 +27,7 @@ namespace Basecode.Data.ViewModels
         [Required]
         public string sex { get; set; }
         [Required]
-        [EmailAddress(ErrorMessage = "Invalid Email Address")]
+        [EmailAddress(ErrorMessage = "Invalid email Address")]
         public string Email { get; set; }
         [Required]
         public string Address { get; set; }

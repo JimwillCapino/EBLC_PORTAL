@@ -35,7 +35,7 @@ namespace Basecode.Data.Migrations
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "Email",
+                name: "email",
                 table: "NewEnrollee",
                 type: "nvarchar(max)",
                 nullable: false,
@@ -377,7 +377,7 @@ namespace Basecode.Data.Migrations
                 table: "UsersPortal");
 
             migrationBuilder.DropColumn(
-                name: "Email",
+                name: "email",
                 table: "NewEnrollee");
 
             migrationBuilder.DropColumn(

@@ -116,7 +116,7 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
             /// </summary>
             [Required]
             [EmailAddress]
-            [Display(Name = "Email")]
+            [Display(Name = "email")]
             public string Email { get; set; }
 
             /// <summary>
