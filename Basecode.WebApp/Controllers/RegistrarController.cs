@@ -63,7 +63,38 @@ namespace Basecode_WebApp.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            return View(await _usersService.SetRegisrarDashBoard());
+            ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+            ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
+            if (await _usersService.IsNewUser(_userManager.GetUserId(User)))
+            {
+                return RedirectToAction("RegistrarProfileRegistration");
+            }
+            var dashboard = await _usersService.SetRegisrarDashBoard();
+            dashboard.SchoolYear = _settingsService.GetSchoolYear();
+            return View(dashboard);
+        }     
+        public IActionResult RegistrarProfileRegistration()
+        {
+            ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+            ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
+            return View();
+        }
+        public async Task<IActionResult> UserSetUpRegistrar(ProfileViewModel profile)
+        {
+            try
+            {
+                profile.AspUserId = _userManager.GetUserId(User);
+                await _usersService.NewUserDetailsRegistration(profile);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Registrar's Profile created successfully!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                return RedirectToAction("RegistrarProfileRegistration");
+            }
         }
         public IActionResult StudentRecord()
         {
@@ -102,6 +133,24 @@ namespace Basecode_WebApp.Controllers
                 ViewBag.ErrorMessage = ex.Message;
                 return RedirectToAction("Index");
             }         
+        }
+        public IActionResult RemoveStudent(int studentId)
+        {
+            try
+            {
+                _studentService.RemoveStudent(studentId);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Student removed successfully!";
+                return RedirectToAction("StudentRecord");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("StudentRecord");
+            }
+
         }
         public async Task<IActionResult> EnrollAndPromoteStudent(int id)
         {
@@ -217,6 +266,97 @@ namespace Basecode_WebApp.Controllers
                 ViewBag.Success = false;
                 Console.WriteLine(ex);
                 return RedirectToAction("Index");
+            }
+        }
+        public async Task<IActionResult> RemoveTeacher(string aspid)
+        {
+            try
+            {
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Teacher Removed Successfully!";
+                await _teacherService.RemoveTeacher(aspid);
+                return RedirectToAction("ManageTeachersList");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("ManageTeachersList");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> ManageTeachersListDataTable()
+        {
+            try
+            {
+                var draw = int.Parse(Request.Form["draw"]);
+                var start = int.Parse(Request.Form["start"]);
+                var length = int.Parse(Request.Form["length"]);
+                var searchValue = Request.Form["search[value]"];
+
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                // Sort Column Direction (asc, desc)  
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+
+                //Paging Size (10,25,50,100)  
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int recordsTotal = 0;
+
+                // Getting all Customer data  
+                var customerData = await _teacherService.GetTeacherinitView();
+                var asEnumcustomerData = customerData.AsEnumerable();
+
+                //Sorting
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    if (sortColumn.Equals("firstname"))
+                    {
+                        asEnumcustomerData = sortColumnDirection.ToLower() == "asc" ? asEnumcustomerData.OrderBy(p => p.firstname) :
+                            asEnumcustomerData.OrderByDescending(p => p.firstname);
+                    }
+                    else if (sortColumn.Equals("middlename"))
+                    {
+                        asEnumcustomerData = sortColumnDirection.ToLower() == "asc" ? asEnumcustomerData.OrderBy(p => p.middlename) :
+                            asEnumcustomerData.OrderByDescending(p => p.middlename);
+                    }
+                    else if(sortColumn.Equals("lastname"))
+                    {
+                        asEnumcustomerData = sortColumnDirection.ToLower() == "asc" ? asEnumcustomerData.OrderBy(p => p.lastname) :
+                            asEnumcustomerData.OrderByDescending(p => p.lastname);
+                    }
+                    else if(sortColumn.Equals("gender"))
+                    {
+                        asEnumcustomerData = sortColumnDirection.ToLower() == "asc" ? asEnumcustomerData.OrderBy(p => p.gender) :
+                            asEnumcustomerData.OrderByDescending(p => p.gender);
+                    }
+                    else if (sortColumn.Equals("email"))
+                    {
+                        asEnumcustomerData = sortColumnDirection.ToLower() == "asc" ? asEnumcustomerData.OrderBy(p => p.email) :
+                            asEnumcustomerData.OrderByDescending(p => p.email);
+                    }
+
+                }
+                //Search  
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    asEnumcustomerData = customerData.Where(m => m.firstname.ToLower().Contains(searchValue.ToString().ToLower())
+                     || m.middlename.ToLower().Contains(searchValue.ToString().ToLower()) || m.lastname.ToLower().Contains(searchValue.ToString().ToLower()) ||
+                     m.gender.ToLower().Contains(searchValue.ToString().ToLower()) || m.email.ToLower().Contains(searchValue.ToString().ToLower()));
+                }
+
+                //total number of rows count   
+                recordsTotal = asEnumcustomerData.Count();
+                //Paging   
+                var data = asEnumcustomerData.Skip(skip).Take(pageSize);
+                //Returning Json Data  
+                var test = Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
+                return test;
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
         public IActionResult ManageSubjects()
@@ -392,8 +532,7 @@ namespace Basecode_WebApp.Controllers
             catch (Exception ex)
             {
                 Constants.ViewDataErrorHandling.Success = 0;
-                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;                
                 Console.WriteLine(ex);
                 return RedirectToAction("ViewChildSubject", new { headId = childSubject.HeadId });
             }
@@ -636,21 +775,24 @@ namespace Basecode_WebApp.Controllers
                 Console.WriteLine(ex);
                 return RedirectToAction("ManageClass");
             }
-        }
-        [HttpPost]
-        public IActionResult AddClassStudents()
+        }       
+        public IActionResult AddClassStudents(ClassViewModel model)
         {
             try
-            {
-                var classId = Int32.Parse(Request.Form["classId"]);
-                var studentid = Int32.Parse(Request.Form["studentId"]);
-                var classStudent = new ClassStudents
+            {                            
+                var students = new List<ClassStudents>();
+                foreach(var student in model.SelectedStudents)
                 {
-                    Class_Id = classId,
-                    Student_Id = studentid,
-                };
-                _classManagementService.AddClassStudent(classStudent);
-                return RedirectToAction("ClassDetails", new { classId = classId });
+                    var cs = new ClassStudents
+                    {
+                        Class_Id = model.Id,
+                        Student_Id = student
+                    };
+                    students.Add(cs);
+                }
+               // _classManagementService.AddClassStudent(classStudent);
+                _classManagementService.AddClassStudents(students);
+                return RedirectToAction("ClassDetails", new { classId = model.Id });
             }
             catch (Exception ex)
             {
@@ -1063,10 +1205,10 @@ namespace Basecode_WebApp.Controllers
         public IActionResult AddNewStudent(RegisterStudent newStudent)
         {
             try
-            {
+            {               
+                _studentService.AddStudent(newStudent);
                 Constants.ViewDataErrorHandling.Success = 1;
                 Constants.ViewDataErrorHandling.ErrorMessage = "Successfully added new student!";
-                _studentService.AddStudent(newStudent);
                 return RedirectToAction("StudentRecord");
             }
             catch (Exception ex)

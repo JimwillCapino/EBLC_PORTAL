@@ -8,9 +8,8 @@ namespace Basecode.Data.ViewModels
 {
     public class HomeRoom
     {
-        public int Class_Id { get; set; }
-        public string ClassName { get; set; }
-        public int Grade { get; set; }
-        public List<ClassStudentViewModel> Students { get; set; }
+        public int classid { get; set; }
+        public string classname { get; set; }
+        public int grade { get; set; }        
     }
 }

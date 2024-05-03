@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Rotativa.AspNetCore;
-
+using Basecode.Data;
 namespace Basecode.WebApp
 {
     public partial class Startup1
@@ -25,10 +25,12 @@ namespace Basecode.WebApp
             // Add services to the container.            
             services.AddControllersWithViews();
             services.AddMvc(options => options.EnableEndpointRouting = false);
+            services.AddTransient<BasecodeContextSeedData>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env, BasecodeContextSeedData seed)
         {
             if (env.IsDevelopment())
             {
@@ -51,6 +53,8 @@ namespace Basecode.WebApp
             //app.UseRotativa();
             this.ConfigureRoutes(app);      // Configuration for API controller routing
             this.ConfigureAuth(app);        // Configuration for Token Authentication
+
+            seed.SeedAdminUser();
         }
     }
 }

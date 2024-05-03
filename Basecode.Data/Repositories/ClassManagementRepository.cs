@@ -164,10 +164,10 @@ namespace Basecode.Data.Repositories
                                join u in userstudent on s.UID equals u.UID
                                select new ClassStudentViewModel
                                {
-                                   Student_Id =s.Student_Id,
-                                   FirstName = u.FirstName,
-                                   MiddleName = u.MiddleName,
-                                   LastName =   u.LastName,
+                                   studentid =s.Student_Id,
+                                   firstname = u.FirstName,
+                                   middlename = u.MiddleName,
+                                   lastname =   u.LastName,
                                };
                 return students.ToList();
             }
@@ -189,11 +189,11 @@ namespace Basecode.Data.Repositories
                                   join u in u_students on s.UID equals u.UID
                                   select new ClassStudentViewModel
                                   {
-                                      Id = cs.Id,
-                                      Student_Id = cs.Student_Id,
-                                      FirstName = u.FirstName,
-                                      MiddleName = u.MiddleName,
-                                      LastName = u.LastName,
+                                      id = cs.Id,
+                                      studentid = cs.Student_Id,
+                                      firstname = u.FirstName,
+                                      middlename = u.MiddleName,
+                                      lastname = u.LastName,
                                   };
                 return studentlist.ToList();
             }
@@ -278,7 +278,7 @@ namespace Basecode.Data.Repositories
                 var cl = classdetails.ClassStudents = this.GetClassStudents(id);
 
                 //Gets the student not existing on all the classes
-                classdetails.Students = this.GetStudents(selectedClass.Grade).Where(s => !studentExist.Any(st => st.Student_Id == s.Student_Id)).ToList();
+                classdetails.Students = this.GetStudents(selectedClass.Grade).Where(s => !studentExist.Any(st => st.Student_Id == s.studentid)).ToList();
                 classdetails.Subjects = this.GetSubjects().Where(s => (!subs.Any(cs => cs.Subject_Id == s.Subject_Id)) && s.Grade == selectedClass.Grade).ToList();
 
                 return classdetails;
@@ -304,20 +304,20 @@ namespace Basecode.Data.Repositories
                            on cl.Subject_Id equals s.Subject_Id
                            select new TeacherClassDetails
                            {
-                               Class_Id = ac.Id,
-                               Subject_Id = s.Subject_Id,
-                               Subject_Name = s.Subject_Name,
-                               Class_Name = ac.ClassName,
+                               classid = ac.Id,
+                               subjectid = s.Subject_Id,
+                               subjectname = s.Subject_Name,
+                               classname = ac.ClassName,
                                grade = ac.Grade,
-                               HasChild =s.HasChild
+                               haschild =s.HasChild
                            };
                 var list1 = list.ToList();
-                //Initialize students belonging to the class
-                for (int x = 0; x < list1.Count(); x++)
-                {
-                    int class_Id = list1.ElementAt(x).Class_Id;
-                    list1.ElementAt(x).Students = this.GetClassStudents(class_Id);
-                }
+                ////Initialize students belonging to the class
+                //for (int x = 0; x < list1.Count(); x++)
+                //{
+                //    int class_Id = list1.ElementAt(x).classid;
+                //    list1.ElementAt(x).Students = this.GetClassStudents(class_Id);
+                //}
 
                 return list1;
             }
@@ -327,21 +327,39 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
+        public TeacherClassDetails GetTeacherSubjectDetails(int classid, int subjectId)
+        {
+            try
+            {
+                var teacherClassDetails = new TeacherClassDetails();
+                var teacherSubject = this.GetDbSet<ClassSubjects>().Where(p => p.ClassId == classid).FirstOrDefault(p => p.Subject_Id == subjectId);
+                var allclass = this.GetDbSet<Class>().Find(teacherSubject.ClassId);
+                var subject = this.GetDbSet<Subject>().Find(teacherSubject.Subject_Id);
+
+                teacherClassDetails.subjectname = subject.Subject_Name;
+                teacherClassDetails.subjectid = subjectId;
+                teacherClassDetails.classname = allclass.ClassName;
+                teacherClassDetails.classid = allclass.Id;
+                teacherClassDetails.haschild = subject.HasChild;
+                teacherClassDetails.grade = allclass.Grade;
+                return teacherClassDetails;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(ex.Message);
+            }
+        }
         public List<HomeRoom> GetTeacherHomeRoom(string teacher_Id)
         {
             try
             {
                 var classHome = this.GetDbSet<Class>().Where(c => c.Adviser == teacher_Id).Select(c => new HomeRoom
                 {
-                    Class_Id = c.Id,
-                    ClassName = c.ClassName,
-                    Grade = c.Grade
-                }).ToList();
-
-                foreach(var item in classHome)
-                {
-                    item.Students = this.GetClassStudents(item.Class_Id);
-                }
+                    classid = c.Id,
+                    classname = c.ClassName,
+                    grade = c.Grade
+                }).ToList();                
                 return classHome;
             }
             catch (Exception ex) 
@@ -349,7 +367,7 @@ namespace Basecode.Data.Repositories
                 Console.WriteLine(ex);
                 throw;
             }
-        }
+        }        
         public async Task<ClassInitView> GetClassWhereStudentBelong(int studentId, string schoolYear)
         {
             try

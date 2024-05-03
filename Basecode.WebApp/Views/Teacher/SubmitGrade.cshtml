@@ -4,82 +4,209 @@
     int? max = 0;
     int finalGrade = 0;
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model GradesDetail
+<style>
+    .btn {
+        /* just for this demo. */
+
+        margin-top: 5px;
+    }
+
+    .btn-arrow-right,
+    .btn-arrow-left {
+        position: relative;
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .btn-arrow-right {
+        padding-left: 36px;
+    }
+
+    .btn-arrow-left {
+        padding-right: 36px;
+    }
+
+        .btn-arrow-right:before,
+        .btn-arrow-right:after,
+        .btn-arrow-left:before,
+        .btn-arrow-left:after {
+            /* make two squares (before and after), looking similar to the button */
+
+            content: "";
+            position: absolute;
+            top: 5px;
+            /* move it down because of rounded corners */
+
+            width: 22px;
+            /* same as height */
+
+            height: 22px;
+            /* button_outer_height / sqrt(2) */
+
+            background: inherit;
+            /* use parent background */
+
+            border: inherit;
+            /* use parent border */
+
+            border-left-color: transparent;
+            /* hide left border */
+
+            border-bottom-color: transparent;
+            /* hide bottom border */
+
+            border-radius: 0px 4px 0px 0px;
+            /* round arrow corner, the shorthand property doesn't accept "inherit" so it is set to 4px */
+
+            -webkit-border-radius: 0px 4px 0px 0px;
+            -moz-border-radius: 0px 4px 0px 0px;
+        }
+
+    .btn-arrow-right:before,
+    .btn-arrow-right:after {
+        transform: rotate(45deg);
+        /* rotate right arrow squares 45 deg to point right */
+
+        -webkit-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+    }
+
+    .btn-arrow-left:before,
+    .btn-arrow-left:after {
+        transform: rotate(225deg);
+        /* rotate left arrow squares 225 deg to point left */
+
+        -webkit-transform: rotate(225deg);
+        -moz-transform: rotate(225deg);
+        -o-transform: rotate(225deg);
+        -ms-transform: rotate(225deg);
+    }
+
+    .btn-arrow-right:before,
+    .btn-arrow-left:before {
+        /* align the "before" square to the left */
+
+        left: -11px;
+    }
+
+    .btn-arrow-right:after,
+    .btn-arrow-left:after {
+        /* align the "after" square to the right */
+
+        right: -11px;
+    }
+
+    .btn-arrow-right:after,
+    .btn-arrow-left:before {
+        /* bring arrow pointers to front */
+
+        z-index: 1;
+    }
+
+    .btn-arrow-right:before,
+    .btn-arrow-left:after {
+        /* hide arrow tails background */
+
+        background-color: white;
+    }
+</style>
+
 <div class="wrapper">
     @await Html.PartialAsync("./_TeacherSideBar")
-    <div class="main p-5">
-        <h1>Submission of Grades</h1>
-        <div class="row">
+    <div class="main p-5" style="height:400px; overflow-y: auto;">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="StudentList">Subjects</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="StudentListPerSubject" asp-route-classid="@Constants.TeacherNavigation.classid" asp-route-subjectid="@Model.Subject_Id">Students</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a>Grade Submmission</a></li>
+            </ol>
+        </nav>              
+        <div class="row mt-3">
             <div class="col">
-                <div class="table-responsive">
+                <div class="card">
+                    <div class="card-body">                      
+                        <h4 class="card-title">Submission of Grades</h4>
+                        <p class="card-description">
+                            When adding a grade, please check before clicking the save button.
+                        </p>
+                        <div class="table-responsive">
 
-                    <table class="table" id="myTable">
-                        <thead>
-                            <tr>
-                                <th scope="col">Quarter</th>
-                                <th scope="col">Grade</th>
-                                <th scope="col">Edit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach(var grades in Model.Grades)
-                            {
-                               if(grades.Quarter> max)
-                                {
-                                    max = grades.Quarter;
-                                }
-                                <tr class="bg-blue">
-                                    @if (grades.Quarter == 5)
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Quarter</th>
+                                        <th scope="col">Grade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var grades in Model.Grades)
                                     {
-                                        finalGrade = grades.Grade;
-                                        <td class="pt-2">
-                                            Final Grade
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td class="pt-2">
-                                            @grades.Quarter
-                                        </td>
-                                    }
-                                    <td class="pt-2">
-                                        @grades.Grade
-                                    </td>
-                                    <td class="pt-2">
+                                        if (grades.Quarter > max)
+                                        {
+                                            max = grades.Quarter;
+                                        }
+                                        <tr>
+                                            @if (grades.Quarter == 5)
+                                            {
+                                                finalGrade = grades.Grade;
+                                                <td class="pt-2">
+                                                    Final Grade
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td class="pt-2">
+                                                    @grades.Quarter
+                                                </td>
+                                            }
+                                            <td class="pt-2">
+                                                @grades.Grade
+                                            </td>
+                                            @* <td class="pt-2">
                                         <i class="lni lni-pencil" onclick="setGradeValue(@grades.Grade_Id,@grades.Quarter)" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
-                                    </td>
-                                </tr>
-                                <tr id="spacing-row">
-                                    <td></td>
-                                </tr>
+                                        </td> *@
+                                        </tr>
+                                        <tr id="spacing-row">
+                                            <td></td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                            @if (max == 5)
+                            {
+                                @if (finalGrade >= 75)
+                                {
+                                    <p>Remarks: Passed</p>
+                                }
+                                else
+                                {
+                                    <p>Remarks: Failed</p>
+                                }
                             }
-                           
-                        </tbody>
-                    </table>
-                    @if (max == 5)
-                    {                                                
-                        @if (finalGrade >= 75)
-                        {
-                           <p>Remarks: Passed</p>
-                        }
-                        else
-                        {
-                            <p>Remarks: Failed</p>
-                        }                                                 
-                    }
+                        </div>
+                    </div>
+
                 </div>
+
             </div>
             <div class ="col">
-                @using (Html.BeginForm("AddGrade", "Teacher", FormMethod.Post))
-                {
-                <input type="hidden" value="@Model.Subject_Id" name="Subject_Id" />
-                <input type="hidden" value="@Model.Student_Id" name="Student_Id" />
-                <input type="hidden" value="@(max+1)" name="Quarter" />
-                <label for="inputPassword5" class="form-label">Grade</label>
-                <input type="text" id="inputPassword5" name="Grade" class="form-control mb-3" required/>
-                <button type="submit" class="btn btn-outline-danger" id="submit">Submit</button>
-                }               
+                <form asp-action="AddGrade">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" value="@Model.Subject_Id" asp-for="Subject_Id" />
+                    <input type="hidden" value="@Model.Student_Id" asp-for="Student_Id" />
+                    <input type="hidden" value="@(max+1)" asp-for="Quarter" />
+                    <label for="inputPassword5" class="form-label">Grade</label>
+                    <input type="text" id="inputPassword5" asp-for="GradeInput" class="form-control mb-3" required />
+                    <span asp-validation-for="GradeInput" class="text-danger"></span><br />
+                    <button type="submit" class="btn btn-outline-danger" id="submit">Submit</button>
+                </form>                                             
             </div>
             <script>
                 var max = @max;
@@ -120,6 +247,11 @@
             </div>
         </div>
     </div>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
     <script>
         function setGradeValue(value, quarter) {
             var hiddenbox = document.getElementById("gradeId");

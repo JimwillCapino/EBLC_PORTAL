@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,11 @@ namespace Basecode.Data.ViewModels
     {
         public int Student_Id { get; set; }
         public int Subject_Id { get; set; }
+        public int class_id { get; set; }
+        public int Quarter { get; set; }
+        [Required]
+        [RegularExpression(@"^\d+$", ErrorMessage = "The field must be a whole number.")]
+        public int GradeInput { get; set; }
         public List<GradesViewModel> Grades { get; set; }
     }
 }

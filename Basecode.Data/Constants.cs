@@ -13,6 +13,10 @@ namespace Basecode.Data
         {
             public static int id;
         }
+        public class TeacherNavigation
+        {
+            public static int classid;
+        }
         public class Parent
         {
             public static int UID;

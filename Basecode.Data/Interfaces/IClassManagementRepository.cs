@@ -29,5 +29,7 @@ namespace Basecode.Data.Interfaces
         public Task<ClassInitView> GetClassWhereStudentBelong(int studentId, string schoolYear);
         public Task<int> GetStudentYearLevel(int studentId, string schoolYear);
         public void UpdateClass(Class classroom);
+        public List<ClassStudentViewModel> GetClassStudents(int classId);
+        public TeacherClassDetails GetTeacherSubjectDetails(int classid, int subjectId);
     }
 }

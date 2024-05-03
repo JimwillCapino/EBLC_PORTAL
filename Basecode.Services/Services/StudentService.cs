@@ -72,6 +72,12 @@ namespace Basecode.Services.Services
                     sex = newStudent.Parentsex,
                     ProfilePic = null,
                 };
+
+                if(_studentRepository.isExisting(StudentUserPortal))
+                {
+                    throw new Exception("This student has already been added to the system.");                   
+                } 
+
                 var parentUID = _usersRepository.AddUser(parentUserPortal);
                 parent.UID = parentUID;
                 var parentId = _parentRepository.AddParent(parent);
@@ -87,6 +93,26 @@ namespace Basecode.Services.Services
                     status = "Enrolled",
                 };
                 _studentRepository.AddStudent(student);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(ex.Message);
+            }
+        }
+        public void RemoveStudent(int studentId)
+        {
+            try
+            {
+                var student = _studentRepository.GetStudent(studentId);
+                var userdetails = _usersRepository.GetUserById(student.UID);
+                var parent = _parentRepository.GetParentById(student.ParentId);
+                var parentUser = _usersRepository.GetUserById(parent.UID);
+
+                _studentRepository.RemoveStudent(student);
+                _usersRepository.RemoveUser(userdetails);
+                _parentRepository.RemoveParent(parent);
+                _usersRepository.RemoveUser(parentUser);                
             }
             catch (Exception ex)
             {

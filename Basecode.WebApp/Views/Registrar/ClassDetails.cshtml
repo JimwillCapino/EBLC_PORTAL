@@ -9,7 +9,16 @@
 @using Basecode.Data
 @using Basecode.Data.ViewModels
 @model ClassViewModel
-<link rel="stylesheet" href="/css/TableInfo.css" />
+<!-- Styles -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+<!-- Or for RTL support -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     function RemoveStudent(id,classId)
     {
@@ -20,6 +29,7 @@
         window.location.href = '@Url.Action("RemoveClassSubject", "Registrar")?id=' + id + '&classId=' + classId;
     }
 </script>
+
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
@@ -90,7 +100,8 @@
                                             <td class="pt-3 mt-1">@classSubject.SubjectName</td>
                                             <td class="pt-3">@classSubject.TeacherName</td> 
                                             <td class="pt-3">
-                                            <i class="lni lni-trash-can" onclick="RemoveClassSubject(@classSubject.Id,@Model.Id)"></i>
+                                            @* <i class="lni lni-trash-can" onclick="RemoveClassSubject(@classSubject.Id,@Model.Id)"></i> *@
+                                            <a asp-action="RemoveClassSubject" asp-route-id="@classSubject.Id" asp-route-classId="@Model.Id" class="btn btn-danger">Delete</a>
                                             </td> 
                                     </tr>
                                     <tr id="spacing-row">
@@ -115,9 +126,10 @@
                                 @foreach(var student in Model.ClassStudents)
                                 {
                                     <tr class="bg-blue">
-                                        <td class="pt-3 mt-1">@student.FirstName @student.MiddleName @student.LastName</td>
+                                        <td class="pt-3 mt-1">@student.firstname @student.middlename @student.lastname</td>
                                         <td class="pt-3">
-                                            <i class="lni lni-trash-can" onclick="RemoveStudent(@student.Id,@Model.Id)"></i>
+                                           @*  <i class="lni lni-trash-can" onclick="RemoveStudent(@student.Id,@Model.Id)"></i> *@
+                                            <a asp-action="RemoveClassStudent" asp-route-id="@student.id" asp-route-classId="@Model.Id" class="btn btn-danger">Delete</a>
                                         </td>
                                     </tr>
                                     <tr id="spacing-row">
@@ -184,26 +196,31 @@
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Select Student</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                @using (Html.BeginForm("AddClassStudents", "Registrar", FormMethod.Post))
-                {
+                <form asp-action="AddClassStudents">
                     <div class="modal-body">
-                        <input type="hidden" value="@Model.Id" name="classId" />
+                        <input type="hidden"  asp-for="Id"/>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Student Name:</label>
-                            <select class="form-select" aria-label="Default select example" name="studentId" required>
-                                <option value="" selected>Open this select menu</option>
+                            @*    <select class="form-select" aria-label="Default select example" name="studentId" required>
+                            <option value="" selected>Open this select menu</option>
+                            @foreach (var student in Model.Students)
+                            {
+                            <option value="@student.Student_Id">@student.FirstName @student.MiddleName, @student.LastName</option>
+                            }
+                            </select> *@
+                            <select asp-for="SelectedStudents" class="form-select" id="multiple-select-field" data-placeholder="Choose Students" multiple>
                                 @foreach (var student in Model.Students)
                                 {
-                                    <option value="@student.Student_Id">@student.FirstName @student.MiddleName, @student.LastName</option>
+                                    <option value="@student.studentid">@student.firstname @student.middlename, @student.lastname</option>
                                 }
                             </select>
-                        </div>                   
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-danger">Add Student</button>
                     </div>
-                }
+                </form>                                  
             </div>
         </div>
     </div>
@@ -256,4 +273,11 @@
         </div>
     </div>
 </div>
-<script src="/js/Tables.js"></script>
+<script>
+    $('#multiple-select-field').select2({
+        theme: "bootstrap-5",
+        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+        placeholder: $(this).data('placeholder'),
+        closeOnSelect: false,
+    });
+</script>

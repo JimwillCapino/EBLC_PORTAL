@@ -8,6 +8,7 @@ namespace Basecode.Data.ViewModels
 {
     public class RegistrarDashboard
     {
+        public string SchoolYear { get; set; }
         public int NewEnrolleeCount { get; set; }
         public int TeacherCount { get; set; }
         public int StudentEnrolledCount { get; set; }

@@ -64,6 +64,5 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
-
     }
 }

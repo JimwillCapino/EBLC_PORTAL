@@ -5,13 +5,46 @@
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int x = 1;
+    int successValue = (int)ViewData["Success"];
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model AttendanceContainer
+<link href="~/css/BackButton.css" rel="stylesheet" />
 <div class="wrapper">
     @await Html.PartialAsync("./_TeacherSideBar")
-    <div class="main p-5">
-        <div class="card">
+    <div class="main p-3" style="height:400px; overflow-y: auto;">
+        <div class="page-content page-container p-5 mx-lg-5" id="page-content">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="HomeRoom">Home Room</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="HomeRoomStudents" asp-route-classid="@Constants.TeacherNavigation.classid">Advisee's</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a>Grade Submmission</a></li>
+                </ol>
+            </nav>
+        @if (successValue == 0)
+        {
+            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-exclamation-octagon-fill"></i>
+                <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+        }
+        else if (successValue == 1)
+        {
+            <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-check-circle-fill"></i>
+                <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @{
+            Constants.ViewDataErrorHandling.Success = -1;
+            Constants.ViewDataErrorHandling.ErrorMessage = null;
+        }
+        <div class="card">           
             <div class="card-body">
                 <h4 class="card-title">Student Attendance</h4>
                 <div class="btn-group">
@@ -39,6 +72,17 @@
 
                                     <td>@(attendance != null ? attendance.Days_of_Schoool : " ")</td>
                                 }
+                                
+                                @if (Model.Months.Count() == Model.Attendances.Count())
+                                {
+                                    var sum = 0;
+                                    @foreach (var attendance in Model.Attendances)
+                                    {
+                                        sum += attendance!= null?attendance.Days_of_Schoool: 0;
+
+                                    }
+                                    <td>@sum</td>
+                                }
                             </tr>
                             <tr>
                                 <td>Days of Present</td>
@@ -46,12 +90,32 @@
                                 {
                                     <td>@(attendance != null ? attendance.Days_of_Present : " ")</td>
                                 }
+                                @if (Model.Months.Count() == Model.Attendances.Count())
+                                {
+                                    var sum = 0;
+                                    @foreach (var attendance in Model.Attendances)
+                                    {
+                                        sum += attendance != null ? attendance.Days_of_Present : 0;
+
+                                    }
+                                    <td>@sum</td>
+                                }
                             </tr>
                             <tr>
                                 <td>Time of Tardy</td>
                                 @foreach(var attendance in Model.Attendances)
                                 {
                                     <td>@(attendance != null ? attendance.Time_of_Tardy : " ")</td>
+                                }
+                                @if (Model.Months.Count() == Model.Attendances.Count())
+                                {
+                                    var sum = 0;
+                                    @foreach (var attendance in Model.Attendances)
+                                    {
+                                        sum += attendance != null ? attendance.Time_of_Tardy : 0;
+
+                                    }
+                                    <td>@sum</td>
                                 }
                             </tr>
                             <tr>
@@ -78,7 +142,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Enter Student Attendance</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form asp-action="AddStudentAttendance">
@@ -114,7 +178,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="submit" class="btn btn-danger">Submit</button>
                     </div>                    
                 </form>
             </div>

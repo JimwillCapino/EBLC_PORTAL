@@ -133,7 +133,7 @@ namespace Basecode.WebApp.Areas.Identity.Pages.Account
                     {
                         return LocalRedirect("~/Teacher/Index");
                     }
-                    Console.WriteLine(role.First());
+                    //Console.WriteLine(role.First());
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

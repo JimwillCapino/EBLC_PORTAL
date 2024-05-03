@@ -23,6 +23,9 @@ namespace Basecode.Services.Services
         ITeacherRepository _teacherRepository;
         IStudentRepository _studentRepository;
         IRTPUsersRepository _rtpUsersRepository;
+        IClassManagementRepository _classManagementRepository;
+        IStudentManagementRepository _studentManagementRepository;
+        IStudentManagementService _studentManagementService;
         public UsersService(IUsersRepository userRepository,
             IMapper mapper,
             UserManager<IdentityUser> userManager,
@@ -30,7 +33,11 @@ namespace Basecode.Services.Services
             INewEnrolleeRepository newEnrolleeRepository,
             ITeacherRepository teacherRepository,
             IStudentRepository studentRepository,
-            IRTPUsersRepository rtpUsersRepository)
+            IRTPUsersRepository rtpUsersRepository,
+            IStudentManagementRepository studentManagementRepository,
+            IClassManagementRepository classManagementRepository,
+            IStudentManagementService studentManagementService
+            )
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -39,7 +46,10 @@ namespace Basecode.Services.Services
             _newEnrolleeRepository = newEnrolleeRepository;
             _teacherRepository = teacherRepository;
             _studentRepository = studentRepository;
-            _rtpUsersRepository = rtpUsersRepository;           
+            _rtpUsersRepository = rtpUsersRepository;        
+            _studentManagementRepository = studentManagementRepository;
+            _classManagementRepository = classManagementRepository;
+            _studentManagementService = studentManagementService;
         }
         public int AddUser(UsersPortal user) 
         {
@@ -210,7 +220,7 @@ namespace Basecode.Services.Services
         {
             try
             {
-                var registrarDashboard = new RegistrarDashboard();
+                var registrarDashboard = new RegistrarDashboard();                
                 registrarDashboard.NewEnrolleeCount = _newEnrolleeRepository.GetAllEnrollees().Count();
                 registrarDashboard.TeacherCount = _teacherRepository.GetAllTeachersInitViewAsync().Result.Count();
                 registrarDashboard.StudentEnrolledCount = _studentRepository.GetAllStudent().Where(p => p.status == "Enrolled").Count();
@@ -224,5 +234,23 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
+        public TeacherDashboard SetTeacherDashboard(string teacherid)
+        {
+            try
+            {
+                var teacherDashboard = new TeacherDashboard();
+                teacherDashboard.NumberOfClass = _classManagementRepository.GetTeacherClassDetails(teacherid).Count();
+                teacherDashboard.NumberOfHomeroom = _classManagementRepository.GetTeacherHomeRoom(teacherid).Count();
+                //teacherDashboard.ListOfStudentsWithNoGrade = _studentManagementService.
+                return teacherDashboard;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception(Constants.Exception.DB);
+            }
+
+        }
+
     }
 }

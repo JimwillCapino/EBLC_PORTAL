@@ -8,10 +8,10 @@ namespace Basecode.Data.ViewModels
 {
     public class ClassStudentViewModel
     {
-        public int Id { get; set; }
-        public int? Student_Id { get; set; }        
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? MiddleName { get; set; }
+        public int id { get; set; }
+        public int studentid { get; set; }        
+        public string? firstname { get; set; }
+        public string? lastname { get; set; }
+        public string? middlename { get; set; }
     }
 }

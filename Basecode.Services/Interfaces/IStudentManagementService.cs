@@ -35,5 +35,6 @@ namespace Basecode.Services.Interfaces
         public Task UpdateStudentDetails(StudentDetailsContainer studentDetails);
         public Task<StudentDetailsContainer> GetStudentDetails(int studentId);
         public IEnumerable<StudentPreviewInformation> GetStudentPreviewInformation();
+        public List<ClassStudentViewModel> GetStudentWithNoGradePerQuarter(int classid, int subjectid, int quarter);
     }
 }

@@ -88,7 +88,7 @@ namespace Basecode.Data.Migrations
                     b.Property<int>("HeadSubjectId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Subject_Id")
+                    b.Property<int>("subjectid")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -134,10 +134,10 @@ namespace Basecode.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Class_Id")
+                    b.Property<int?>("classidT")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Student_Id")
+                    b.Property<int?>("studentid")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -156,7 +156,7 @@ namespace Basecode.Data.Migrations
                     b.Property<int?>("ClassId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Subject_Id")
+                    b.Property<int?>("subjectid")
                         .HasColumnType("int");
 
                     b.Property<string>("Teacher_Id")
@@ -206,10 +206,10 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Student_Id")
+                    b.Property<int>("studentid")
                         .HasColumnType("int");
 
-                    b.Property<int>("Subject_Id")
+                    b.Property<int>("subjectid")
                         .HasColumnType("int");
 
                     b.HasKey("Grade_Id");
@@ -255,7 +255,7 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Student_Id")
+                    b.Property<int>("studentid")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -416,11 +416,11 @@ namespace Basecode.Data.Migrations
 
             modelBuilder.Entity("Basecode.Data.Models.Student", b =>
                 {
-                    b.Property<int>("Student_Id")
+                    b.Property<int>("studentid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Student_Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("studentid"));
 
                     b.Property<int>("CurrGrade")
                         .HasColumnType("int");
@@ -437,29 +437,29 @@ namespace Basecode.Data.Migrations
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Student_Id");
+                    b.HasKey("studentid");
 
                     b.ToTable("Student");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.Subject", b =>
                 {
-                    b.Property<int>("Subject_Id")
+                    b.Property<int>("subjectid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Subject_Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("subjectid"));
 
                     b.Property<int?>("grade")
                         .HasColumnType("int");
 
-                    b.Property<bool>("HasChild")
+                    b.Property<bool>("haschild")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Subject_Name")
+                    b.Property<string>("subjectname")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Subject_Id");
+                    b.HasKey("subjectid");
 
                     b.ToTable("Subject");
                 });

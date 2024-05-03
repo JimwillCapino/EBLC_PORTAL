@@ -39,5 +39,17 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        public IEnumerable<RTPUsers> GetRTPUsers()
+        {
+            try
+            {
+                return this.GetDbSet<RTPUsers>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }

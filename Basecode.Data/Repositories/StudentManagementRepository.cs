@@ -18,7 +18,7 @@ namespace Basecode.Data.Repositories
             BasecodeContext context) : base(unitOfWork)
         {
             _context = context;
-        }
+        }      
         public void SubmitGrade(Grades grade)
         {
             try
@@ -170,10 +170,10 @@ namespace Basecode.Data.Repositories
                 var schoolYears = this.GetDbSet<Learner_Values>()
                     .Where(g => g.Student_Id == student_Id)
                     .Select(g => g.School_Year).Distinct().ToList();
-                var valuesSchoolyears = this.GetValuesSchoolyear(student_Id);
+                //var valuesSchoolyears = this.GetValuesSchoolyear(student_Id);
                 var attendanceSchoolYears = this.GetAttendanceSchoolYear(student_Id);
 
-                var concatList = schoolYears.Concat(valuesSchoolyears).Concat(attendanceSchoolYears).Distinct();
+                var concatList = schoolYears.Concat(attendanceSchoolYears).Distinct();
                 return concatList.ToList();
             }
             catch (Exception ex)
@@ -359,6 +359,24 @@ namespace Basecode.Data.Repositories
                     }).ToList();
                 
                 return studentGrades;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public int GetBehavioralMaxQuarter(int studentId, int BehavioralId, string schoolYear)
+        {
+            try
+            {
+                var maxQuarter = 0;
+                var list = this.GetDbSet<Learner_Values>().Where(p => p.Student_Id == studentId).Where(p => p.School_Year == schoolYear)
+                    .Where(p => p.Behavioural_Statement == BehavioralId);
+                if (list.Count() > 0)
+                    maxQuarter = list.Max(p => p.Quarter);
+                
+                return maxQuarter;
             }
             catch (Exception ex)
             {
@@ -599,11 +617,11 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-        public bool isDateExisting(int month, string schoolYear)
+        public bool isDateExisting(int month, string schoolYear, int studentid)
         {
             try
             {
-                var list = this.GetDbSet<Attendance>().Where(p => p.School_Year == schoolYear).Where(p => p.Month == month);
+                var list = this.GetDbSet<Attendance>().Where(p => p.School_Year == schoolYear).Where(p => p.Month == month).Where(p => p.Studentid == studentid);
                 return list.Count() > 0;
             }
             catch (Exception ex)

@@ -67,7 +67,7 @@ namespace Basecode.Services.Services
                     var student = new ClassStudents
                     {
                         Class_Id = classViewModel.Id,
-                        Student_Id = classStudent.Id
+                        Student_Id = classStudent.id
                     };
                     _repository.AddClassStudent(student);
                 }
@@ -95,6 +95,19 @@ namespace Basecode.Services.Services
             try
             {
                 _repository.AddClassStudent(student);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public void AddClassStudents(List<ClassStudents> students)
+        {
+            try
+            {
+                foreach(var student in students)
+                    _repository.AddClassStudent(student);
             }
             catch (Exception ex)
             {
@@ -139,6 +152,30 @@ namespace Basecode.Services.Services
             try
             {
                 return await _repository.GetClassViewModelById(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public List<ClassStudentViewModel> GetClassStudents(int classId)
+        {
+            try
+            {
+                return _repository.GetClassStudents(classId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public TeacherClassDetails GetTeacherSubjectDetails(int classid, int subjectId)
+        {
+            try
+            {
+                return _repository.GetTeacherSubjectDetails(classid, subjectId);
             }
             catch (Exception ex)
             {

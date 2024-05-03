@@ -13,5 +13,7 @@ namespace Basecode.Data.Interfaces
         public Student GetStudent(int id);
         public Task UpdateStudentAsync(Student student);
         public IEnumerable<Student> GetAllStudent();
+        public void RemoveStudent(Student student);
+        public bool isExisting(UsersPortal student);
     }
 }

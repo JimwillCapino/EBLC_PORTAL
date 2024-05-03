@@ -35,8 +35,9 @@ namespace Basecode.Data.Interfaces
         public void UpdateAttendance(Attendance attendance);
         public void DeleteAttendance(Attendance attendance);
         public List<Attendance> GetStudentAtendance(int student_Id, string schoolYear);
-        public bool isDateExisting(int month, string schoolYear);
+        public bool isDateExisting(int month, string schoolYear, int studentid);
         public List<string> GetAttendanceSchoolYear(int student_Id);
         public IEnumerable<StudentPreviewInformation> GetAllStudentPreview();
+        public int GetBehavioralMaxQuarter(int studentId, int BehavioralId, string schoolYear);
     }
 }

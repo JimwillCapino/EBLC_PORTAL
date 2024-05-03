@@ -1,4 +1,4 @@
-﻿@*
+﻿ @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -6,17 +6,28 @@
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int? max = 0;
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model ChildSubjectGrades
 <link rel="stylesheet" href="/css/TableInfo.css" />
+<link href="~/css/BackButton.css" rel="stylesheet" />
 <div class="wrapper">
     @await Html.PartialAsync("./_TeacherSideBar")
-    <div class="main p-5">
+    <div class="main p-4" style="height:400px; overflow-y: auto;">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="StudentList">Subjects</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="StudentListPerSubject" asp-route-classid="@Constants.TeacherNavigation.classid" asp-route-subjectid="@Model.HeadId">Students</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a>Grade Submmission</a></li>
+            </ol>
+        </nav>
         <div class="card">
             <div class="card-body">
+                <h3>@Model.HeadSubjectName</h3>
                 <h4 class="card-title">Child Subject Grades</h4>
                 <p class="card-description">
-                    Below are the grades obtained by the student.
+                    When adding a grade, please check before clicking the save button.
                 </p>
                 <button type="button" id="add"class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Grades</button>
                 <div class="table-responsive">
@@ -27,7 +38,8 @@
                                 <th>1</th>
                                 <th>2</th>
                                 <th>3</th>
-                                <th>4</th>                                
+                                <th>4</th>
+                                <th>Final</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,10 +58,18 @@
                                     }
                                 </tr>
                             }
+                            <tr>
+                                <td>@Model.HeadSubjectName</td>
+                                @foreach(var grade in Model.HeadSubjectGrade.Grades)
+                                {
+                                    <td>@grade.Grade</td>
+                                }
+                            </tr>
                         </tbody>
-                    </table>
+                    </table>                   
                 </div>              
             </div>
+           
         </div>
     </div>
     <!--Modal for adding grades-->

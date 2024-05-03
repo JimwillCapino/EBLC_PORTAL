@@ -11,5 +11,6 @@ namespace Basecode.Data.Interfaces
     {
         public void AddRTPUsers(RTPUsers rTPUsers);
         public RTPUsers GetRTPuserByRTPId(int rtpId);
+        public IEnumerable<RTPUsers> GetRTPUsers();
     }
 }

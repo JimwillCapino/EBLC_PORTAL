@@ -10,21 +10,13 @@
         @await Html.PartialAsync("./_RegistrarSideBar")
         <div class="main p-3">
             <div class="container p-lg-2">
-               <i class="fas fa-user-circle"></i><span class="p-2">School Year 2024-2025</span>
+               <i class="fas fa-user-circle"></i><span class="p-2">School Year @Model.SchoolYear</span>
                 <h1>
                     Dashboard
                 </h1>               
             </div>
         <div class="container mt-3 gap-3">
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="card-counter primary">
-                        <i class="fa-solid fa-users-line"></i>
-                        <span class="count-numbers">@Model.NewEnrolleeCount</span>
-                        <span class="count-name">New Enrollees</span>
-                    </div>
-                </div>
-
+            <div class="row">              
                 <div class="col-md-3">
                     <div class="card-counter danger">
                         <i class="fa-solid fa-person-chalkboard"></i>
@@ -35,7 +27,7 @@
 
                 <div class="col-md-3">
                     <div class="card-counter success">
-                        <i class="fa-solid fa-universal-access"></i>
+                        <i class="  fa-solid fa-universal-access"></i>
                         <span class="count-numbers">@Model.StudentEnrolledCount</span>
                         <span class="count-name">Enrolled</span>
                     </div>
@@ -50,59 +42,7 @@
                 </div>
             </div>
         </div>
-
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-12 col-lg-9 col-xl-8">
-                    <div class="card widget-card border-light shadow-sm">
-                        <div class="card-body p-4">
-                            <h5 class="card-title widget-card-title mb-4">Upcomming Student Screening</h5>
-                            <div class="table-responsive">
-                                <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0">                                                                       
-                                        @if(Model.NewEnrolleeList.Count != 0)
-                                        {
-                                        <thead>
-                                            <tr>
-                                                <th>Full name</th>
-                                                <th>Sex</th>
-                                                <th>Grade</th>
-                                                <th>Schedule</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var enrollee in Model.NewEnrolleeList)
-                                            {
-                                                <tr>
-                                                    <td>
-                                                        @enrollee.FirstName @enrollee.Middlename @enrollee.LastName
-                                                    </td>
-                                                    @if (enrollee.sex.Equals('F'))
-                                                    {
-                                                        <td>Female</td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td>Male</td>
-                                                    }
-                                                    <td>@enrollee.GradeEnrolled</td>
-                                                    <td>@enrollee.ExamSchedule</td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                        }
-                                        else
-                                        {
-                                            <p>No Scheduled Examination for new Enrollee's</p>
-                                        }
-                                   
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        
         </div> 
     </div>
    

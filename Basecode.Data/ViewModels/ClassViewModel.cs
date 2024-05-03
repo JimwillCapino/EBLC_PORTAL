@@ -22,5 +22,6 @@ namespace Basecode.Data.ViewModels
         public List<TeacherViewModel> Teachers { get; set; }
         public List<Subject>Subjects { get; set; }
         public List<ClassStudentViewModel> Students { get; set; }
+        public List<int> SelectedStudents { get; set; }
     }
 }

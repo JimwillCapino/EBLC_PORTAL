@@ -2,14 +2,17 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Teacher";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int successValue = (int)ViewData["Success"];
 }
 @using Basecode.Data
+@using Basecode.Data.ViewModels
+@model TeacherDashboard
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <div class="wrapper">
     @await Html.PartialAsync("./_TeacherSideBar")
-    <div class="main p-3">
+    <div class="main p-3" style="height:400px; overflow-y: auto;">
         @if (successValue == 0)
         {
             <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
@@ -31,5 +34,159 @@
             Constants.ViewDataErrorHandling.Success = -1;
             Constants.ViewDataErrorHandling.ErrorMessage = null;
         }
+        <div class="container p-lg-2">
+            <i class="fas fa-user-circle"></i><span class="p-2">@Model.SchoolYear</span>
+            <h1>
+                Dashboard
+            </h1>
+        </div>
+        <div class="container mt-3 gap-3">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card-counter success">
+                                <i class="fa-solid fa-users-line"></i>
+                                <span class="count-numbers">@Model.NumberOfClass</span>
+                                <span class="count-name">Classes</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                   <div class="row">   
+                       <div class="col">
+                            <div class="card-counter danger">
+                                <i class="fa-solid fa-person-chalkboard"></i>
+                                <span class="count-numbers">@Model.NumberOfHomeroom</span>
+                                <span class="count-name">Home room</span>
+                            </div>
+                        </div>
+                                            
+                   </div>
+                </div>
+                <div class="col">
+                    <div class="container" >
+                        <div class="row justify-content-center">
+                            <div class="col-12 col-lg-9 col-xl-8">
+                                <div class="card widget-card border-light shadow-sm">
+                                    <div class="card-body p-4">
+                                        <h5 class="card-title widget-card-title mb-4">Students with no grades</h5>
+                                        <h5>@Model.SubjectName</h5>
+                                        <div class="table-responsive" style="height:400px; overflow-y: auto;">
+                                            @using (Html.BeginForm("QueryDashboad", "Teacher", FormMethod.Post))
+                                            {
+                                                <div class="row">
+                                                    <div class="col-sm-5">
+                                                        <select class="form-select mb-3" aria-label="Default select example" name="class" required>
+                                                            <option value="">Class</option>
+                                                            @foreach (var classofteacher in Model.ClassesOfTeacher)
+                                                            {
+                                                                <option value="@classofteacher.classid @classofteacher.subjectid">Grade @classofteacher.grade, @classofteacher.classname @classofteacher.subjectname</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <select class="form-select mb-3" aria-label="Default select example" name="quarter" required>
+                                                            <option value="" selected>Quarter</option>
+                                                            <option value="1">One</option>
+                                                            <option value="2">Two</option>
+                                                            <option value="3">Three</option>
+                                                            <option value="4">four</option>
+                                                            <option value="5">final</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <button type="submit" class="btn btn-warning">Search</button>
+                                                    </div>                                                   
+                                                </div>
+                                            }                                                                                                                                            
+                                                                                                                                 
+                                            <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0" >
+                                                @if (Model.ListOfStudentsWithNoGrade.Count() > 0)
+                                                {
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Full name</th>                                                           
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var student in Model.ListOfStudentsWithNoGrade)
+                                                        {
+                                                            <tr>
+                                                                <td>
+                                                                    @student.firstname @student.middlename @student.lastname
+                                                                </td>                                                                                                                            
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                }
+                                                else
+                                                {
+                                                    <p>No Data to show</p>
+                                                }
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                   
+            </div>           
+        </div>
+
+    @*     <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-9 col-xl-8">
+                    <div class="card widget-card border-light shadow-sm">
+                        <div class="card-body p-4">
+                            <h5 class="card-title widget-card-title mb-4">Upcomming Student Screening</h5>
+                            <div class="table-responsive">
+                                <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0">
+                                    @if (Model.NewEnrolleeList.Count != 0)
+                                    {
+                                        <thead>
+                                            <tr>
+                                                <th>Full name</th>
+                                                <th>Sex</th>
+                                                <th>Grade</th>
+                                                <th>Schedule</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var enrollee in Model.NewEnrolleeList)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @enrollee.FirstName @enrollee.Middlename @enrollee.LastName
+                                                    </td>
+                                                    @if (enrollee.sex.Equals('F'))
+                                                    {
+                                                        <td>Female</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>Male</td>
+                                                    }
+                                                    <td>@enrollee.GradeEnrolled</td>
+                                                    <td>@enrollee.ExamSchedule</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    }
+                                    else
+                                    {
+                                        <p>No Scheduled Examination for new Enrollee's</p>
+                                    }
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> *@
     </div>
 </div>

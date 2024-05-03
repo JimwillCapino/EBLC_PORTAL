@@ -73,5 +73,32 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        public void RemoveStudent(Student student)
+        {
+            try
+            {
+                _context.Student.Remove(student);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public bool isExisting(UsersPortal student)
+        {
+            try
+            {
+                var studentsCount = this.GetDbSet<UsersPortal>().Where(p => p.FirstName.ToLower().Equals(student.FirstName) && p.MiddleName.ToLower().Equals(student.MiddleName)
+                || p.LastName.ToLower().Equals(student.LastName)).Count();
+                return studentsCount > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }

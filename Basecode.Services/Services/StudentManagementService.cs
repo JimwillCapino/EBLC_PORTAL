@@ -101,11 +101,15 @@ namespace Basecode.Services.Services
             try
             {
                 var childSubjectGrade = new ChildSubjectGrades();
+                var headsub = _subjectRepository.GetSubjectById(headId);
+                childSubjectGrade.HeadSubjectGrade = _studentManagementRepository.GetStudentGradeBySubject(studentId, headId);
                 childSubjectGrade.ChildSubjects = _subjectRepository.GetChildSubject(headId);
                 childSubjectGrade.GradesContainer = new List<GradesDetail>();
+                childSubjectGrade.HeadSubjectName = headsub.Subject_Name;
                 childSubjectGrade.HeadId = headId;
-                childSubjectGrade.StudentId = studentId;
-                foreach(var subject in childSubjectGrade.ChildSubjects)
+                childSubjectGrade.StudentId = studentId;               
+                
+                foreach (var subject in childSubjectGrade.ChildSubjects)
                 {
                     childSubjectGrade.GradesContainer.Add(_studentManagementRepository.GetStudentGradeBySubject(studentId, subject.Id));
                 }
@@ -319,8 +323,7 @@ namespace Basecode.Services.Services
                 valueswithgrades.Student_Id = StudentId;
                 valueswithgrades.School_Year = schoolyear;
                 valueswithgrades.Grades = _studentManagementRepository.GetValuesGrades(StudentId, schoolyear);
-                valueswithgrades.Values = _studentManagementRepository.GetLearnersValues();
-                valueswithgrades.Scool_Years = _studentManagementRepository.GetValuesSchoolyear(StudentId);
+                valueswithgrades.Values = _studentManagementRepository.GetLearnersValues();               
                 return valueswithgrades;
             }
             catch
@@ -332,6 +335,8 @@ namespace Basecode.Services.Services
         {
             try
             {
+                int maxQuarter = _studentManagementRepository.GetBehavioralMaxQuarter(values.Student_Id,values.Behavioural_Statement,values.School_Year);
+                values.Quarter = maxQuarter + 1;
                 _studentManagementRepository.AddLearnerValues(values);
             }
             catch
@@ -360,7 +365,7 @@ namespace Basecode.Services.Services
                 //var thisMonth = DateTime.Now.Date;
                 var attendance = new Attendance();
                 var numMonth = DateTime.ParseExact(Helper.GetFullMonthName(month), "MMMM", CultureInfo.CurrentCulture, DateTimeStyles.None).Month;
-                if (!_studentManagementRepository.isDateExisting(numMonth, schoolYear))
+                if (!_studentManagementRepository.isDateExisting(numMonth, schoolYear, studentId))
                 {
                     attendance.Studentid = studentId;
                     attendance.Days_of_Schoool = Days_of_School;
@@ -376,7 +381,7 @@ namespace Basecode.Services.Services
             catch(Exception ex)
             {
                 Console.Write(ex);
-                throw new Exception(Data.Constants.Exception.DB);
+                throw new Exception(ex.Message);
             }
         }
         public AttendanceContainer GetStudentAttendance(int studentId, string schoolYear)
@@ -423,7 +428,7 @@ namespace Basecode.Services.Services
                 var numMonth = DateTime.ParseExact(Helper.GetFullMonthName(month), "MMMM", CultureInfo.CurrentCulture, DateTimeStyles.None).Month;
                 var attendance = new Attendance();
 
-                if (_studentManagementRepository.isDateExisting(numMonth, schoolYear))
+                if (_studentManagementRepository.isDateExisting(numMonth, schoolYear, studentId))
                     throw new Exception("Month already existing");
 
                 attendance.Id = id;
@@ -491,6 +496,30 @@ namespace Basecode.Services.Services
             try
             {
                 return _studentManagementRepository.GetAllStudentPreview();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public List<ClassStudentViewModel> GetStudentWithNoGradePerQuarter(int classid, int subjectid, int quarter)
+        {
+            try
+            {
+                var students = _classManagementRepository.GetClassStudents(classid);
+                var listOfNoGrades = new List<ClassStudentViewModel>();
+
+                if(students.Count > 0 || students !=null)
+                {
+                    foreach (var student in students)
+                    {
+                        var studentgrade = _studentManagementRepository.GetStudentGradeBySubject(student.studentid, subjectid);
+                        if (studentgrade.Grades.Where(p => p.Quarter == quarter).Count() == 0)
+                            listOfNoGrades.Add(student);
+                    }
+                }                
+                return listOfNoGrades;
             }
             catch (Exception ex)
             {

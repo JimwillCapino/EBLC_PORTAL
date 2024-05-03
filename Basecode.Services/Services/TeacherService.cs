@@ -185,5 +185,22 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
+        public async Task RemoveTeacher(string aspid)
+        {
+            try
+            {
+                var user = await _UserManager.FindByIdAsync(aspid);
+                var rtpid = _rtpusers.GetRTPUsers().FirstOrDefault(p => p.AspUserId == aspid).RTPId;
+                var uid = _rtpCommons.getRTPCommons().FirstOrDefault(p => p.Id == rtpid).UID;
+                var userportal = _UsersRepository.GetUserById(uid);
+                await _UserManager.DeleteAsync(user);
+                _UsersRepository.RemoveUser(userportal);               
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB +". Ensure that the teacher is not an adviser on any class.");
+            }
+        }
     }
 }
