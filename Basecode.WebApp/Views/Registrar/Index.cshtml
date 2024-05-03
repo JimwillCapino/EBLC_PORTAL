@@ -10,7 +10,7 @@
 
     <div class="wrapper">
         @await Html.PartialAsync("./_RegistrarSideBar")
-        <div class="main p-3">
+        <div class="main p-3" style="height:400px; overflow-y: auto;">
         @if (successValue == 0)
         {
             <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
@@ -39,8 +39,40 @@
                 </h1>               
             </div>
         <div class="container mt-3 gap-3">
-            <div class="row">              
-                <div class="col-md-3">
+            <div class="row">
+                <div class="col-md-4 ">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card-counter danger">
+                                <i class="fa-solid fa-person-chalkboard"></i>
+                                <span class="count-numbers">@Model.TeacherCount</span>
+                                <span class="count-name">Teachers</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="card-counter success">
+                                <i class="  fa-solid fa-universal-access"></i>
+                                <span class="count-numbers">@Model.StudentEnrolledCount</span>
+                                <span class="count-name">Enrolled</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="card-counter info">
+                                <i class="fa-solid fa-user-xmark"></i>
+                                <span class="count-numbers">@Model.StudentNotEnrolledCount</span>
+                                <span class="count-name">Not Enrolled</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+               @*  <div class="col-md-3">
                     <div class="card-counter danger">
                         <i class="fa-solid fa-person-chalkboard"></i>
                         <span class="count-numbers">@Model.TeacherCount</span>
@@ -62,90 +94,92 @@
                         <span class="count-numbers">@Model.StudentNotEnrolledCount</span>
                         <span class="count-name">Not Enrolled</span>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-12 col-lg-9 col-xl-8">
-                            <div class="card widget-card border-light shadow-sm">
-                                <div class="card-body p-4">
-                                    <h5 class="card-title widget-card-title mb-4">Ranking of Students</h5>                                    
-                                    <div class="table-responsive" style="height:400px; overflow-y: auto;">
-                                        @using (Html.BeginForm("QueryDashboad", "Registrar", FormMethod.Post))
-                                        {
-                                            <div class="row">
-                                                <div class="col-sm-5">
-                                                    <select class="form-select mb-3" aria-label="Default select example" name="grade" required>
-                                                        <option value="">Grade</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="5">5</option>
-                                                        <option value="6">6</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <select class="form-select mb-3" aria-label="Default select example" name="quarter" required>
-                                                        <option value="" selected>Quarter</option>
-                                                        <option value="1">One</option>
-                                                        <option value="2">Two</option>
-                                                        <option value="3">Three</option>
-                                                        <option value="4">four</option>
-                                                        <option value="5">final</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <select class="form-select mb-3" aria-label="Default select example" name="rank" required>
-                                                        <option value="" selected>Rank</option>
-                                                        <option value="1">With Highest Honor</option>
-                                                        <option value="2">With High Honor</option>
-                                                        <option value="3">With High Honor</option>                                                       
-                                                    </select>
-                                                </div>
-                                                <div class="col-sm-3">
-                                                    <button type="submit" class="btn btn-warning">Search</button>
-                                                </div>
-                                            </div>
-                                        }
-
-                                        <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0">
-                                            @if (Model.StudentRanking.Count() > 0)
+                </div> *@
+                <div class="col">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-12 col-lg-9 col-xl-8">
+                                <div class="card widget-card border-light shadow-sm">
+                                    <div class="card-body p-4">
+                                        <h5 class="card-title widget-card-title mb-4">Ranking of Students</h5>
+                                        <div class="table-responsive" style="height:400px; overflow-y: auto;">
+                                            @using (Html.BeginForm("QueryDashboad", "Registrar", FormMethod.Post))
                                             {
-                                                <thead>
-                                                    <tr>
-                                                        <th>Full name</th>
-                                                        <th>Grade</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var student in Model.StudentRanking)
-                                                    {
+                                                <div class="row">
+                                                    <div class="col-sm-5">
+                                                        <select class="form-select mb-3" aria-label="Default select example" name="grade" required>
+                                                            <option value="">Grade</option>
+                                                            <option value="1">1</option>
+                                                            <option value="2">2</option>
+                                                            <option value="3">3</option>
+                                                            <option value="4">4</option>
+                                                            <option value="5">5</option>
+                                                            <option value="6">6</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <select class="form-select mb-3" aria-label="Default select example" name="quarter" required>
+                                                            <option value="" selected>Quarter</option>
+                                                            <option value="1">One</option>
+                                                            <option value="2">Two</option>
+                                                            <option value="3">Three</option>
+                                                            <option value="4">four</option>
+                                                            <option value="5">final</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <select class="form-select mb-3" aria-label="Default select example" name="rank" required>
+                                                            <option value="" selected>Rank</option>
+                                                            <option value="1">With Highest Honor</option>
+                                                            <option value="2">With High Honor</option>
+                                                            <option value="3">With High Honor</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <button type="submit" class="btn btn-warning">Search</button>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0">
+                                                @if (Model.StudentRanking.Count() > 0)
+                                                {
+                                                    <thead>
                                                         <tr>
-                                                            <td>
-                                                                @student.fullname
-                                                            </td>
-                                                            <td>
-                                                                @student.Average
-                                                            </td>
+                                                            <th>Full name</th>
+                                                            <th>Grade</th>
                                                         </tr>
-                                                    }
-                                                </tbody>
-                                            }
-                                            else
-                                            {
-                                                <p>No Data to show</p>
-                                            }
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var student in Model.StudentRanking)
+                                                        {
+                                                            <tr>
+                                                                <td>
+                                                                    @student.fullname
+                                                                </td>
+                                                                <td>
+                                                                    @student.Average
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                }
+                                                else
+                                                {
+                                                    <p>No Data to show</p>
+                                                }
 
-                                        </table>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
+            
         </div>
         
         </div> 
