@@ -92,7 +92,7 @@
                             var subject = Model.ChildSubjects.ElementAt(x);
                             <div class="mb-3">
                                  <label for="recipient-name" class="col-form-label">@subject.Name:</label>
-                                 <input type="hidden" value="@subject.Id" name="subject" />
+                                 <input type="hidden" value="@subject.subjectId" name="subject" />
                                  <input type="text" class="form-control" id="recipient-name" name="grades" required>
                             </div>
                         }

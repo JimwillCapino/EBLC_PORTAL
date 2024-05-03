@@ -55,7 +55,7 @@
                                 <tr class="bg-blue">
                                     <td class="pt-3 mt-1">@subject.Name</td>
                                     <td class="pt-3">
-                                        <a asp-action="RemoveSubject" asp-route-id="@subject.Id" asp-route-headid="@Model.HeadId" class='btn btn-danger'>Delete</a>
+                                        <a asp-action="RemoveSubject" asp-route-id="@subject.Id" asp-route-subjectId="@subject.subjectId" asp-route-headid="@Model.HeadId" class='btn btn-danger'>Delete</a>
                                         <a href='#' class='btn btn-success' data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="setValues('@subject.Id','@subject.Name')">Edit</a>
                                     </td>
                                 </tr>

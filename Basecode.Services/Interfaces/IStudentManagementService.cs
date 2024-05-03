@@ -36,5 +36,6 @@ namespace Basecode.Services.Interfaces
         public Task<StudentDetailsContainer> GetStudentDetails(int studentId);
         public IEnumerable<StudentPreviewInformation> GetStudentPreviewInformation();
         public List<ClassStudentViewModel> GetStudentWithNoGradePerQuarter(int classid, int subjectid, int quarter);
+        public List<StudentQuarterlyAverage> GetStudentRanking(int gradeLevel, int quarter, int rank);
     }
 }

@@ -21,5 +21,9 @@ namespace Basecode.Data.Models
         public byte[]? SchoolLogo { get; set; }
         public byte[]? DepEdLogo { get; set; }
         public string? Administrator { get; set; }
+        public int? PassingGrade { get; set; }
+        public int? WithHighestHonor { get; set; }
+        public int? WithHighHonor { get; set; }
+        public int? WithHonor { get; set; }
     }
 }

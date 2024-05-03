@@ -51,5 +51,14 @@ namespace Basecode.Data.ViewModels
         public IFormFile? SchoolLogoRecieve { get; set; }
         public IFormFile? DepEdLogoRecieve { get; set; }
         public string? Administrator { get; set; }
+        [RegularExpression(@"^\d+$", ErrorMessage = "The field must be a whole number.")]
+        public int? PassingGrade { get; set; }
+        [RegularExpression(@"^\d+$", ErrorMessage = "The field must be a whole number.")]
+        public int? WithHighestHonor { get; set; }
+        [RegularExpression(@"^\d+$", ErrorMessage = "The field must be a whole number.")]
+        public int? WithHighHonor { get; set; }
+        [RegularExpression(@"^\d+$", ErrorMessage = "The field must be a whole number.")]
+        public int? WithHonor { get; set; }
+
     }
 }

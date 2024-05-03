@@ -4,7 +4,9 @@
 @{
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model SettingsViewModel
 
@@ -13,6 +15,27 @@
    @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
         <div class="container p-0">
+            @if (successValue == 0)
+            {
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-exclamation-octagon-fill"></i>
+                    <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+            }
+            else if (successValue == 1)
+            {
+                <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-check-circle-fill"></i>
+                    <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @{
+                Constants.ViewDataErrorHandling.Success = -1;
+                Constants.ViewDataErrorHandling.ErrorMessage = null;
+            }
             <h1 class="h3 mb-3">Settings</h1>
             <div class="row">
                 <div class="col-md-5 col-xl-4">
@@ -28,15 +51,19 @@
                             <a class="list-group-item list-group-item-action" data-toggle="list" href="#password" role="tab">
                                 School Information
                             </a>
-                            <a asp-action="ManageLearnerValues" class="list-group-item list-group-item-action">
+                            @* <a asp-action="ManageLearnerValues" class="list-group-item list-group-item-action">
                                 Learner's Value
-                            </a>                            
+                            </a>     *@ 
+                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#gradeEval" role="tab">
+                                Grade Evaluation
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-7 col-xl-8">
                     <form method="post" enctype="multipart/form-data" asp-action="UpdateSettings">
+                        <input type="hidden" asp-for="Id"/>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="account" role="tabpanel">
                             <div class="card">
@@ -139,6 +166,42 @@
                                 </div>
                             </div>
                         </div>
+                            <div class="tab-pane fade show" id="gradeEval" role="tabpanel">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Set Grade Evaluation</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label for="inputUsername">Passing Grade</label>
+                                                    <input type="text" class="form-control" id="inputUsername" placeholder="Enter Passing Grade" asp-for="PassingGrade">
+                                                    <span asp-validation-for="PassingGrade"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputUsername">With Highest Honor Threshold</label>
+                                                    <input type="text" class="form-control" id="inputUsername" placeholder="With Highest Honor Threshold" asp-for="WithHighestHonor">
+                                                    <span asp-validation-for="WithHighestHonor"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputUsername">With High Honor Threshold</label>
+                                                    <input type="text" class="form-control" id="inputUsername" placeholder="With High Honor Threshold" asp-for="WithHighHonor">
+                                                    <span asp-validation-for="WithHighHonor"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="inputUsername">With Honor Threshold</label>
+                                                    <input type="text" class="form-control" id="inputUsername" placeholder="With Honor Threshold" asp-for="WithHonor">
+                                                    <span asp-validation-for="WithHonor"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-danger mt-4">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                         
+
                     </div>
                     </form>
                 </div>

@@ -91,7 +91,7 @@ namespace Basecode.Data.Repositories
             try
             {
                 var studentsCount = this.GetDbSet<UsersPortal>().Where(p => p.FirstName.ToLower().Equals(student.FirstName) && p.MiddleName.ToLower().Equals(student.MiddleName)
-                || p.LastName.ToLower().Equals(student.LastName)).Count();
+                && p.LastName.ToLower().Equals(student.LastName)).Count();
                 return studentsCount > 0;
             }
             catch (Exception ex)

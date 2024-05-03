@@ -32,6 +32,40 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
+       public List<Subject> GetAllSubjectTakenByStudent(int studentId, string schoolYear)
+        {
+            try
+            {
+                var subjects = this.GetDbSet<Subject>();
+                var Classes = this.GetDbSet<Class>().Where(p => p.SchoolYear == schoolYear);
+                var ClassStudents = this.GetDbSet<ClassStudents>().Where(p => p.Student_Id == studentId);
+                var ClassSubjects = this.GetDbSet<ClassSubjects>();
+                var headSubjects = this.GetDbSet<HeadSubject>();
+
+                var SubjectsTaken = from Class in Classes
+                                    join classstudent in ClassStudents
+                                    on Class.Id equals classstudent.Class_Id
+                                    join classsubject in ClassSubjects
+                                    on Class.Id equals classsubject.ClassId
+                                    join subject in subjects on
+                                    classsubject.Subject_Id equals subject.Subject_Id
+                                    join headsubject in headSubjects
+                                    on subject.Subject_Id equals headsubject.Subect_Id
+                                    select new Subject
+                                    {
+                                        Subject_Id = subject.Subject_Id,
+                                        Subject_Name = subject.Subject_Name,
+                                        HasChild = subject.HasChild,
+                                        Grade = subject.Grade
+                                    };
+                return SubjectsTaken.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
        public List<Subject> GetAllSubjects(int studentId, string schoolYear) 
        {
             try
@@ -156,7 +190,7 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
-        public List<ChildSubjectView> GetChildSubject(int headId)
+        public List<ChildSubjectView> GetChildSubjects(int headId)
         {
             try
             {
@@ -167,10 +201,25 @@ namespace Basecode.Data.Repositories
                                   s in subject on c.Subject_Id equals s.Subject_Id
                                   select new ChildSubjectView
                                   {
-                                      Id = c.Subject_Id,
+                                      Id = c.Id,
+                                      subjectId = c.Subject_Id,
                                       Name = s.Subject_Name
                                   };
                 return viewSubject.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }     
+        public void RemoveChildSubject(int id)
+        {
+            try
+            {
+                var childSub = _context.ChildSubject.Find(id);
+                _context.ChildSubject.Remove(childSub);
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {

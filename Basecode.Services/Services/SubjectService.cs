@@ -107,7 +107,30 @@ namespace Basecode.Services.Services
             try
             {
                 var subject = _subjectRepository.GetSubjectById(id);
+                List<ChildSubjectView> childsubjects;
+                if (subject.HasChild)
+                {
+                     childsubjects = _subjectRepository.GetChildSubjects(id);
+                    foreach(var childSubject in childsubjects)
+                    {
+                        var childSubjectDelete = _subjectRepository.GetSubjectById(childSubject.subjectId);
+                        _subjectRepository.RemoveChildSubject(childSubject.Id);
+                        _subjectRepository.RemoveSubject(childSubjectDelete);                      
+                    }
+                }                   
                 _subjectRepository.RemoveSubject(subject);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public void RemoveChildSubject(int id)
+        {
+            try
+            {             
+                _subjectRepository.RemoveChildSubject(id);
             }
             catch (Exception ex)
             {
@@ -120,7 +143,7 @@ namespace Basecode.Services.Services
             try
             {
                 var container = new ChildSubjectContainer();
-                container.ChildSubjects = _subjectRepository.GetChildSubject(headId);
+                container.ChildSubjects = _subjectRepository.GetChildSubjects(headId);
                 container.HeadId = headId;
                 return container;
             }

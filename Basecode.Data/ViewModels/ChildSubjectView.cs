@@ -9,6 +9,7 @@ namespace Basecode.Data.ViewModels
     public class ChildSubjectView
     {
         public int Id { get; set; }
+        public int subjectId { get; set; }
         public string Name { get; set; }
     }
 }

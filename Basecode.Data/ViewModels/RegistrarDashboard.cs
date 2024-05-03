@@ -14,5 +14,6 @@ namespace Basecode.Data.ViewModels
         public int StudentEnrolledCount { get; set; }
         public int StudentNotEnrolledCount { get; set; }
         public List<NewEnrolleeViewModel> NewEnrolleeList { get; set; }
+        public List<StudentQuarterlyAverage> StudentRanking { get ; set; }
     }
 }

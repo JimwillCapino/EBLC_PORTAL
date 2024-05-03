@@ -58,21 +58,51 @@ namespace Basecode_WebApp.Controllers
             //un enroll student if this date is at the end of the school year
             var datToday = DateTime.Now;
             var endSchoolDate = _settingsService.GetSettings().EndofClass;
-            if(datToday.CompareTo( endSchoolDate ) == 0 )
+            if (datToday.CompareTo(endSchoolDate) == 0)
                 _studentService.UnEnrollStudents();
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int gradeLevel, int quarter, int rank)
         {
-            ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
-            ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
-            if (await _usersService.IsNewUser(_userManager.GetUserId(User)))
+            try
             {
-                return RedirectToAction("RegistrarProfileRegistration");
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
+                if (await _usersService.IsNewUser(_userManager.GetUserId(User)))
+                {
+                    return RedirectToAction("RegistrarProfileRegistration");
+                }
+                var dashboard = await _usersService.SetRegisrarDashBoard();
+                dashboard.SchoolYear = _settingsService.GetSchoolYear();
+                dashboard.StudentRanking = _studentManagementService.GetStudentRanking(gradeLevel, quarter, rank);
+                return View(dashboard);
             }
-            var dashboard = await _usersService.SetRegisrarDashBoard();
-            dashboard.SchoolYear = _settingsService.GetSchoolYear();
-            return View(dashboard);
-        }     
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        public IActionResult QueryDashboad()
+        {
+            try
+            {
+                var gradeLevel = Request.Form["grade"].ToString();
+                var quarter = Int32.Parse(Request.Form["quarter"]);
+                var rank = Int32.Parse(Request.Form["rank"]);
+
+                return RedirectToAction("Index", new { gradeLevel = gradeLevel, quarter = quarter, rank = rank });
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
         public IActionResult RegistrarProfileRegistration()
         {
             ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
@@ -560,11 +590,12 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("ViewChildSubject", new { headId = childSubject.HeadId });
             }
         }
-        public IActionResult RemoveSubject(int id, int headid)
+        public IActionResult RemoveSubject(int id, int subjectId,int headid)
         {
             try
             {
-                _subjectService.RemoveSubject(id);
+                _subjectService.RemoveChildSubject(id);
+                _subjectService.RemoveSubject(subjectId);                
                 Constants.ViewDataErrorHandling.Success = 1;
                 Constants.ViewDataErrorHandling.ErrorMessage = "Subject Removed!";
                 return RedirectToAction("ViewChildSubject", new { headId = headid });
@@ -577,12 +608,15 @@ namespace Basecode_WebApp.Controllers
                 Console.WriteLine(ex);
                 return RedirectToAction("ViewChildSubject", new { headId = headid });
             }
-        }
+        }       
         public IActionResult RemoveSubjectHead(int id)
         {
             try
             {
                 _subjectService.RemoveSubject(id);
+                var subject = _subjectService.GetSubject(id);
+                //if(subject.HasChild)
+
                 Constants.ViewDataErrorHandling.Success = 1;
                 Constants.ViewDataErrorHandling.ErrorMessage = "Subject Removed!";
                 return RedirectToAction("ManageSubjects");
@@ -831,21 +865,26 @@ namespace Basecode_WebApp.Controllers
         }       
         public IActionResult Settings()
         {
+            ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+            ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
             return View(_settingsService.GetSettings());
         }
-        [HttpPost]
+        
         public IActionResult UpdateSettings(SettingsViewModel settings)
         {
             try
             {
                 _settingsService.UpdateSettings(settings);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully updated the settings";
                 return RedirectToAction("Settings");
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
-                return RedirectToAction("Index");
+                return RedirectToAction("Settings");
             }
         }
         public IActionResult ManageLearnerValues()

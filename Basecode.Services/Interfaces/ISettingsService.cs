@@ -17,5 +17,8 @@ namespace Basecode.Services.Interfaces
         public string GetSchoolYear();
         public SettingsViewModel GetSettings();
         public Settings GetSettingsById(int id);
+        public int? GetWithHighestHonor();
+        public int? GetWithHighHonor();
+        public int? GetWithHonor();
     }
 }

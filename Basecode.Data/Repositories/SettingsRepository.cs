@@ -1,5 +1,6 @@
 ﻿using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace Basecode.Data.Repositories
         {
             try
             {
-                return _context.Settings.FirstOrDefault();
+                return _context.Settings.AsNoTracking().FirstOrDefault();
             }
             catch(Exception ex)
             {

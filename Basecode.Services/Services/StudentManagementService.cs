@@ -24,6 +24,7 @@ namespace Basecode.Services.Services
         private readonly IParentRepository _parentRepository;
         private readonly IUsersRepository _usersRepository;
         private readonly IRTPRepository _rtpRepository;
+        private readonly ISettingsService _settingsService;
         public StudentManagementService(IStudentManagementRepository studentManagementRepository,
             IStudentRepository studentRepository,
             ISettingsRepository settings,
@@ -31,7 +32,8 @@ namespace Basecode.Services.Services
             IClassManagementRepository classManagementRepository,
             IParentRepository parentRepository,
             IUsersRepository usersRepository,
-            IRTPRepository rtpRepository) 
+            IRTPRepository rtpRepository,
+            ISettingsService settingsService) 
         {
             _studentManagementRepository = studentManagementRepository;
             _studentRepository = studentRepository;
@@ -41,6 +43,7 @@ namespace Basecode.Services.Services
             _parentRepository = parentRepository;
             _usersRepository = usersRepository;
             _rtpRepository = rtpRepository;
+            _settingsService = settingsService;
         }
         public GradesDetail GetStudentGradeBySubject(int student_Id, int subject_Id)
         {
@@ -103,7 +106,7 @@ namespace Basecode.Services.Services
                 var childSubjectGrade = new ChildSubjectGrades();
                 var headsub = _subjectRepository.GetSubjectById(headId);
                 childSubjectGrade.HeadSubjectGrade = _studentManagementRepository.GetStudentGradeBySubject(studentId, headId);
-                childSubjectGrade.ChildSubjects = _subjectRepository.GetChildSubject(headId);
+                childSubjectGrade.ChildSubjects = _subjectRepository.GetChildSubjects(headId);
                 childSubjectGrade.GradesContainer = new List<GradesDetail>();
                 childSubjectGrade.HeadSubjectName = headsub.Subject_Name;
                 childSubjectGrade.HeadId = headId;
@@ -111,7 +114,7 @@ namespace Basecode.Services.Services
                 
                 foreach (var subject in childSubjectGrade.ChildSubjects)
                 {
-                    childSubjectGrade.GradesContainer.Add(_studentManagementRepository.GetStudentGradeBySubject(studentId, subject.Id));
+                    childSubjectGrade.GradesContainer.Add(_studentManagementRepository.GetStudentGradeBySubject(studentId, subject.subjectId));
                 }
                 return childSubjectGrade;
             }
@@ -161,6 +164,78 @@ namespace Basecode.Services.Services
             catch
             {
                 throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public List<StudentQuarterlyAverage> GetStudentRanking(int gradeLevel, int quarter, int rank)
+        {
+            try
+            {
+                double sum;
+                int avg = 0;
+                var students = _studentManagementRepository.GetAllStudentPreview().Where(p => p.grade == gradeLevel);
+                var RankOfStudents = new List<StudentQuarterlyAverage>();
+
+                foreach (var student in students)
+                {
+                    sum = 0.0;
+                    var studentgrade = _studentManagementRepository.GetStudentGrades(student.studentid, _settingsRepository.GetSchoolYear());
+                    var subjects = _subjectRepository.GetAllSubjectTakenByStudent(student.studentid, _settingsRepository.GetSchoolYear());
+                    foreach (var subject in subjects)
+                    {
+                        var filteredSubject = studentgrade.FirstOrDefault(p => p.SubjectId == subject.Subject_Id);
+                        if(filteredSubject != null)
+                        {
+                            var selectedGrade = filteredSubject.Grades.FirstOrDefault(p => p.Quarter == quarter);
+                            if (selectedGrade == null)
+                            {
+                                throw new Exception("There are students that do not have grade on this particular quarter yet.");
+                            }
+                            sum += selectedGrade.Grade;
+                        }
+                        else
+                        {
+                            throw new Exception("There are students that do not have grades on some subjects.");
+                        }
+                    }
+                    avg = (int)Math.Round(sum / subjects.Count(), MidpointRounding.AwayFromZero);
+
+                    if ((rank == 1) && (avg >= _settingsService.GetWithHighestHonor() && avg <= 100))
+                    {
+                        var studentRank = new StudentQuarterlyAverage
+                        {
+                            studentId = student.studentid,
+                            fullname = student.fullname,
+                            Average = avg
+                        };
+                        RankOfStudents.Add(studentRank);
+                    }
+                    else if ((rank == 2) && (avg >= _settingsService.GetWithHighHonor() && avg < _settingsService.GetWithHighestHonor()))
+                    {
+                        var studentRank = new StudentQuarterlyAverage
+                        {
+                            studentId = student.studentid,
+                            fullname = student.fullname,
+                            Average = avg
+                        };
+                        RankOfStudents.Add(studentRank);
+                    }
+                    else if ((rank == 3) && (avg >= _settingsService.GetWithHonor() && avg < _settingsService.GetWithHighHonor()))
+                    {
+                        var studentRank = new StudentQuarterlyAverage
+                        {
+                            studentId = student.studentid,
+                            fullname = student.fullname,
+                            Average = avg
+                        };
+                        RankOfStudents.Add(studentRank);
+                    }
+                }
+                return RankOfStudents;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw ex;
             }
         }
         public async Task<StudentDetailsContainer> GetStudentDetails(int studentId)
@@ -527,5 +602,6 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
+        
     }
 }

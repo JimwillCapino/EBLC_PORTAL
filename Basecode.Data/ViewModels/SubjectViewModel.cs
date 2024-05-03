@@ -11,7 +11,7 @@ namespace Basecode.Data.ViewModels
     {
         public int subjectid { get; set; }
         [Required]
-        [StringLength(30, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [StringLength(30, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
         public string subjectname { get; set; }
         [Required]
         [RegularExpression(@"^\d+$", ErrorMessage = "Please enter a valid integer.")]
