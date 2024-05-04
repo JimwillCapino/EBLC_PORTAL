@@ -32,7 +32,7 @@
 
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main p-5">
+    <div class="main p-5" style="height:400px; overflow-y: auto;">
         @if (successValue == 0)
         {
             <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
@@ -76,7 +76,13 @@
                         <p>Adviser: @Model.AdviserName</p>
                         <p>Grade Level: @Model.Grade</p>
                         <p>Class Size: @Model.ClassSize</p>
-                        <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal2">Edit</a>  <a asp-action="RemoveClass" asp-route-classId="@Model.Id" class="btn btn-danger">Delete</a>
+                        <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal2">Edit</a>  
+                        <a asp-action="RemoveClass" asp-route-classId="@Model.Id" class="btn btn-danger">Delete</a>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Subjects</button>
+                        @if (Model.ClassStudents.Count < Model.ClassSize)
+                        {
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal1">Add Students</button>
+                        }
                     </div>
                 </div>
             </div>
@@ -84,7 +90,7 @@
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <div class="table-responsive overflow-auto">
+                    <div class="table-responsive overflow-auto" style="height:400px; overflow-y: auto;">
                         <table class="table overflow-auto" id="myTable">
                             <thead>
                                 <tr>
@@ -110,12 +116,12 @@
                                 }
                             </tbody>
                         </table>
-                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Subjects</button>
+                       
                     </div>
                 </div>
                 <div class="col">
-                    <div class="table-responsive overflow-auto">
-                        <table class="table overflow-auto" id="myTable">
+                    <div class="table-responsive overflow-auto" style="height:400px; overflow-y: auto;">
+                        <table class="table" id="myTable" >
                             <thead>
                                 <tr>
                                     <th>Student Name</th>
@@ -138,10 +144,7 @@
                                 }                                                         
                             </tbody>
                         </table>
-                        @if(Model.ClassStudents.Count < Model.ClassSize)
-                        {
-                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal1">Add Students</button>
-                        }                        
+                                           
                     </div>
                 </div>
             </div>

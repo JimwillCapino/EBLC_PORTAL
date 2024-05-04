@@ -473,11 +473,14 @@ namespace Basecode_WebApp.Controllers
                     return RedirectToAction("AddChildSubjectForm", new { headId =id, grade = subjectview.grade });
                 }
                 _subjectService.SaveDbChanges();
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Subject created successfully!";
                 return RedirectToAction("ManageSubjects");
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
                 return RedirectToAction("Index");
             }
@@ -523,15 +526,18 @@ namespace Basecode_WebApp.Controllers
                         HeadSubjectId = headId,
                         Subject_Id = id,                        
                     };
-                    _subjectService.AddChildSubject(childsubject);                   
+                    _subjectService.AddChildSubject(childsubject);
+                    Constants.ViewDataErrorHandling.Success = 1;
+                    Constants.ViewDataErrorHandling.ErrorMessage = "Subject created successfully!";
                 }
                 return RedirectToAction("ManageSubjects");
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
-                return RedirectToAction("Index");
+                return RedirectToAction("ManageSubjects");
             }
         }
         public IActionResult ViewChildSubject(int headId)
@@ -544,9 +550,10 @@ namespace Basecode_WebApp.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
-                return RedirectToAction("Index");
+                return RedirectToAction("ManageSubjects");
             }
         } 
         public IActionResult AddSingleChildSubject(ChildSubjectContainer childSubject)
@@ -588,6 +595,25 @@ namespace Basecode_WebApp.Controllers
                 ViewBag.Success = false;
                 Console.WriteLine(ex);
                 return RedirectToAction("ViewChildSubject", new { headId = childSubject.HeadId });
+            }
+        }
+        public IActionResult UpdateSubject(SubjectViewModel subject)
+        {
+            try
+            {
+                _subjectService.UpdateSubject(subject);
+                _subjectService.SaveDbChanges();
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Subject Update!";
+                return RedirectToAction("ManageSubjects");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                
+                Console.WriteLine(ex);
+                return RedirectToAction("ManageSubjects");
             }
         }
         public IActionResult RemoveSubject(int id, int subjectId,int headid)
@@ -667,8 +693,7 @@ namespace Basecode_WebApp.Controllers
             catch (Exception ex)
             {
                 Constants.ViewDataErrorHandling.Success = 0;
-                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;              
                 Console.WriteLine(ex);
                 return RedirectToAction("ClassDetails", new { classId = classview.Id });
             }
@@ -800,12 +825,15 @@ namespace Basecode_WebApp.Controllers
                 };
 
                 _classManagementService.AddClassSubjects(classSubjects);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully added a subject to this class.";
 
                 return RedirectToAction("ClassDetails", new { classId = classId });
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
                 return RedirectToAction("ManageClass");
             }
@@ -826,11 +854,14 @@ namespace Basecode_WebApp.Controllers
                 }
                // _classManagementService.AddClassStudent(classStudent);
                 _classManagementService.AddClassStudents(students);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully added a student to this class.";
                 return RedirectToAction("ClassDetails", new { classId = model.Id });
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
                 return RedirectToAction("ManageClass");
             }
@@ -840,11 +871,14 @@ namespace Basecode_WebApp.Controllers
             try
             {
                 _classManagementService.RemoveClassStudent(id);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully removed a student in this class.";
                 return RedirectToAction("ClassDetails", new { classId = classId });
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
                 return RedirectToAction("ManageClass");
             }
@@ -854,11 +888,14 @@ namespace Basecode_WebApp.Controllers
             try
             {
                 _classManagementService.RemoveClassSubject(id);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully removed a subject in this class";
                 return RedirectToAction("ClassDetails", new { classId = classId });
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
                 return RedirectToAction("ManageClass");
             }
@@ -897,9 +934,10 @@ namespace Basecode_WebApp.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
-                return RedirectToAction("Index");
+                return RedirectToAction("ViewLearnersValues");
             }
         }
         [HttpPost]
@@ -913,13 +951,17 @@ namespace Basecode_WebApp.Controllers
                     core_Values = core_value
                 };
                 _studentManagementService.AddCoreValues(core_value_object);
-                return RedirectToAction("ManageLearnerValues");
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully added Core Values.";
+                return RedirectToAction("ViewLearnersValues");
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
-                return RedirectToAction("Index");
+                return RedirectToAction("ViewLearnersValues");
             }
         }
         public IActionResult AddBehavioralStatement(Learner_Values_ViewModel model)
@@ -930,25 +972,32 @@ namespace Basecode_WebApp.Controllers
                 statement.Core_Values = model.Core_Values;
                 statement.Statements = model.Behavioural_Statement;
                 _studentManagementService.AddBehavioralStatement(statement);
-                return RedirectToAction("ManageLearnerValues");   
+
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully added Behavioral Statement.";
+                return RedirectToAction("ViewLearnersValues");   
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
-                return RedirectToAction("Index");
+                return RedirectToAction("ViewLearnersValues");
             }
         }
         public IActionResult ViewLearnersValues()
         {
             try
             {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
                 var test = _studentManagementService.GetLearnersValues();
                 return View(_studentManagementService.GetLearnersValues());
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
                 return RedirectToAction("Index");
             }
@@ -958,13 +1007,16 @@ namespace Basecode_WebApp.Controllers
             try
             {
                 _studentManagementService.UpdateCoreValues(values);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully updated Core Values.";
                 return RedirectToAction("ViewLearnersValues");
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
-                return RedirectToAction("Index");
+                return RedirectToAction("ViewLearnersValues");
             }
         }
         public IActionResult UpdateBeheviouralStatement(Learner_Values_ViewModel model)
@@ -978,13 +1030,16 @@ namespace Basecode_WebApp.Controllers
                     Statements = model.Behavioural_Statement
                 };
                 _studentManagementService.UpdateBehavioralStatement(statement);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully Updated Behavioral Statement.";
                 return RedirectToAction("ViewLearnersValues");
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
-                return RedirectToAction("Index");
+                return RedirectToAction("ViewLearnersValues");
             }
         }
         public IActionResult DeleteCoreValues(Core_Values values)
@@ -992,13 +1047,16 @@ namespace Basecode_WebApp.Controllers
             try
             {
                 _studentManagementService.DeleteCoreValues(values);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully Removed Core Values.";
                 return RedirectToAction("ViewLearnersValues");
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
-                return RedirectToAction("Index");
+                return RedirectToAction("ViewLearnersValues");
             }
         }
         public IActionResult UpdateBehaviouralStatementView(int id)
@@ -1013,13 +1071,15 @@ namespace Basecode_WebApp.Controllers
                     Core_Values = statement.Core_Values,
                     CoreValues = _studentManagementService.GetAllCoreValues()
                 };
+                
                 return View(values);
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
-                return RedirectToAction("Index");
+                return RedirectToAction("ViewLearnersValues");
             }
         }
         public IActionResult RemoveCoreValues(int id)
@@ -1028,11 +1088,14 @@ namespace Basecode_WebApp.Controllers
             {
                 var corevalues = _studentManagementService.GetCoreValuesById(id);
                 _studentManagementService.DeleteCoreValues(corevalues);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully Removed Core Values";
                 return RedirectToAction("ViewLearnersValues");
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
                 return RedirectToAction("Index");
             }
@@ -1050,12 +1113,32 @@ namespace Basecode_WebApp.Controllers
                     Id = Int32.Parse(corevaluesId),
                 };
                 _studentManagementService.UpdateCoreValues(cv);
-
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully Update Core Values Statement";
                 return RedirectToAction("ViewLearnersValues");
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("ViewLearnersValues");
+            }
+        }
+        public IActionResult DeleteBehavioralStatement(int id)
+        {
+            try
+            {
+                _studentManagementService.DeleteBehavioralStatement(id);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully Removed Behavioral Statement";
+                return RedirectToAction("ViewLearnersValues");
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                return RedirectToAction("ViewLearnersValues");
                 Console.WriteLine(ex);
                 return RedirectToAction("Index");
             }

@@ -18,7 +18,7 @@
 <script src="~/js/Tables.js"></script>
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main p-5">
+    <div class="main p-5" style="height:400px; overflow-y: auto;">
         @if (successValue == 0)
         {
             <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">

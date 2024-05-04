@@ -166,6 +166,7 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
+
         public List<StudentQuarterlyAverage> GetStudentRanking(int gradeLevel, int quarter, int rank)
         {
             try
@@ -400,6 +401,18 @@ namespace Basecode.Services.Services
                 valueswithgrades.Grades = _studentManagementRepository.GetValuesGrades(StudentId, schoolyear);
                 valueswithgrades.Values = _studentManagementRepository.GetLearnersValues();               
                 return valueswithgrades;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public void DeleteBehavioralStatement(int id)
+        {
+            try
+            {
+                var statement = _studentManagementRepository.GetBehavioural_Statement(id);
+                _studentManagementRepository.DeleteBehavioralStatement(statement);
             }
             catch
             {

@@ -503,6 +503,31 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        public Behavioural_Statement GetBehavioural_Statement(int id)
+        {
+            try
+            {
+                return _context.Behavioural_Statement.Find(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void DeleteBehavioralStatement(Behavioural_Statement statement)
+        {
+            try
+            {
+                _context.Behavioural_Statement.Remove(statement);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
         public void UpdateBehavioralStatement(Behavioural_Statement statement)
         {
             try

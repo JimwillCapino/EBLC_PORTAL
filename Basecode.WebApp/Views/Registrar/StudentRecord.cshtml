@@ -10,6 +10,19 @@
 @using Basecode.Data
 @using Basecode.Data.ViewModels
 @model List<StudentViewModel>
+<style>
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px; /* Adjust vertical spacing */
+        table-layout: fixed;
+    }
+
+    th, td {
+        padding: 10px; /* Adjust padding as needed */
+        text-align: center; /* Center align content */
+    }
+</style>
 <script>
     $(document).ready(function () {
         var table = $("#table").DataTable({
@@ -87,12 +100,8 @@
 </script>
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main p-3">
-        <div class="container p-lg-2">            
-            <h1>
-                Student Record
-            </h1>
-        </div>
+    <div class="main p-3" style="height:400px; overflow-y: auto;">
+       
         <div class="container">
             @if (successValue == 0)
             {
@@ -116,7 +125,10 @@
                 Constants.ViewDataErrorHandling.ErrorMessage = null;
             }
             <br />
-            <div style="width:90%; margin:0 auto;">                
+            <div style="width:90%; margin:0 auto;">
+                <h1>
+                    Student Record
+                </h1>
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1></h1>
                     <a asp-action="AddNewEnrollee"><button type="button" class="btn btn-warning">Add Student</button></a>

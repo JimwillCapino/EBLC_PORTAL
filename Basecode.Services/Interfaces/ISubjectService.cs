@@ -23,6 +23,7 @@ namespace Basecode.Services.Interfaces
         public void AddChildSubject(ChildSubjectContainer childSubject);
         public void UpdateChildSubject(ChildSubjectView subject);
         public void RemoveChildSubject(int id);
+        public void UpdateSubject(SubjectViewModel subjectView);
     }
 
 }

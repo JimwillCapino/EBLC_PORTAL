@@ -11,6 +11,7 @@
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
         <form asp-action="UpdateBeheviouralStatement">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="mb-3">
                 <input type="hidden" value="@Model.Id" asp-for="Id"/>
                 <select class="form-select" aria-label="Default select example" asp-for="Core_Values">
@@ -20,10 +21,12 @@
                         <option value="@core_value.Id">@core_value.core_Values</option>
                     }
                 </select>
+                <span asp-validation-for="Core_Values" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Behavioral Statement</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" asp-for="Behavioural_Statement"></textarea>
+                <span asp-validation-for="Behavioural_Statement" class="text-danger"></span>
             </div>
             <div class="row">
                 <div class="col">
@@ -33,3 +36,8 @@
         </form>
     </div>
 </div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

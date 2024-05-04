@@ -4,66 +4,107 @@
 @{
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model List<Learners_Values_Report>
-<link rel="stylesheet" href="/css/TableInfo.css" />
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main p-1">
-        <div class="page-content page-container" id="page-content">
-            <div class="padding">
-                <div class="row container d-flex justify-content-center">
-                    <div class="col-lg-8 grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Learner Values</h4>
-                                <p class="card-description">
-                                   Below are the criteria of rating the Learner's observed values.
-                                </p>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>                                       
-                                        </thead>
-                                        <tbody>
-                                            @foreach(var corevalues in Model)
-                                            {
-                                                <tr>
-                                                        <th rowspan="@corevalues.behavioural_Statements.Count()">@corevalues.Core_Values 
-                                                            <a asp-action="RemoveCoreValues" asp-route-id="@corevalues.Core_Values_Id"><i class="lni lni-eraser"></i></a>
-                                                            <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="set('@corevalues.Core_Values_Id','@corevalues.Core_Values')"><i class="lni lni-pencil"></i></a>
-                                                        </th>
-                                                        <td>@corevalues.behavioural_Statements.ElementAt(0).Statements
-                                                            <a asp-action="UpdateBehaviouralStatementView" asp-route-id="@corevalues.behavioural_Statements.ElementAt(0).Id"><i class="lni lni-pencil"></i></a>
-                                                        </td>
-                                                </tr>
-                                                    @for (int x = 1; x < @corevalues.behavioural_Statements.Count();x++)
-                                                    {
-                                                        <tr>
-                                                            <td>
-                                                                @corevalues.behavioural_Statements.ElementAt(x).Statements  <a asp-action="UpdateBehaviouralStatementView" asp-route-id="@corevalues.behavioural_Statements.ElementAt(x).Id"><i class="lni lni-pencil"></i></a>
-                                                            </td>
-                                                        </tr>
-                                                    }
-                                                }   
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+    <div class="main p-5">
+        <div class="table-responsive p-3">
+            <h1>Learner's Value Criteria</h1>
+            <div class="mt-4 mb-4">
+                <a asp-action="ManageLearnerValues" class="btn btn-warning"> Add Learner's Value</a>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Core Values</button>
             </div>
-    </div>
-    </div>
+            @if (successValue == 0)
+            {
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-exclamation-octagon-fill"></i>
+                    <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
 
+            }
+            else if (successValue == 1)
+            {
+                <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-check-circle-fill"></i>
+                    <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @{
+                Constants.ViewDataErrorHandling.Success = -1;
+                Constants.ViewDataErrorHandling.ErrorMessage = null;
+            }
+            <table class="table">
+                <thead>
+                    <th>Core Values</th>
+                    <th>Behavioral Statement</th>
+                </thead>
+                <tbody>
+                    @foreach (var corevalues in Model)
+                    {
+                        <tr>
+                            <th rowspan="@corevalues.behavioural_Statements.Count()">
+                                @corevalues.Core_Values
+                                <a asp-action="RemoveCoreValues" asp-route-id="@corevalues.Core_Values_Id"><i class="lni lni-eraser"></i></a>
+                                <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="set('@corevalues.Core_Values_Id','@corevalues.Core_Values')"><i class="lni lni-pencil"></i></a>
+                            </th>
+                            <td>
+                                @corevalues.behavioural_Statements.ElementAt(0).Statements
+                                <a asp-action="UpdateBehaviouralStatementView" asp-route-id="@corevalues.behavioural_Statements.ElementAt(0).Id"><i class="lni lni-pencil"></i></a>
+                                <a asp-action="DeleteBehavioralStatement" asp-route-id="@corevalues.behavioural_Statements.ElementAt(0).Id"><i class="lni lni-eraser"></i></a>
+                            </td>
+                        </tr>
+                        @for (int x = 1; x < @corevalues.behavioural_Statements.Count(); x++)
+                        {
+                            <tr>
+                                <td>
+                                    @corevalues.behavioural_Statements.ElementAt(x).Statements  <a asp-action="UpdateBehaviouralStatementView" asp-route-id="@corevalues.behavioural_Statements.ElementAt(x).Id"><i class="lni lni-pencil"></i></a>
+                                    <a asp-action="DeleteBehavioralStatement" asp-route-id="@corevalues.behavioural_Statements.ElementAt(x).Id"><i class="lni lni-eraser"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
     @* Modal For adding Core Values *@
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Core Values</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                @using (Html.BeginForm("AddCoreValue", "Registrar", FormMethod.Post))
+                    {
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Core Values:</label>
+                            <textarea class="form-control" id="message-text" name="Core_Value" required></textarea>
+                        </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-warning">Add Core Value</button>
+                        </div>
+                    }
+                </div>
+        </div>
+    </div>
+    @* Modal For Editing Core Values *@
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Update Core Values</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 @using (Html.BeginForm("UpdateCoreValues", "Registrar", FormMethod.Post))
@@ -78,7 +119,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Update Core Value</button>
+                        <button type="submit" class="btn btn-warning">Update Core Value</button>
                     </div>
                 }
             </div>

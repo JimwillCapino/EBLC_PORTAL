@@ -15,6 +15,7 @@ namespace Basecode.Data.ViewModels
         [Required]
         public int Core_Values { get; set; }
         [Required]
+        [StringLength(100, ErrorMessage = "The Behavioral Statement must be at most {1} characters long.")]
         public string Behavioural_Statement { get; set; }
     }
 }

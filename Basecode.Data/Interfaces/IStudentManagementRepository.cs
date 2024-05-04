@@ -39,5 +39,8 @@ namespace Basecode.Data.Interfaces
         public List<string> GetAttendanceSchoolYear(int student_Id);
         public IEnumerable<StudentPreviewInformation> GetAllStudentPreview();
         public int GetBehavioralMaxQuarter(int studentId, int BehavioralId, string schoolYear);
+        public Behavioural_Statement GetBehavioural_Statement(int id);
+        public void DeleteBehavioralStatement(Behavioural_Statement statement);
+
     }
 }

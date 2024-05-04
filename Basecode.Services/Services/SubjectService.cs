@@ -203,5 +203,24 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
+        public void UpdateSubject(SubjectViewModel subjectView)
+        {
+            try
+            {
+                var subject = new Subject()
+                {
+                    Subject_Id = subjectView.subjectid,
+                    Subject_Name = subjectView.subjectname,
+                    Grade = subjectView.grade,
+                    HasChild = subjectView.haschild
+                };
+                _subjectRepository.UdpateSubject(subject);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
     }
 }
