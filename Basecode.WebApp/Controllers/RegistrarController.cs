@@ -32,6 +32,7 @@ namespace Basecode_WebApp.Controllers
         private readonly IUsersService _usersService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IStudentService _studentService;
+        private readonly SignInManager<IdentityUser> _signInManager;        
         public RegistrarController(INewEnrolleeService newEnrolleeService,
             ITeacherService teacherService,
             ISubjectService subjectService,
@@ -41,7 +42,8 @@ namespace Basecode_WebApp.Controllers
             IMapper mapper,
             IUsersService usersService,
             UserManager<IdentityUser> userManager,
-            IStudentService studentService
+            IStudentService studentService,
+            SignInManager<IdentityUser> signInManager
             ) 
         { 
             _newEnrolleeService = newEnrolleeService;
@@ -54,6 +56,7 @@ namespace Basecode_WebApp.Controllers
             _usersService = usersService;
             _userManager = userManager;
             _studentService = studentService;
+            _signInManager = signInManager;
 
             //un enroll student if this date is at the end of the school year
             var datToday = DateTime.Now;
@@ -89,6 +92,11 @@ namespace Basecode_WebApp.Controllers
                 Console.WriteLine(ex);
                 return RedirectToAction("Index");
             }
+        }
+        public async Task<IActionResult> SignOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
         [HttpPost]
         public IActionResult QueryDashboad()

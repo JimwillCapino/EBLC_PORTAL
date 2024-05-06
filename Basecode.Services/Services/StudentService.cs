@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Basecode.Services.Services
 {
@@ -76,8 +77,19 @@ namespace Basecode.Services.Services
                 if(_studentRepository.isExisting(StudentUserPortal))
                 {
                     throw new Exception("This student has already been added to the system.");                   
-                } 
-
+                }
+                if (newStudent.ProfilePicRecieve != null)
+                {
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        newStudent.ProfilePicRecieve.CopyTo(stream);
+                        StudentUserPortal.ProfilePic = stream.ToArray();
+                    }
+                }
+                else
+                {
+                    newStudent.ProfilePic = newStudent.ProfilePic;
+                }
                 var parentUID = _usersRepository.AddUser(parentUserPortal);
                 parent.UID = parentUID;
                 var parentId = _parentRepository.AddParent(parent);

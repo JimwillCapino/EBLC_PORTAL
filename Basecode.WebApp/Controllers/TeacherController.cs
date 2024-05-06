@@ -20,13 +20,15 @@ namespace Basecode.WebApp.Controllers
         private readonly ISubjectService _subjectService;
         private readonly IStudentService _studentService;
         private readonly IUsersService _usersService;
+        private readonly SignInManager<IdentityUser> _signInManager;
         public TeacherController(UserManager<IdentityUser> userManager, 
             IClassManagementService classManagementService,
             IStudentManagementService studentManagementService,
             ISettingsService settingsService,
             ISubjectService subjectService,
             IStudentService studentService,
-            IUsersService usersService)
+            IUsersService usersService,
+            SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
             _classManagementService = classManagementService;
@@ -35,6 +37,7 @@ namespace Basecode.WebApp.Controllers
             _subjectService = subjectService;
             _studentService = studentService;
             _usersService = usersService;
+            _signInManager = signInManager; 
         }
         public async Task<IActionResult> Index(int classid, int subjectid, int quarter)
         {
@@ -56,6 +59,12 @@ namespace Basecode.WebApp.Controllers
                 ClassesOfTeacher = _classManagementService.GetTeacherClassDetails(id)
             };
             return View(dashboard);
+        }
+        public async Task<IActionResult> SignOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+
         }
         public async Task<IActionResult> StudentInfo(int studentId, int classId)
         {

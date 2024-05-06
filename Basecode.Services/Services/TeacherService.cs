@@ -94,6 +94,7 @@ namespace Basecode.Services.Services
                 };
 
                 var result = await _UserManager.CreateAsync(teacherUser, account.Password);
+                             
                 if (result.Succeeded)
                 {
                     var userRole = _roleManager.FindByNameAsync("Teacher").Result;                  
@@ -102,13 +103,13 @@ namespace Basecode.Services.Services
                 }
                 else
                 {
-                    throw new Exception(result.Errors.ToString());
+                    throw new Exception(result.Errors.First().Code);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                throw new Exception(Constants.Exception.DB);
+                throw new Exception(Constants.Exception.DB+". Specifically "+ex.Message);
             }
         }
         public async Task ApproveTeacherRegistration(int id)

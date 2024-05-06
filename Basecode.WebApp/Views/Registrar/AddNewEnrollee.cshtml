@@ -10,7 +10,7 @@
 @model RegisterStudent
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main">
+    <div class="main" style="height:400px; overflow-y: auto;">
         <div class="container py-3 min-vh-100 d-flex flex-column">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -24,8 +24,13 @@
                     Enter Student Details
                 </div>
                 <div class="card-body p-4">
-                    <form role="form" class="row" asp-action="AddNewStudent">
+                    <form role="form" enctype="multipart/form-data" class="row" asp-action="AddNewStudent">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputEmail4">Profile Picture</label>
+                            <input type="file" class="form-control" id="inputEmail4" placeholder="" asp-for="ProfilePicRecieve">
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
                         <div class="form-group col-lg-4">
                             <label for="inputEmail4">First Name</label>
                             <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="FirstName">

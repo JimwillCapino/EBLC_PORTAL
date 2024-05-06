@@ -21,6 +21,8 @@ namespace Basecode.Data.Models
         [Required(ErrorMessage = "First Name is Required.")]
         public DateTime Birthday { get; set; }
         public IFormFile? BirthCertificateFile { get; set; }
+        public byte[]? ProfilePic { get; set; }
+        public IFormFile? ProfilePicRecieve { get; set; }
         [Required(ErrorMessage = "gender is Required.")]
         public string sex { get; set; }
         [Required(ErrorMessage = "grade is Required.")]

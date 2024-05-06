@@ -51,8 +51,16 @@
             <div class="col-lg-4">
                 <div class="card mb-4">
                     <div class="card-body text-center">
-                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
-                             class="rounded-circle img-fluid" style="width: 150px;">
+                        @if (Model.Student.profilePicture == null)
+                        {
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                                 class="rounded-circle img-fluid" style="width: 150px;">
+                        }
+                        else
+                        {
+                            <img src="data:image/png;base64,@Convert.ToBase64String(Model.Student.profilePicture)" alt="avatar"
+                                 class="rounded-circle img-fluid" style="width: 150px;">
+                        }
                         <h5 class="my-3">@Model.Student.FirstName @Model.Student.MiddleName @Model.Student.LastName</h5>
                         <p class="text-muted mb-1">@Model.Student.Status</p>
                         <p class="text-muted mb-4">Grade @Model.Student.Grade</p>
@@ -210,7 +218,7 @@
                                     School Year
                                 </button>
                                 <ul class="dropdown-menu">
-                                    @foreach (var schoolyear in Model.Values_School_Years)
+                                    @foreach (var schoolyear in Model.School_Years)
                                     {
                                         <li><a class="dropdown-item" asp-action="StudentInfo" asp-route-student_Id="@Model.Student.Student_ID" asp-route-school_year="@schoolyear">@schoolyear</a></li>
                                     }
@@ -283,7 +291,7 @@
                                     School Year
                                 </button>
                                 <ul class="dropdown-menu">
-                                    @foreach (var schoolyear in Model.Attendance_School_Years)
+                                    @foreach (var schoolyear in Model.School_Years)
                                     {
                                         <li><a class="dropdown-item" asp-action="StudentInfo" asp-route-student_Id="@Model.Student.Student_ID" asp-route-school_year="@schoolyear">@schoolyear</a></li>
                                     }

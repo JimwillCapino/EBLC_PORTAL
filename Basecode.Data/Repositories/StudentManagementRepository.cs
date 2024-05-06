@@ -130,6 +130,7 @@ namespace Basecode.Data.Repositories
 
                 var studentdetails = new StudentViewModel
                 {
+                    profilePicture = userstudent.ProfilePic,
                     Student_ID = student.Student_Id,
                     FirstName = userstudent.FirstName,
                     MiddleName = userstudent.MiddleName,
@@ -191,55 +192,7 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-        public List<string> GetValuesSchoolyear(int student_Id)
-        {
-            try
-            {
-                var schoolYearsWithGradeList = new List<string>();
-                var schoolYears = this.GetDbSet<Learner_Values>()
-                    .Where(g => g.Student_Id == student_Id)
-                    .Select(g => g.School_Year).Distinct().ToList();
-                //var valuesSchoolyears = this.GetValuesSchoolyear(student_Id);
-                //var attendanceSchoolYears = this.GetAttendanceSchoolYear(student_Id);
-                var grades = this.GetDbSet<Learner_Values>()
-                    .Where(g => g.Student_Id == student_Id);
-                foreach (var schoolYear in schoolYears)
-                {
-                    var gradelevel = grades.FirstOrDefault(g => g.School_Year == schoolYear).Grade.ToString();
-                    schoolYearsWithGradeList.Add(schoolYear + " Grade:" + gradelevel);
-                }
-                //var concatList = schoolYears.Concat(attendanceSchoolYears).Distinct();
-                return schoolYearsWithGradeList;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                throw;
-            }
-        }
-        public List<string> GetAttendanceSchoolYear(int student_Id)
-        {
-            try
-            {
-                var schoolYearsWithGradeList = new List<string>();
-                var schoolYears = this.GetDbSet<Attendance>()
-                                    .Where(g => g.Studentid == student_Id)
-                                    .Select(g => g.School_Year).Distinct();
-                var grades = this.GetDbSet<Grades>()
-                    .Where(g => g.Student_Id == student_Id);
-                foreach (var schoolYear in schoolYears)
-                {
-                    var gradelevel = grades.FirstOrDefault(g => g.School_Year == schoolYear).Grade.ToString();
-                    schoolYearsWithGradeList.Add(schoolYear + " Grade:" + gradelevel);
-                }
-                return schoolYears.ToList();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                throw;
-            }
-        }
+        
         public int GradeLevel(int studentId, string schoolYear)
         {
             try

@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,6 +11,7 @@ namespace Basecode.Data.ViewModels
 {
     public class StudentViewModel
     {
+        public IFormFile? ProfilePicRecieve { get; set; }
         public int Student_ID { get; set; }
         [Required(ErrorMessage = "First Name is Required.")]
         public string FirstName { get; set; }

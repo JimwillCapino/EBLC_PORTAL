@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Drawing;
 using System.Xml;
 using System.Diagnostics;
+using AutoMapper;
 namespace Basecode.Services.Services
 {
     public class StudentManagementService:IStudentManagementService
@@ -187,8 +188,7 @@ namespace Basecode.Services.Services
                 var headSubjects = _subjectRepository.GetAllHeadSubject();
                 var student = new StudentDetailsWithGrade();
                 student.School_Years = _studentManagementRepository.GetSchoolYears(student_Id);
-                student.Values_School_Years = _studentManagementRepository.GetValuesSchoolyear(student_Id);
-                student.Attendance_School_Years = _studentManagementRepository.GetAttendanceSchoolYear(student_Id);
+              
                 student.Student = _studentManagementRepository.GetStudent(student_Id);
                 student.grades = _studentManagementRepository.GetStudentGrades(student_Id,school_year);
                 student.valuesGrades = _studentManagementRepository.GetValuesGrades(student_Id,school_year);
@@ -209,17 +209,9 @@ namespace Basecode.Services.Services
                 student.Parent = await _parentRepository.GetParentDetailById(student_Id);
                 student.PassingGrade = _settingsService.GetSettings().PassingGrade;
                 var schoolYearForAll = _settingsRepository.GetSchoolYear() + " Grade:" + gradeLevel;
-                if (!student.School_Years.Contains(schoolYearForAll))
+                if (!student.School_Years.Contains(schoolYearForAll) && student.Student.Status == "Enrolled")
                 {
                     student.School_Years.Add(schoolYearForAll);
-                }
-                if(!student.Values_School_Years.Contains(schoolYearForAll))
-                {
-                    student.Values_School_Years.Add(schoolYearForAll);
-                }
-                if(!student.Attendance_School_Years.Contains(schoolYearForAll))
-                {
-                    student.Attendance_School_Years.Add(schoolYearForAll);
                 }
                 return student;
             }
@@ -614,8 +606,15 @@ namespace Basecode.Services.Services
                 studentUserPortal.LastName = studentDetails.Student.LastName;
                 studentUserPortal.Birthday = studentDetails.Student.Birthday;
                 studentUserPortal.sex = studentDetails.Student.sex;
-                studentUserPortal.ProfilePic = studentDetails.Student.profilePicture;
-
+                if (studentDetails.Student.ProfilePicRecieve != null)
+                {
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        studentDetails.Student.ProfilePicRecieve.CopyTo(stream);
+                        studentUserPortal.ProfilePic = stream.ToArray();
+                    }
+                }
+                              
                 student.LRN = studentDetails.Student.lrn;
                 student.status = studentDetails.Student.Status;
                 student.CurrGrade = studentDetails.Student.Grade;

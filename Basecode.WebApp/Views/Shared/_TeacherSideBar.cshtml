@@ -34,7 +34,7 @@
                
     </ul>
     <div class="sidebar-footer">
-        <a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" class="sidebar-link">
+        <a asp-action="SignOut" class="sidebar-link">
             <i class="lni lni-exit"></i>
             <span>Logout</span>
         </a>
