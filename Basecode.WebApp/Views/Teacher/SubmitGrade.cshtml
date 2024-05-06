@@ -3,10 +3,12 @@
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int? max = 0;
     int finalGrade = 0;
+    int successValue = (int)ViewData["Success"];
 }
 @using Basecode.Data
 @using Basecode.Data.ViewModels
 @model GradesDetail
+
 <style>
     .btn {
         /* just for this demo. */
@@ -126,7 +128,28 @@
                 <li class="breadcrumb-item" aria-current="page"><a asp-action="StudentListPerSubject" asp-route-classid="@Constants.TeacherNavigation.classid" asp-route-subjectid="@Model.Subject_Id">Students</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a>Grade Submmission</a></li>
             </ol>
-        </nav>              
+        </nav>
+        @if (successValue == 0)
+        {
+            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-exclamation-octagon-fill"></i>
+                <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+        }
+        else if (successValue == 1)
+        {
+            <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-check-circle-fill"></i>
+                <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @{
+            Constants.ViewDataErrorHandling.Success = -1;
+            Constants.ViewDataErrorHandling.ErrorMessage = null;
+        }
         <div class="row mt-3">
             <div class="col">
                 <div class="card">
@@ -168,9 +191,9 @@
                                             <td class="pt-2">
                                                 @grades.Grade
                                             </td>
-                                            @* <td class="pt-2">
-                                        <i class="lni lni-pencil" onclick="setGradeValue(@grades.Grade_Id,@grades.Quarter)" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
-                                        </td> *@
+                                            <td class="pt-2">
+                                        <a class="btn btn-warning" onclick="setGradeValue(@grades.Grade_Id,@Model.Student_Id,@Model.Subject_Id,@grades.Quarter,@grades.Grade)" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</a>
+                                        </td>
                                         </tr>
                                         <tr id="spacing-row">
                                             <td></td>
@@ -230,14 +253,17 @@
                 {
                     <div class="modal-body">
 
-                        <div class="input-group mb-3">
+                       
                             <input type="hidden" value="" name="Grade_Id" id="gradeId"/>
                             <input type="hidden" value="@Model.Subject_Id" name="Subject_Id" />
                             <input type="hidden" value="@Model.Student_Id" name="Student_Id" />
                             <input type="hidden" value="" name="Quarter" id="quarter"/>
-                            <label for="inputPassword5" class="form-label mr-3">Grade</label>
-                            <input type="text" id="inputPassword5" name="Grade" class="form-control mb-3" required />
-                        </div>
+                            <div class="mb-3">
+                                <label for="inputPassword5" class="form-label">Grade</label>
+                                <input type="text" id="grade" name="Grade" class="form-control" required />
+                            </div>
+                            
+                        
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -253,11 +279,12 @@
         }
     }
     <script>
-        function setGradeValue(value, quarter) {
-            var hiddenbox = document.getElementById("gradeId");
-            var quarterbox = document.getElementById("quarter");
-            hiddenbox.value = value;
-            quarterbox.value = quarter;
+        function setGradeValue(gradeId,studentid,subjectid,quarter,grade) {
+            document.getElementById("gradeId").value = gradeId;
+            document.getElementById("Subject_Id").value = subjectid;
+            document.getElementById("Student_Id").value = studentid;
+            document.getElementById("grade").value = grade;
+            document.getElementById("quarter").value = quarter;
         }
     </script>
 </div>

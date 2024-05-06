@@ -10,7 +10,14 @@
 <link rel="stylesheet" href="/css/TableInfo.css" />
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main">
+    <div class="main p-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="ManageTeachersList">List of Teachers</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a>Add Teacher</a></li>
+            </ol>
+        </nav>
         <div class="container d-flex justify-content-center align-items-center min-vh-100 mt-4">
         <!----------------------- Login Container -------------------------->
         <div class="row border rounded-5 p-3 bg-white shadow box-area">

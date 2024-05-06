@@ -26,7 +26,7 @@ namespace Basecode.Services.Services
         {
             try
             {
-                classroom.SchoolYear = _settings.GetSchoolYear();
+                
                 _repository.AddClass(classroom);
             }
             catch (Exception ex)
@@ -45,7 +45,7 @@ namespace Basecode.Services.Services
                     Adviser = classViewModel.Adviser,
                     Grade = classViewModel.Grade,
                     ClassSize = classViewModel.ClassSize,
-                    SchoolYear = _settings.GetSchoolYear()
+                    
                 };
 
                 var classid = _repository.AddClass(classSection);
@@ -255,8 +255,7 @@ namespace Basecode.Services.Services
                     Id = classdetails.Id,
                     ClassName = classdetails.ClassName,
                     Adviser = classdetails.Adviser,
-                    Grade = classdetails.Grade,
-                    SchoolYear = classdetails.SchoolYear,
+                    Grade = classdetails.Grade,                   
                     ClassSize = classdetails.ClassSize
                 };
                 _repository.UpdateClass(classTable);

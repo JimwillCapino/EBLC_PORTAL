@@ -12,6 +12,13 @@
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main">
         <div class="container py-3 min-vh-100 d-flex flex-column">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="StudentRecord">List of Students</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a>Add New Student</a></li>
+                </ol>
+            </nav>
             <div class="card shadow rounded-3 my-auto">
                 <div class="card-header p-3 h4">
                     Enter Student Details

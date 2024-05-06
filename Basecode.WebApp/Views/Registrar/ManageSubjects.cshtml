@@ -41,7 +41,7 @@
                 {
                     data: null, render: function (data, type, row) {
                         //return row.haschild == true ? '<a href="#" class="btn btn-success" onclick=redirect("' + row.subjectid + '");>Child Subjects</a> <a href="#" onclick="removeSub(' + row.subjectid + ')" class="btn btn-danger">Delete</a> <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="SetSubjectEditPanel(' + row.subjectid + ',' + row.subname + ',' + row.grade + ',' + row.haschild + ')">Edit</a>' : '<a href="#" onclick="removeSub(' + row.subjectid + ')" class="btn btn-danger">Delete</a> <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="SetSubjectEditPanel(' + row.subjectid + ',' + row.subname + ',' + row.grade + ',' + row.haschild + ')">Edit</a>';
-                        return row.haschild == true ? '<a href="#" class="btn btn-success" onclick=redirect("' + row.subjectid + '");>Child Subjects</a> <a href="#" onclick="removeSub(' + row.subjectid + ')" class="btn btn-danger">Delete</a> <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="SetSubjectEditPanel(' + row.subjectid + ',' + ensureString(row.subjectname) + ',' + row.grade + ',' + row.haschild + ')">Edit</a>' : '<a href="#" onclick="removeSub(' + row.subjectid + ')" class="btn btn-danger">Delete</a> <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="SetSubjectEditPanel(' + row.subjectid + ',' + ensureString(row.subjectname) + ',' + row.grade + ',' + row.haschild + ')">Edit</a>';
+                        return row.haschild == true ? '<a href="#" class="btn btn-success" onclick=redirect("' + row.subjectid + '");>Child Subjects</a> <a href="#" onclick="removeSub(' + row.subjectid + ')" class="btn btn-danger">Delete</a> <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="SetSubjectEditPanel(' + row.subjectid + ',' + ensureString(row.subjectname) + ',' + row.grade + ',' + row.haschild + ')">Edit</a>' : '<a href="#" onclick="removeSub(' + row.subjectid + ')" class="btn btn-danger">Delete</a> <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="SetSubjectEditPanel(' + row.subjectid + ',' + ensureString(row.subjectname) + ',' + row.grade +')">Edit</a>';
 
                     }
                 }
@@ -65,8 +65,14 @@
 </style>
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main p-5">
+    <div class="main p-5" style="height:400px; overflow-y: auto;">
         <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a>Subjects</a></li>
+                </ol>
+            </nav>
             <br />
             <div style="width:95%; margin:0 auto;">
                 <h1>Manage Subjects</h1>
@@ -170,16 +176,7 @@
                             <label for="message-text" class="col-form-label">Grade:</label>
                             <input type="text" class="form-control" id="grade" asp-for="grade">
                             <span asp-validation-for="grade" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label for="message-text" class="col-form-label">Has Child Subject:</label>
-                            <select class="form-select" aria-label="Default select example" id="haschild" asp-for="haschild">
-                                <option value="" selected>Click to open menu</option>
-                                <option value="false">False</option>
-                                <option value="true">True</option>
-                            </select>
-                            <span asp-validation-for="haschild" class="text-danger"></span>
-                        </div>
+                        </div>                        
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -197,11 +194,11 @@
     function removeSub(id){
         window.location.href = '@Url.Action("RemoveSubjectHead", "Registrar")?id=' + id;
     }
-    function SetSubjectEditPanel(id, subname, grade, haschild){
+    function SetSubjectEditPanel(id, subname, grade){
         document.getElementById("id").value=id;
         document.getElementById("subname").value = subname;
         document.getElementById("grade").value = grade;
-        document.getElementById("haschild").value = haschild;
+        
     }
     function ensureString(value) {
         if (typeof value === 'string') {

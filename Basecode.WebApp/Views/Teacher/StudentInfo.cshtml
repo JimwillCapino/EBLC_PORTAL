@@ -17,15 +17,16 @@
 <link rel="stylesheet" href="/css/TableInfo.css" />
 <script src="~/js/Tables.js"></script>
 <div class="wrapper">
-    @await Html.PartialAsync("./_RegistrarSideBar")
+    @await Html.PartialAsync("./_TeacherSideBar")
     <div class="main p-5" style="height:400px; overflow-y: auto;">
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
-                <li class="breadcrumb-item" aria-current="page"><a asp-action="StudentRecord">List of Students</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a>Student Information</a></li>
-            </ol>
-        </nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="HomeRoom">Home Room</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="HomeRoomStudents" asp-route-classid="@Constants.TeacherNavigation.classid">Advisee's</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a>Student Information</a></li>
+                </ol>
+            </nav>
         @if (successValue == 0)
         {
             <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
@@ -75,13 +76,12 @@
                             <a asp-action="RemoveStudent" asp-route-studentId="@Model.Student.Student_ID" class="btn btn-danger mx-2">Delete</a>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-success ms-1 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                   Document
+                                    Document
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end">                             
-                                    <li> <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear="@Model.SchoolYear" asp-route-documentType="1"><button type="button" class="dropdown-item">Form-138</button></a></li>
+                                <ul class="dropdown-menu dropdown-menu-end">                                    
                                     <li><a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear="@Model.SchoolYear" asp-route-documentType="0"><button type="button" class="dropdown-item">Report Card</button></a></li>
                                 </ul>
-                            </div>                                                   
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col align-self-center">
@@ -89,7 +89,7 @@
                                 {
                                     <a asp-action="EnrollAndPromoteStudent" asp-route-id="@Model.Student.Student_ID"><button type="button" class="btn btn-warning">Enroll Student</button></a>
                                 }
-                            </div>                           
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                                 <i class="fa-solid fa-phone" style="color:#555555;"></i>
                                 <p class="mb-0">@Model.Parent.PhoneNumber</p>
-                            </li>                            
+                            </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                                 <i class="fa-solid fa-location-dot fa-lg" style="color: #ac2bac;"></i>
                                 <p class="mb-0">@Model.Parent.Address</p>
@@ -126,9 +126,9 @@
                         </ul>
                     </div>
                 </div>
-              </div>
+            </div>
             <div class="col-lg-8 grid-margin stretch-card">
-                <div class="tab">                    
+                <div class="tab">
                     <button class="tablinks" onclick="tabs(event, 'Grades')" id="defaultOpen">Grades</button>
                     <button class="tablinks" onclick="tabs(event, 'Values')">Values</button>
                     <button class="tablinks" onclick="tabs(event, 'Attendance')">Attendance</button>
@@ -137,17 +137,7 @@
                     <div class="card">
                         <div class="card-body">
                             <p>Select a School Year. Note that after selecting a school year, the page will reload thus going back to the grades tab.</p>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    School Year
-                                </button>
-                                <ul class="dropdown-menu">
-                                    @foreach (var schoolyear in Model.School_Years)
-                                    {
-                                        <li><a class="dropdown-item" asp-action="StudentInfo" asp-route-student_Id="@Model.Student.Student_ID" asp-route-school_year="@schoolyear">@schoolyear</a></li>
-                                    }
-
-                                </ul>
+                            <div class="btn-group">                             
                             </div>
                             <div class="table-responsive">
                                 <table class="table">
@@ -163,31 +153,33 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach(var subject in Model.Subjects)
+                                        @foreach (var subject in Model.Subjects)
                                         {
                                             <tr>
                                                 <td>@subject.Subject_Name</td>
-                                                @{var SubjectWithGrades = Model.grades.FirstOrDefault(p => p.SubjectId == subject.Subject_Id);}
-                                                @if(SubjectWithGrades != null)
+                                                @{
+                                                    var SubjectWithGrades = Model.grades.FirstOrDefault(p => p.SubjectId == subject.Subject_Id);
+                                                }
+                                                @if (SubjectWithGrades != null)
                                                 {
                                                     @foreach (var grade in SubjectWithGrades.Grades)
                                                     {
                                                         <td>@grade.Grade</td>
                                                         if (grade.Quarter == 5 && grade.Grade >= Model.PassingGrade)
                                                         {
-                                                            
+
                                                             avg += grade.Grade;
                                                             <td>Passed</td>
                                                         }
                                                         else if (grade.Quarter == 5 && grade.Grade < Model.PassingGrade)
                                                         {
-                                                            
+
                                                             avg += grade.Grade;
                                                             <td>Failed</td>
                                                         }
-                                                    }                                                   
+                                                    }
                                                 }
-                                           </tr>
+                                            </tr>
                                         }
                                     </tbody>
                                 </table>
@@ -196,27 +188,18 @@
                                 {
                                     <p class="lead">Promoted</p>
                                 }
-                                @{avg = 0;}
+                                @{
+                                    avg = 0;
+                                }
                             </div>
                         </div>
                     </div>
-                </div>                
-                <div id="Values" class="tabcontent">                   
+                </div>
+                <div id="Values" class="tabcontent">
                     <div class="card">
-                        <div class="card-body">   
+                        <div class="card-body">
                             <p>Select a School Year. Note that after selecting a school year, the page will reload thus going back to the grades tab.</p>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    School Year
-                                </button>
-                                <ul class="dropdown-menu">
-                                    @foreach (var schoolyear in Model.Values_School_Years)
-                                    {
-                                        <li><a class="dropdown-item" asp-action="StudentInfo" asp-route-student_Id="@Model.Student.Student_ID" asp-route-school_year="@schoolyear">@schoolyear</a></li>
-                                    }
-
-                                </ul>
-                            </div>
+                            
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
@@ -241,11 +224,11 @@
                                                     @corevalues.Core_Values
                                             </th>
                                             <td>
-                                                    @corevalues.behavioural_Statements.ElementAt(0).Statements                                         
+                                                    @corevalues.behavioural_Statements.ElementAt(0).Statements
                                             </td>
                                                 @foreach (var grade in grades)
                                                 {
-                                                   
+
                                                 <td>
                                                         @grade.Grade
                                                 </td>
@@ -257,12 +240,12 @@
 
                                             <tr>
                                                 <td>
-                                                        @corevalues.behavioural_Statements.ElementAt(x).Statements 
+                                                        @corevalues.behavioural_Statements.ElementAt(x).Statements
                                                 </td>
                                                     @for (int y = 0; y < gradesi.Count(); y++)
                                                     {
                                                     <td>
-                                                            @gradesi.ElementAt(y).Grade 
+                                                            @gradesi.ElementAt(y).Grade
                                                     </td>
                                                     }
                                             </tr>
@@ -270,7 +253,7 @@
                                         }
                                     </tbody>
                                 </table>
-                            </div>                          
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -278,19 +261,8 @@
                     <div class="card">
                         <div class="card-body">
                             <p>Select a School Year. Note that after selecting a school year, the page will reload thus going back to the grades tab.</p>
+                        
                             <div class="btn-group">
-                                <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    School Year
-                                </button>
-                                <ul class="dropdown-menu">
-                                    @foreach (var schoolyear in Model.Attendance_School_Years)
-                                    {
-                                        <li><a class="dropdown-item" asp-action="StudentInfo" asp-route-student_Id="@Model.Student.Student_ID" asp-route-school_year="@schoolyear">@schoolyear</a></li>
-                                    }
-
-                                </ul>
-                            </div>
-                            <div class="btn-group">                                
                             </div>
                             <div class="table-responsive">
                                 <table class="table">
@@ -339,7 +311,7 @@
                                                 }
                                                 <td>@sum</td>
                                             }
-                                            
+
                                         </tr>
                                         <tr>
                                             <td>Time of Tardy</td>
@@ -357,21 +329,20 @@
                                                 }
                                                 <td>@sum</td>
                                             }
-                                        </tr>                                       
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                    </div>                   
-               </div>
+                    </div>
+                </div>
                 <div class="d-flex justify-content-center mb-2">
-                    
-                </div>
-                </div>
                 </div>
             </div>
-          </div>
+        </div>
     </div>
-        
+</div>
+    </div>
+
 </div>
 </div>

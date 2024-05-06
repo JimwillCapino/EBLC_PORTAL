@@ -10,35 +10,49 @@
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
-        <form asp-action="AddBehavioralStatement">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-3">
-                <select class="form-select" aria-label="Default select example" asp-for="Core_Values">
-                    <option value=""selected>Open this select menu</option>
-                    @foreach(var core_value in Model.CoreValues)
-                    {
-                        <option value="@core_value.Id">@core_value.core_Values</option>
-                    }                                      
-                </select>
-                <span asp-validation-for="Core_Values" class="text-danger"></span>
-
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="ViewLearnersValues">Learners Values</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a>Add Learners Values</a></li>
+            </ol>
+        </nav>
+        <div class="card shadow rounded-3 my-auto">
+            <div class="card-header p-3 h4">
+                Enter learner Values Pair
             </div>
-            <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">Behavioral Statement</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" asp-for="Behavioural_Statement"></textarea>
-                <span asp-validation-for="Behavioural_Statement" class="text-danger"></span>
+            <div class="card-body p-4">
+                <form asp-action="AddBehavioralStatement">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="mb-3">
+                        <select class="form-select" aria-label="Default select example" asp-for="Core_Values">
+                            <option value="" selected>Open this select menu</option>
+                            @foreach (var core_value in Model.CoreValues)
+                            {
+                                <option value="@core_value.Id">@core_value.core_Values</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Core_Values" class="text-danger"></span>
 
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Behavioral Statement</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" asp-for="Behavioural_Statement"></textarea>
+                        <span asp-validation-for="Behavioural_Statement" class="text-danger"></span>
+
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <button type="submit" class="btn btn-warning">Add</button>
+                        </div>
+                        @* <div class="col-md-6 d-flex justify-content-end">
+                        <a asp-action="ViewLearnersValues"><button type="button" class="btn btn-outline-danger" style="margin-right:10px"> View Learner's Value</button></a>
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Core Values</button>
+                        </div>   *@
+                    </div>
+                </form>
             </div>
-            <div class="row">
-                <div class="col">
-                    <button type="submit" class="btn btn-outline-danger">Add Behavioural Statement</button>
-                </div>
-                @* <div class="col-md-6 d-flex justify-content-end">
-                    <a asp-action="ViewLearnersValues"><button type="button" class="btn btn-outline-danger" style="margin-right:10px"> View Learner's Value</button></a>
-                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Core Values</button>
-                </div>   *@             
-            </div>            
-        </form>
+        </div>        
     </div>  
 </div>
 @section Scripts {

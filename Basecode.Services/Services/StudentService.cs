@@ -100,6 +100,18 @@ namespace Basecode.Services.Services
                 throw new Exception(ex.Message);
             }
         }
+        public int GetUnEnrolledCount()
+        {
+            try
+            {
+                return _studentRepository.GetAllStudent().Where(p => p.status == "Not Enrolled").Count();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
         public void RemoveStudent(int studentId)
         {
             try
@@ -132,7 +144,7 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
-        public async Task UnEnrollStudents()
+        public void UnEnrollStudents()
         {
             try
             {
@@ -140,7 +152,7 @@ namespace Basecode.Services.Services
                 foreach(var student in students)
                 {
                     student.status = "Not Enrolled";
-                    await _studentRepository.UpdateStudentAsync(student);
+                    _studentRepository.UpdateStudent(student);
                 }
             }
             catch (Exception ex)

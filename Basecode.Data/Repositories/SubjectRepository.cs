@@ -32,12 +32,12 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
-       public List<Subject> GetAllSubjectTakenByStudent(int studentId, string schoolYear)
+       public List<Subject> GetAllSubjectTakenByStudent(int studentId, int gradeLevel)
         {
             try
             {
                 var subjects = this.GetDbSet<Subject>();
-                var Classes = this.GetDbSet<Class>().Where(p => p.SchoolYear == schoolYear);
+                var Classes = this.GetDbSet<Class>().Where(p => p.Grade == gradeLevel);
                 var ClassStudents = this.GetDbSet<ClassStudents>().Where(p => p.Student_Id == studentId);
                 var ClassSubjects = this.GetDbSet<ClassSubjects>();
                 var headSubjects = this.GetDbSet<HeadSubject>();
@@ -66,36 +66,31 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-       public List<Subject> GetAllSubjects(int studentId, string schoolYear) 
+       public List<Subject> GetAllSubjects(int studentId, int gradeLevel) 
        {
             try
             {
                 List<Subject> ChildSubjectContainer = new List<Subject>();
-                var mainClass = this.GetDbSet<Class>().Where(p => p.SchoolYear == schoolYear);
-                var mainClassStudent = this.GetDbSet<ClassStudents>().Where(p => p.Student_Id == studentId);
-                var mainClassSubjects = this.GetDbSet<ClassSubjects>();
-                var referenceSubjcect = this.GetDbSet<Subject>();
+                //var mainClass = this.GetDbSet<Class>().Where(p => p.Grade == gradeLevel);
+                //var mainClassStudent = this.GetDbSet<ClassStudents>().Where(p => p.Student_Id == studentId);
+                //var mainClassSubjects = this.GetDbSet<ClassSubjects>();
+                var referenceSubjcect = this.GetDbSet<Subject>().Where(p => p.Grade == gradeLevel);
                 var nochildsub = this.GetDbSet<Subject>().Where(p => !p.HasChild);
                 var subjects = this.GetDbSet<HeadSubject>();
                 var HeadSubs = this.GetDbSet<Subject>().Where(p => p.HasChild);
                 var childSubs = this.GetDbSet<ChildSubject>();
 
-                var unionMainSubjects = from mclass in mainClass
-                                        join student in mainClassStudent
-                                        on mclass.Id equals student.Class_Id
-                                        join subject in mainClassSubjects
-                                        on mclass.Id equals subject.ClassId
-                                        join nc in nochildsub
-                                        on subject.Subject_Id equals nc.Subject_Id
-                                        join s in subjects 
-                                        on nc.Subject_Id equals s.Subect_Id
-                                        select new Subject
-                                        {
-                                            Subject_Id = nc.Subject_Id,
-                                            Subject_Name = nc.Subject_Name,
-                                            Grade = nc.Grade,
-                                            HasChild = nc.HasChild,
-                                        };
+                var subsWithNoChild = from subs in nochildsub
+                                       join s in subjects on subs.Subject_Id equals s.Subect_Id
+                                       join reference in referenceSubjcect
+                                       on subs.Subject_Id equals reference.Subject_Id
+                                      select new Subject
+                                      {
+                                          Subject_Id = subs.Subject_Id,
+                                          Subject_Name = subs.Subject_Name,
+                                          Grade = subs.Grade,
+                                          HasChild = subs.HasChild,
+                                      };
 
                 var unionHeadSubject = from subs in HeadSubs
                                        join reference in referenceSubjcect
@@ -134,7 +129,7 @@ namespace Basecode.Data.Repositories
                         ChildSubjectContainer.Add(childsubject);
                     }                   
                 }
-                var concat = unionMainSubjects.ToList().Concat(ChildSubjectContainer);
+                var concat = subsWithNoChild.ToList().Concat(ChildSubjectContainer);
                 return concat.ToList();
             }
             catch (Exception ex)

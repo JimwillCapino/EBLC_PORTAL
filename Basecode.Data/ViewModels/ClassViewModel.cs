@@ -15,8 +15,7 @@ namespace Basecode.Data.ViewModels
         public int Grade { get; set; }
         public int ClassSize { get; set; }
         public string? ClassName { get; set; }
-        public string AdviserName { get; set; }
-        public string SchoolYear { get; set; }
+        public string AdviserName { get; set; }       
         public List<ClassSubjectViewModel> ClassSubjects { get; set; }
         public List<ClassStudentViewModel> ClassStudents { get; set; }
         public List<TeacherViewModel> Teachers { get; set; }

@@ -216,6 +216,7 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
+        
         public async Task<RegistrarDashboard> SetRegisrarDashBoard()
         {
             try

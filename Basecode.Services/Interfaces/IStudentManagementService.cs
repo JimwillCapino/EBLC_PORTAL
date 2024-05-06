@@ -38,5 +38,6 @@ namespace Basecode.Services.Interfaces
         public List<ClassStudentViewModel> GetStudentWithNoGradePerQuarter(int classid, int subjectid, int quarter);
         public List<StudentQuarterlyAverage> GetStudentRanking(int gradeLevel, int quarter, int rank);
         public void DeleteBehavioralStatement(int id);
+        public void EditChildSubGrade(int Grade_Id, int headId, int student_id, int Subject_Id, int grade, int Quarter);
     }
 }

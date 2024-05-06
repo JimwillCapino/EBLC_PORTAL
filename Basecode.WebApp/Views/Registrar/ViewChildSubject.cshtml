@@ -12,8 +12,14 @@
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
-        <h1>Manage Subjects</h1>
-        
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="ManageSubjects">Subjects</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a>Child Subjects</a></li>
+            </ol>
+        </nav>
+        <h1>Manage Subjects</h1>       
         <div class="row">
             <div class="col">
                 <div class="table-responsive overflow-auto">
@@ -56,7 +62,7 @@
                                     <td class="pt-3 mt-1">@subject.Name</td>
                                     <td class="pt-3">
                                         <a asp-action="RemoveSubject" asp-route-id="@subject.Id" asp-route-subjectId="@subject.subjectId" asp-route-headid="@Model.HeadId" class='btn btn-danger'>Delete</a>
-                                        <a href='#' class='btn btn-success' data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="setValues('@subject.Id','@subject.Name')">Edit</a>
+                                        <a href='#' class='btn btn-success' data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="setValues('@subject.subjectId','@subject.Name')">Edit</a>
                                     </td>
                                 </tr>
                                 <tr id="spacing-row">
@@ -74,7 +80,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Add Child Subject</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form asp-action="AddSingleChildSubject">

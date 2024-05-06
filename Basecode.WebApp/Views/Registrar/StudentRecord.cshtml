@@ -103,6 +103,7 @@
     <div class="main p-3" style="height:400px; overflow-y: auto;">
        
         <div class="container">
+          
             @if (successValue == 0)
             {
                 <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
@@ -126,6 +127,12 @@
             }
             <br />
             <div style="width:90%; margin:0 auto;">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a>List of Students</a></li>
+                    </ol>
+                </nav>
                 <h1>
                     Student Record
                 </h1>

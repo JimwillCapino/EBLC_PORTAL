@@ -10,29 +10,29 @@
 
     <div class="wrapper">
         @await Html.PartialAsync("./_RegistrarSideBar")
-        <div class="main p-3" style="height:400px; overflow-y: auto;">
-        @if (successValue == 0)
-        {
-            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
-                <i class="bi-exclamation-octagon-fill"></i>
-                <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+        <div class="main p-3" style="height:400px; overflow-y: auto;">        
+            <div class="container p-lg-2">
+            @if (successValue == 0)
+            {
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-exclamation-octagon-fill"></i>
+                    <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
 
-        }
-        else if (successValue == 1)
-        {
-            <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
-                <i class="bi-check-circle-fill"></i>
-                <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        }
+            }
+            else if (successValue == 1)
+            {
+                <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-check-circle-fill"></i>
+                    <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
         @{
             Constants.ViewDataErrorHandling.Success = -1;
             Constants.ViewDataErrorHandling.ErrorMessage = null;
         }
-            <div class="container p-lg-2">
                <i class="fas fa-user-circle"></i><span class="p-2">School Year @Model.SchoolYear</span>
                 <h1>
                     Dashboard

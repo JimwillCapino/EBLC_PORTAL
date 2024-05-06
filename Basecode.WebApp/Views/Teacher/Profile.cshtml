@@ -17,6 +17,12 @@
     @await Html.PartialAsync("./_TeacherSideBar")
     <div class="main" style="height:400px; overflow-y: auto;">
         <div class="container py-5">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a>Profile</a></li>
+                </ol>
+            </nav>
             @if (successValue == 0)
             {
                 <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">

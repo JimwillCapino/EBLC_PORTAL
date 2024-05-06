@@ -12,6 +12,7 @@ using Basecode.Services.Interfaces;
 using System.Globalization;
 using System.Drawing;
 using System.Xml;
+using System.Diagnostics;
 namespace Basecode.Services.Services
 {
     public class StudentManagementService:IStudentManagementService
@@ -134,31 +135,92 @@ namespace Basecode.Services.Services
                 throw new Exception(Data.Constants.Exception.DB);
             }
         }
+        public void EditChildSubGrade(int Grade_Id, int headId,int student_id, int Subject_Id, int grade, int Quarter)
+        {
+            try
+            {
+                var student = _studentRepository.GetStudent(student_id);
+                double sum = 0.0;
+                int avg;
+                var Updategrade = new Grades
+                {
+                    Grade_Id = Grade_Id,
+                    Student_Id = student_id,
+                    Subject_Id = Subject_Id,
+                    Grade = grade,
+                    Quarter = Quarter,
+                    Grade_Level = student.CurrGrade,
+                    School_Year = _settingsRepository.GetSchoolYear()
+                };
+                _studentManagementRepository.EditGrade(Updategrade);
+
+                var childSubject = this.GetChildSubjectGrades(headId, student_id);
+              
+                for(int x = 0;  x < childSubject.ChildSubjects.Count(); x++)
+                {
+                    sum += childSubject.GradesContainer.ElementAt(x).Grades.FirstOrDefault(p => p.Quarter == Quarter).Grade;
+                }
+                avg = (int) Math.Round(sum / childSubject.ChildSubjects.Count(), MidpointRounding.AwayFromZero);
+                var headGrade = _studentManagementRepository.GetStudentGradeBySubject(student_id, headId);
+                var UpdategradeForHead = new Grades
+                {
+                    Grade_Id = headGrade.Grades.FirstOrDefault(p => p.Quarter == Quarter).Grade_Id,
+                    Student_Id = student_id,
+                    Subject_Id = headId,
+                    Grade = avg,
+                    Quarter = Quarter,
+                    Grade_Level = student.CurrGrade,
+                    School_Year = _settingsRepository.GetSchoolYear()
+                };
+                _studentManagementRepository.EditGrade(UpdategradeForHead);
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
         public async Task<StudentDetailsWithGrade> GetStudentGrades(int student_Id, string school_year)
         {
             try
             {
+                int gradeLevel = _studentManagementRepository.GradeLevel(student_Id, school_year);
                 var headSubjects = _subjectRepository.GetAllHeadSubject();
                 var student = new StudentDetailsWithGrade();
                 student.School_Years = _studentManagementRepository.GetSchoolYears(student_Id);
+                student.Values_School_Years = _studentManagementRepository.GetValuesSchoolyear(student_Id);
+                student.Attendance_School_Years = _studentManagementRepository.GetAttendanceSchoolYear(student_Id);
                 student.Student = _studentManagementRepository.GetStudent(student_Id);
                 student.grades = _studentManagementRepository.GetStudentGrades(student_Id,school_year);
                 student.valuesGrades = _studentManagementRepository.GetValuesGrades(student_Id,school_year);
                 student.learnersValues = _studentManagementRepository.GetLearnersValues();
                 student.StudentAttendance = this.GetStudentAttendance(student_Id,school_year);
-                student.Subjects = _subjectRepository.GetAllSubjects(student_Id, school_year);
-                student.studentClass = await _classManagementRepository.GetClassWhereStudentBelong(student_Id,school_year);
+                student.Subjects = _subjectRepository.GetAllSubjects(student_Id, gradeLevel);
+                student.studentClass = await _classManagementRepository.GetClassWhereStudentBelong(student_Id, gradeLevel);
                 var unionHeadSubject = from h in headSubjects
                                        join s in student.Subjects
                                         on h.Subect_Id equals s.Subject_Id
-                                       select new
+                                       select new 
                                        {
-                                           
+                                           grade = s.Grade
                                        };
 
-                student.TotalHeadSubjectCount = unionHeadSubject.Count();
+                student.TotalHeadSubjectCount = unionHeadSubject.Where(p => p.grade == gradeLevel).Count();
                 student.SchoolYear = school_year;
                 student.Parent = await _parentRepository.GetParentDetailById(student_Id);
+                student.PassingGrade = _settingsService.GetSettings().PassingGrade;
+                var schoolYearForAll = _settingsRepository.GetSchoolYear() + " Grade:" + gradeLevel;
+                if (!student.School_Years.Contains(schoolYearForAll))
+                {
+                    student.School_Years.Add(schoolYearForAll);
+                }
+                if(!student.Values_School_Years.Contains(schoolYearForAll))
+                {
+                    student.Values_School_Years.Add(schoolYearForAll);
+                }
+                if(!student.Attendance_School_Years.Contains(schoolYearForAll))
+                {
+                    student.Attendance_School_Years.Add(schoolYearForAll);
+                }
                 return student;
             }
             catch
@@ -174,13 +236,16 @@ namespace Basecode.Services.Services
                 double sum;
                 int avg = 0;
                 var students = _studentManagementRepository.GetAllStudentPreview().Where(p => p.grade == gradeLevel);
-                var RankOfStudents = new List<StudentQuarterlyAverage>();
-
+                var RankOfStudents = new List<StudentQuarterlyAverage>();              
                 foreach (var student in students)
                 {
                     sum = 0.0;
                     var studentgrade = _studentManagementRepository.GetStudentGrades(student.studentid, _settingsRepository.GetSchoolYear());
-                    var subjects = _subjectRepository.GetAllSubjectTakenByStudent(student.studentid, _settingsRepository.GetSchoolYear());
+                    var subjects = _subjectRepository.GetAllSubjectTakenByStudent(student.studentid, gradeLevel);
+                    if(subjects.Count() == 0)
+                    {
+                        throw new Exception("Ranking failed. There are students that has not been added to a class.");
+                    }
                     foreach (var subject in subjects)
                     {
                         var filteredSubject = studentgrade.FirstOrDefault(p => p.SubjectId == subject.Subject_Id);
@@ -189,13 +254,13 @@ namespace Basecode.Services.Services
                             var selectedGrade = filteredSubject.Grades.FirstOrDefault(p => p.Quarter == quarter);
                             if (selectedGrade == null)
                             {
-                                throw new Exception("There are students that do not have grade on this particular quarter yet.");
+                                throw new Exception("Ranking failed. A student has not been enrolled to a subject.");
                             }
                             sum += selectedGrade.Grade;
                         }
                         else
                         {
-                            throw new Exception("There are students that do not have grades on some subjects.");
+                            throw new Exception("Ranking failed. There are students that do not have grades on some subjects.");
                         }
                     }
                     avg = (int)Math.Round(sum / subjects.Count(), MidpointRounding.AwayFromZero);
@@ -257,9 +322,8 @@ namespace Basecode.Services.Services
         {
             try
             {
-
-
-                var schoolYears = _studentManagementRepository.GetSchoolYears(studentId);
+                var schoolYears = _studentManagementRepository.GetSchoolYearsWithOutGradeLevel(studentId);
+                schoolYears.Add(_settingsRepository.GetSchoolYear());
                 var form137Container = new Form137Container();
                 form137Container.Student = _studentManagementRepository.GetStudent(studentId);
                 form137Container.Settings = _settingsRepository.GetSettings(); 
@@ -269,9 +333,9 @@ namespace Basecode.Services.Services
                 {
                     var form137 = new Form137ViewModel();                    
                     form137.SchoolYear = schoolYear;
-                    form137.GradeLevel = await _classManagementRepository.GetStudentYearLevel(studentId, schoolYear);
+                    form137.GradeLevel = _studentManagementRepository.GradeLevel(studentId,schoolYear);
                     form137.grades = _studentManagementRepository.GetStudentGrades(studentId, schoolYear);
-                    form137.Subjects = _subjectRepository.GetAllSubjects(studentId, schoolYear);
+                    form137.Subjects = _subjectRepository.GetAllSubjects(studentId, form137.GradeLevel);
 
                     var headSubjects = _subjectRepository.GetAllHeadSubject();
                     var unionHeadSubject = from h in headSubjects

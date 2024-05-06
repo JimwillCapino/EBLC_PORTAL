@@ -13,6 +13,8 @@ namespace Basecode.Data.ViewModels
         public ClassInitView studentClass { get; set; }
         public List<Subject> Subjects { get; set; }
         public List<string> School_Years { get; set; }
+        public List<string> Values_School_Years { get; set; }
+        public List<string>Attendance_School_Years { get; set; }
         public StudentViewModel Student { get; set; }
         public List<StudentGrades> grades { get; set; }
         public List<ValuesGrades> valuesGrades { get; set; }
@@ -20,5 +22,6 @@ namespace Basecode.Data.ViewModels
         public AttendanceContainer StudentAttendance { get; set; }
         public string SchoolYear { get; set; }
         public ParentDetails Parent { get; set; }
+        public  int? PassingGrade { get; set; }
     }
 }

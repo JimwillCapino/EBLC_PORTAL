@@ -3,7 +3,8 @@
 *@
 @{
     ViewData["Title"] = "Registrar";
-    Layout = "~/Views/Shared/NoLayout.cshtml";    
+    Layout = "~/Views/Shared/NoLayout.cshtml";   
+    int successValue = (int)ViewData["Success"];
 }
 <link href="~/css/BackButton.css" rel="stylesheet"/>
 @using Basecode.Data
@@ -24,6 +25,27 @@
                     <li class="breadcrumb-item active" aria-current="page"><a>Grade Submmission</a></li>
                 </ol>
             </nav>
+            @if (successValue == 0)
+            {
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-exclamation-octagon-fill"></i>
+                    <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+            }
+            else if (successValue == 1)
+            {
+                <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-check-circle-fill"></i>
+                    <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @{
+                Constants.ViewDataErrorHandling.Success = -1;
+                Constants.ViewDataErrorHandling.ErrorMessage = null;
+            }
                 <div class="row container d-flex justify-content-center">
                     <!--learner's observes values table.-->
                     <div class="col-lg-7 grid-margin stretch-card">
@@ -209,7 +231,13 @@
                             <input type="hidden" id="" name="StudentId" value="@Model.Student_Id" />
                             <div class="mb-3">
                                 <label for="message-text" class="col-form-label">Grades:</label>
-                                <textarea class="form-control" value="" id="grade" name="Grades" required></textarea>
+                                <select id="grade" name="Grades"  name="Grades" class="form-select" required>
+                                    <option value="">Select score</option>
+                                    <option value="AO">AO</option>
+                                    <option value="SO">SO</option>
+                                    <option value="RO">RO</option>
+                                    <option value="NO">NO</option>
+                                </select>                                
                             </div>
                         </div>
                         <div class="modal-footer">

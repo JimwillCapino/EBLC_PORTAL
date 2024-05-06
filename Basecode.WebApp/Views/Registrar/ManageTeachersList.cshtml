@@ -62,7 +62,13 @@
 </script>
 <div class ="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main p-5" style="height:400px; overflow-y: auto;">        
+    <div class="main p-5" style="height:400px; overflow-y: auto;">      
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a>List of Teachers</a></li>
+            </ol>
+        </nav>
             @if (successValue == 0)
             {
                 <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">

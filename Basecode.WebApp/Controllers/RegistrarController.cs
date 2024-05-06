@@ -57,9 +57,15 @@ namespace Basecode_WebApp.Controllers
 
             //un enroll student if this date is at the end of the school year
             var datToday = DateTime.Now;
-            var endSchoolDate = _settingsService.GetSettings().EndofClass;
-            if (datToday.CompareTo(endSchoolDate) == 0)
-                _studentService.UnEnrollStudents();
+            var endSchoolDate = _settingsService.GetSettings().EndofClass;           
+            if (endSchoolDate!=null && datToday.CompareTo(endSchoolDate) >= 0)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = "The School Year has Ended. Go to settings to set date of Start and End Classes.";
+                if(_studentService.GetUnEnrolledCount() == 0)
+                    _studentService.UnEnrollStudents();
+            }
+                
         }
         public async Task<IActionResult> Index(int gradeLevel, int quarter, int rank)
         {
@@ -148,19 +154,25 @@ namespace Basecode_WebApp.Controllers
             {
                 ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
                 ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
+               
                 if (school_year == null)
                 {
                     var schoolYear = _settingsService.GetSettings().StartofClass.Value.Year.ToString() + "-" +
                 _settingsService.GetSettings().EndofClass.Value.Year.ToString();
-                    school_year = schoolYear;
+                    school_year = schoolYear.Split(' ')[0];
+                }
+                else
+                {
+                     var split = school_year.Split(' ');
+                    school_year = split[0];
                 }
                 
                 return View(await _studentManagementService.GetStudentGrades(student_Id, school_year));
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
-                ViewBag.ErrorMessage = ex.Message;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 return RedirectToAction("Index");
             }         
         }
@@ -482,13 +494,15 @@ namespace Basecode_WebApp.Controllers
                 Constants.ViewDataErrorHandling.Success = 0;
                 Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
-                return RedirectToAction("Index");
+                return RedirectToAction("ManageSubjects");
             }
         }
         public IActionResult AddChildSubjectForm(int headId, int grade)
         {
             try
             {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
                 var form = new ChildSubjectForm
                 {
                     HeadId = headId,
@@ -506,11 +520,11 @@ namespace Basecode_WebApp.Controllers
         [HttpPost]
         public IActionResult AddChildSubject()
         {
+            var headId = Int32.Parse(Request.Form["headId"]);
+            var grade = Int32.Parse(Request.Form["grade"]);
+            var input = Request.Form["inputSubname"];
             try
-            {
-                var headId = Int32.Parse(Request.Form["headId"]);
-                var grade = Int32.Parse(Request.Form["grade"]);
-                var input = Request.Form["inputSubname"];                
+            {                             
                 for(int x = 0; x< input.Count; x++)
                 {
                     var subname = input[x];                   
@@ -537,7 +551,7 @@ namespace Basecode_WebApp.Controllers
                 Constants.ViewDataErrorHandling.Success = 0;
                 Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
-                return RedirectToAction("ManageSubjects");
+                return RedirectToAction("AddChildSubjectForm", new { headId = headId , grade = grade });
             }
         }
         public IActionResult ViewChildSubject(int headId)
@@ -745,11 +759,7 @@ namespace Basecode_WebApp.Controllers
                         customerData.classes = sortColumnDirection.ToLower() == "asc" ? customerData.classes.OrderBy(p => p.classsize).ToList() :
                            customerData.classes.OrderByDescending(p => p.grade).ToList();
                     }
-                    else if (sortColumn.Equals("schoolyear"))
-                    {
-                        customerData.classes = sortColumnDirection.ToLower() == "asc" ? customerData.classes.OrderBy(p => p.schoolyear).ToList():
-                          customerData.classes.OrderByDescending(p => p.schoolyear).ToList();
-                    }
+                 
 
                 }
                 //Search  
@@ -757,7 +767,7 @@ namespace Basecode_WebApp.Controllers
                 {
                     customerData.classes = customerData.classes.Where(m => m.classname.ToLower().Contains(searchValue.ToString().ToLower())
                      || m.grade.ToString().Equals(searchValue) || m.grade.ToString().Equals(searchValue)
-                     || m.schoolyear.ToLower().Contains(searchValue.ToString().ToLower()) || m.advisername.ToLower().Contains(searchValue.ToString().ToLower())).ToList();
+                     || m.advisername.ToLower().Contains(searchValue.ToString().ToLower())).ToList();
                 }
 
                 //total number of rows count   

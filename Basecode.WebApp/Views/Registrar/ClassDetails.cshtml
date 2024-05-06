@@ -33,6 +33,13 @@
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5" style="height:400px; overflow-y: auto;">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="ManageClass">Manage Classes</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a>Class Details</a></li>
+            </ol>
+        </nav>
         @if (successValue == 0)
         {
             <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
@@ -81,7 +88,7 @@
                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Subjects</button>
                         @if (Model.ClassStudents.Count < Model.ClassSize)
                         {
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal1">Add Students</button>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">Add Students</button>
                         }
                     </div>
                 </div>
@@ -240,7 +247,7 @@
                 <div class="modal-body">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id"/>
-                    <input type="hidden" asp-for="SchoolYear" />
+                    
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Class Name:</label>
                         <input type="text" class="form-control" id="recipient-name" asp-for="ClassName">

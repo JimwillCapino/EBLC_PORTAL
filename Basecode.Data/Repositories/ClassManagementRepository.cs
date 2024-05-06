@@ -157,7 +157,7 @@ namespace Basecode.Data.Repositories
         {
             try
             {
-                var student = this.GetDbSet<Student>().ToList().FindAll(s => s.CurrGrade == grade);
+                var student = this.GetDbSet<Student>().ToList().FindAll(s => s.CurrGrade == grade && s.status == "Enrolled");
                 var userstudent = this.GetDbSet<UsersPortal>().ToList();
 
                 var students = from s in student
@@ -248,8 +248,7 @@ namespace Basecode.Data.Repositories
                                      grade = c.Grade,
                                      classsize = c.ClassSize,
                                      classname = c.ClassName,
-                                     advisername = t.firstname + " " + t.lastname,
-                                     schoolyear = c.SchoolYear,
+                                     advisername = t.firstname + " " + t.lastname                                     
                                  };
             return classesdetails.ToList();
         }
@@ -269,8 +268,7 @@ namespace Basecode.Data.Repositories
                     AdviserName = teacher.firstname+ " " + teacher.lastname,
                     ClassSize = selectedClass.ClassSize,
                     Grade = selectedClass.Grade,
-                    ProfilePic = teacher.profilepic,
-                    SchoolYear = selectedClass.SchoolYear
+                    ProfilePic = teacher.profilepic,                   
                 };
                 var studentExist = this.GetDbSet<ClassStudents>();
                 classdetails.Teachers = teachers;
@@ -368,12 +366,12 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }        
-        public async Task<ClassInitView> GetClassWhereStudentBelong(int studentId, string schoolYear)
+        public async Task<ClassInitView> GetClassWhereStudentBelong(int studentId, int gradeLevel)
         {
             try
             {
                 var teachers = await _teacherRepository.GetAllTeachersInitViewAsync();
-                var classroom = this.GetDbSet<Class>().Where(s => s.SchoolYear == schoolYear).ToList();
+                var classroom = this.GetDbSet<Class>().Where(s => s.Grade == gradeLevel).ToList();
                 var studentsInClasses = this.GetDbSet<ClassStudents>().Where(s => s.Student_Id == studentId).ToList();
 
                 var unionClassDetails = from c in classroom
@@ -386,8 +384,7 @@ namespace Basecode.Data.Repositories
                                             id = c.Id,
                                             classname = c.ClassName,
                                             grade = c.Grade,
-                                            classsize = c.ClassSize,
-                                            schoolyear = c.SchoolYear,
+                                            classsize = c.ClassSize,                                          
                                             advisername = t.firstname + " " + t.lastname,
                                         };
                 return unionClassDetails.ToList().FirstOrDefault();
@@ -398,12 +395,12 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-        public async Task<int> GetStudentYearLevel(int studentId, string schoolYear)
+        public async Task<int> GetStudentYearLevel(int studentId)
         {
             try
             {
                 var teachers = await _teacherRepository.GetAllTeachersInitViewAsync();
-                var classroom = this.GetDbSet<Class>().Where(s => s.SchoolYear == schoolYear).ToList();
+                var classroom = this.GetDbSet<Class>().ToList();
                 var studentsInClasses = this.GetDbSet<ClassStudents>().Where(s => s.Student_Id == studentId).ToList();
 
                 var unionClassDetails = from c in classroom
@@ -416,11 +413,10 @@ namespace Basecode.Data.Repositories
                                             id = c.Id,
                                             classname = c.ClassName,
                                             grade = c.Grade,
-                                            classsize = c.ClassSize,
-                                            schoolyear = c.SchoolYear,
+                                            classsize = c.ClassSize,                                           
                                             advisername = t.firstname + " " + t.lastname,
                                         };
-                return unionClassDetails.ToList().FirstOrDefault().grade;
+                return unionClassDetails.OrderByDescending(p => p.grade).FirstOrDefault().grade;
             }
             catch (Exception ex)
             {

@@ -152,10 +152,38 @@ namespace Basecode.Data.Repositories
         {
             try
             {
+                var schoolYearsWithGradeList = new List<string>();
                 var schoolYears = this.GetDbSet<Grades>()
-                    .Where(g => g.Student_Id == student_Id)
-                    .Select(g => g.School_Year).Distinct();
-                return schoolYears.ToList();
+                    .Where(g => g.Student_Id == student_Id).Select(p => p.School_Year).Distinct();
+                var grades = this.GetDbSet<Grades>()
+                    .Where(g => g.Student_Id == student_Id);                
+                foreach ( var schoolYear in schoolYears)
+                {
+                    var gradelevel = grades.FirstOrDefault(g => g.School_Year == schoolYear).Grade_Level.ToString();
+                    schoolYearsWithGradeList.Add(schoolYear +" Grade:"+ gradelevel);
+                }               
+                return schoolYearsWithGradeList;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public List<string> GetSchoolYearsWithOutGradeLevel(int student_Id)
+        {
+            try
+            {
+                var schoolYearsWithGradeList = new List<string>();
+                var schoolYears = this.GetDbSet<Grades>()
+                    .Where(g => g.Student_Id == student_Id).Select(p => p.School_Year).Distinct();
+                var grades = this.GetDbSet<Grades>()
+                    .Where(g => g.Student_Id == student_Id);
+                foreach (var schoolYear in schoolYears)
+                {                    
+                    schoolYearsWithGradeList.Add(schoolYear);
+                }               
+                return schoolYearsWithGradeList;
             }
             catch (Exception ex)
             {
@@ -167,14 +195,21 @@ namespace Basecode.Data.Repositories
         {
             try
             {
+                var schoolYearsWithGradeList = new List<string>();
                 var schoolYears = this.GetDbSet<Learner_Values>()
                     .Where(g => g.Student_Id == student_Id)
                     .Select(g => g.School_Year).Distinct().ToList();
                 //var valuesSchoolyears = this.GetValuesSchoolyear(student_Id);
-                var attendanceSchoolYears = this.GetAttendanceSchoolYear(student_Id);
-
-                var concatList = schoolYears.Concat(attendanceSchoolYears).Distinct();
-                return concatList.ToList();
+                //var attendanceSchoolYears = this.GetAttendanceSchoolYear(student_Id);
+                var grades = this.GetDbSet<Learner_Values>()
+                    .Where(g => g.Student_Id == student_Id);
+                foreach (var schoolYear in schoolYears)
+                {
+                    var gradelevel = grades.FirstOrDefault(g => g.School_Year == schoolYear).Grade.ToString();
+                    schoolYearsWithGradeList.Add(schoolYear + " Grade:" + gradelevel);
+                }
+                //var concatList = schoolYears.Concat(attendanceSchoolYears).Distinct();
+                return schoolYearsWithGradeList;
             }
             catch (Exception ex)
             {
@@ -186,12 +221,37 @@ namespace Basecode.Data.Repositories
         {
             try
             {
+                var schoolYearsWithGradeList = new List<string>();
                 var schoolYears = this.GetDbSet<Attendance>()
                                     .Where(g => g.Studentid == student_Id)
                                     .Select(g => g.School_Year).Distinct();
+                var grades = this.GetDbSet<Grades>()
+                    .Where(g => g.Student_Id == student_Id);
+                foreach (var schoolYear in schoolYears)
+                {
+                    var gradelevel = grades.FirstOrDefault(g => g.School_Year == schoolYear).Grade.ToString();
+                    schoolYearsWithGradeList.Add(schoolYear + " Grade:" + gradelevel);
+                }
                 return schoolYears.ToList();
             }
             catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public int GradeLevel(int studentId, string schoolYear)
+        {
+            try
+            {
+                var student = this.GetDbSet<Grades>().Where(p => p.Student_Id == studentId && p.School_Year == schoolYear);
+                if(student.Count()>0)
+                {
+                    return student.FirstOrDefault().Grade_Level;
+                }
+                return _context.Student.Find(studentId).CurrGrade;
+            }
+             catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 throw;

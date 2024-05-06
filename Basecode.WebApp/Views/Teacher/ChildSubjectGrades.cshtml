@@ -5,6 +5,7 @@
     ViewData["Title"] = "Registrar";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int? max = 0;
+    int successValue = (int)ViewData["Success"];
 }
 @using Basecode.Data
 @using Basecode.Data.ViewModels
@@ -22,6 +23,27 @@
                 <li class="breadcrumb-item active" aria-current="page"><a>Grade Submmission</a></li>
             </ol>
         </nav>
+        @if (successValue == 0)
+        {
+            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-exclamation-octagon-fill"></i>
+                <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+        }
+        else if (successValue == 1)
+        {
+            <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-check-circle-fill"></i>
+                <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @{
+            Constants.ViewDataErrorHandling.Success = -1;
+            Constants.ViewDataErrorHandling.ErrorMessage = null;
+        }
         <div class="card">
             <div class="card-body">
                 <h3>@Model.HeadSubjectName</h3>
@@ -54,7 +76,7 @@
                                         {
                                             max = grade.Quarter;
                                         }
-                                        <td>@grade.Grade</td>
+                                        <td>@grade.Grade <a href="" onclick="updateGrade('@grade.Grade_Id','@Model.StudentId','@subject.subjectId','@grade.Quarter','@grade.Grade','@subject.Name')" data-bs-toggle="modal" data-bs-target="#exampleModal1"><i class="lni lni-pencil"></i></a></td>
                                     }
                                 </tr>
                             }
@@ -106,11 +128,52 @@
         </div>
     </div>
 
+    @* Modal For Updating grades *@
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Update Grade</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                @using (Html.BeginForm("EditChildSubGrade", "Teacher", FormMethod.Post))
+                {
+                    <div class="modal-body">
+                        <input type="hidden" id="gradeid" name="Grade_Id"/>
+                        <input type="hidden" id="studentId" name="Student_Id" />
+                        <input type="hidden" id="subjectId" name="Subject_Id" />
+                        <input type="hidden" id="quarter" name="Quarter" />
+                        <input type="hidden" name="headid"  value="@Model.HeadId"/>
+                        <div class="mb-3">
+                            <label id="subname" for="recipient-name" class="col-form-label">:</label>
+                            <input type="text" class="form-control" id="grade" name="Grade" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit Grade</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
 </div>
+
+
 <script>
     var button = document.getElementById("add");
     if (@max == 4)
     {
         button.disabled = true;
+    }
+    function updateGrade(gradeId,studentId,subjectId,quarter,grade,subname)
+    {
+        document.getElementById("gradeid").value = gradeId;
+        document.getElementById("studentId").value = studentId;
+        document.getElementById("subjectId").value = subjectId;
+        document.getElementById("quarter").value = quarter;
+        document.getElementById("grade").value = grade;
+        document.getElementById("subname").textContent = subname;
     }
 </script>

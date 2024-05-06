@@ -50,18 +50,15 @@
             {
                 "targets": [3],
                 "orderable": true
-            },
-            {
-                "targets": [4],
-                "orderable": true
-            }],
+            }
+           ],
 
             "columns": [
                 { "data": "classname", "name": "classname" },
                 { "data": "advisername", "name": "advisername" },
                 { "data": "grade", "name": "grade" },
-                { "data": "classsize", "name": "classsize" },
-                { "data": "schoolyear", "name": "schoolyear" }
+                { "data": "classsize", "name": "classsize" }
+                
                
             ]
         });
@@ -80,7 +77,12 @@
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5" style="height:400px; overflow-y: auto;">
-       
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a>Manage Class</a></li>
+            </ol>
+        </nav>
 
         @if (successValue == 0)
         {
@@ -117,8 +119,7 @@
                             <th>Class Name</th>
                             <th>Adviser</th>
                             <th>Grade</th>
-                            <th>Class Size</th>
-                            <th>School Year</th>                            
+                            <th>Class Size</th>                                                    
                         </tr>
                     </thead>
                     <tbody>

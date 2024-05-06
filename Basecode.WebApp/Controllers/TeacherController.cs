@@ -57,6 +57,61 @@ namespace Basecode.WebApp.Controllers
             };
             return View(dashboard);
         }
+        public async Task<IActionResult> StudentInfo(int studentId, int classId)
+        {
+            try
+            {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
+                var studentclass = await _classManagementService.GetClassViewModelById(classId);
+                var studentGrades =await _studentManagementService.GetStudentGrades(studentId, _settingsService.GetSchoolYear());
+                return View(studentGrades);
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("HomeRoomStudents",new { classid = classId });
+            }
+        }
+        public async Task<IActionResult> GeneratePdf(int StudentId, string SchoolYear, int documentType)
+        {
+            try
+            {
+                ReportCardContents studentCard = new ReportCardContents();
+                studentCard.Settings = _settingsService.GetSettings();
+                if (documentType == 0)
+                {
+                    studentCard.StudentDetails = await _studentManagementService.GetStudentGrades(StudentId, SchoolYear);
+                    if (studentCard.StudentDetails.studentClass == null)
+                    {
+                        Constants.ViewDataErrorHandling.Success = 0;
+                        Constants.ViewDataErrorHandling.ErrorMessage = "The student is currently not added to any class.";
+                        return RedirectToAction("StudentInfo", new { student_Id = StudentId });
+                    }
+                    var document = new Rotativa.AspNetCore.ViewAsPdf("PDFView/ReportCardPDF", studentCard)
+                    {
+                        //FileName = studentCard.StudentDetails.Student.lastname+"_"+ studentCard.StudentDetails.Student.firstname+"Report_Card.pdf",
+                        PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
+                        PageMargins = { Left = 10, Bottom = 10, Right = 10, Top = 10 }
+                    };
+                    return document;
+                }
+                else
+                {
+                    var form137 = await _studentManagementService.GetStudentForm137(StudentId);
+                    return new Rotativa.AspNetCore.ViewAsPdf("PDFView/Form137PDF", form137);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Success = false;
+                Console.WriteLine(ex);
+                return RedirectToAction("Index");
+            }
+        }
         [HttpPost]
         public IActionResult QueryDashboad()
         {
@@ -301,6 +356,8 @@ namespace Basecode.WebApp.Controllers
         }
         public IActionResult SubmitGrade(int student_Id, int subject_Id)
         {
+            ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+            ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
             var subject = _subjectService.GetSubject(subject_Id);
 
             if(subject.HasChild)
@@ -313,9 +370,61 @@ namespace Basecode.WebApp.Controllers
         }
         [HttpPost]
         public IActionResult AddGrade(GradesDetail grade)
-        {                               
-            _studentManagementService.SubmitGrade(grade.Student_Id, grade.Subject_Id, grade.GradeInput, grade.Quarter);
-            return RedirectToAction("SubmitGrade", new { student_Id = grade.Student_Id, subject_Id = grade.Subject_Id });
+        {
+            try
+            {
+                double sum = 0;
+                if(grade.Quarter == 4)
+                {
+                    var suminner = 0.0;
+                    double avg = 0;
+                    var MainSubjectGrade = _studentManagementService.GetStudentGradeBySubject(grade.Student_Id, grade.Subject_Id);
+                    foreach(var Tabgrade in MainSubjectGrade.Grades) 
+                    {
+                        suminner += Tabgrade.Grade;
+                    }
+                    avg = Math.Round(suminner / MainSubjectGrade.Grades.Count,MidpointRounding.AwayFromZero);                   
+                    _studentManagementService.SubmitGrade(grade.Student_Id, grade.Subject_Id, grade.GradeInput, grade.Quarter);
+                    grade.Quarter++;
+                    _studentManagementService.SubmitGrade(grade.Student_Id, grade.Subject_Id,(int)avg, grade.Quarter);
+                }
+                else
+                {
+                    _studentManagementService.SubmitGrade(grade.Student_Id, grade.Subject_Id, grade.GradeInput, grade.Quarter);
+                }               
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully Added Grade.";
+                return RedirectToAction("SubmitGrade", new { student_Id = grade.Student_Id, subject_Id = grade.Subject_Id });
+            }  
+            catch(Exception ex)
+            {
+                return RedirectToAction("SubmitGrade", new { student_Id = grade.Student_Id, subject_Id = grade.Subject_Id });
+            }
+            
+        }
+        [HttpPost]
+        public IActionResult EditChildSubGrade()
+        {
+            var Grade_Id = Int32.Parse(Request.Form["Grade_Id"]);
+            var student_id = Int32.Parse(Request.Form["Student_Id"]);
+            var subject_Id = Int32.Parse(Request.Form["Subject_Id"]);
+            var grade = Int32.Parse(Request.Form["Grade"]);
+            var quarter = Int32.Parse(Request.Form["Quarter"]);
+            var headid = Int32.Parse(Request.Form["headid"]);
+            try
+            {
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = Constants.Student.StudentSuccessEdit;
+                _studentManagementService.EditChildSubGrade(Grade_Id, headid, student_id, subject_Id, grade, quarter);
+                return RedirectToAction("ChildSubjectGrades", new { headId = headid, studentId = student_id });
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                return RedirectToAction("ChildSubjectGrades", new { headId = headid, studentId = student_id });
+            }
         }
         [HttpPost]
         public IActionResult EditGrade()
@@ -325,9 +434,20 @@ namespace Basecode.WebApp.Controllers
             var subject_Id = Int32.Parse(Request.Form["Subject_Id"]);
             var grade = Int32.Parse(Request.Form["Grade"]);
             var quarter = Int32.Parse(Request.Form["Quarter"]);
-
-            _studentManagementService.EditGrade(Grade_Id, student_id, subject_Id, grade, quarter);
-            return RedirectToAction("SubmitGrade", new { student_Id = student_id, subject_Id = subject_Id });
+            try
+            {
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = Constants.Student.StudentSuccessEdit;
+                _studentManagementService.EditGrade(Grade_Id, student_id, subject_Id, grade, quarter);
+                return RedirectToAction("SubmitGrade", new { student_Id = student_id, subject_Id = subject_Id });
+            }
+            catch(Exception ex)
+            {
+                Console.Write(ex);
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                return RedirectToAction("SubmitGrade", new { student_Id = student_id, subject_Id = subject_Id });
+            }
         }
         public IActionResult HomeRoom()
         {
@@ -466,6 +586,8 @@ namespace Basecode.WebApp.Controllers
         {
             try
             {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
                 if (school_year == null)
                 {
                     var schoolYear = _settingsService.GetSettings().StartofClass.Value.Year.ToString() + "-" +
@@ -477,20 +599,19 @@ namespace Basecode.WebApp.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
-                ViewBag.ErrorMessage = ex.Message;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 return RedirectToAction("Index");
             }
         }
         [HttpPost]
         public IActionResult SubmitGradeValues()
         {
+            var behaviouralId = Int32.Parse(Request.Form["Behavioural"]);
+            var Student_Id = Int32.Parse(Request.Form["StudentId"]);
+            var grades = Request.Form["Grades"];
             try
-            {
-                var behaviouralId = Int32.Parse(Request.Form["Behavioural"]);                               
-                var Student_Id = Int32.Parse(Request.Form["StudentId"]);
-                var grades = Request.Form["Grades"];                
-
+            {                  
                 var values = new Learner_Values
                 {
                     Behavioural_Statement = behaviouralId,                  
@@ -499,62 +620,65 @@ namespace Basecode.WebApp.Controllers
                     Grade = grades
                 };
                 _studentManagementService.AddLearnerValues(values);
-
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully added student values.";
                 return RedirectToAction("StudentValues", new { studentId = Student_Id , school_year = _settingsService.GetSchoolYear()});
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
-                ViewBag.ErrorMessage = ex.Message;
-                return RedirectToAction("Index");
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                return RedirectToAction("StudentValues", new { studentId = Student_Id, school_year = _settingsService.GetSchoolYear() });
             }
         }
         [HttpPost]
         public IActionResult UpdateLearnerValues()
         {
+            var id = Int32.Parse(Request.Form["LearnerValuesId"]);
+            var grade = Request.Form["Grades"];
+            var studentId = Int32.Parse(Request.Form["StudentId"]);
             try
-            {
-                var id = Int32.Parse(Request.Form["LearnerValuesId"]);
-                var grade = Request.Form["Grades"];
-                var studentId = Int32.Parse(Request.Form["StudentId"]);
+            {               
                 _studentManagementService.UpdateLearnerValues(id, grade);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully updated student values score.";
                 return RedirectToAction("StudentValues",new {studentId = studentId });
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
-                ViewBag.ErrorMessage = ex.Message;
-                return RedirectToAction("Index");
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                return RedirectToAction("StudentValues", new { studentId = studentId });
             }
         }
         public IActionResult ChildSubjectGrades(int headId, int studentId)
         {
             try
-
             {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
                 return View(_studentManagementService.GetChildSubjectGrades(headId, studentId));
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
-                ViewBag.ErrorMessage = ex.Message;
-                return RedirectToAction("Index");
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                return RedirectToAction("StudentListPerSubject" ,new {classid = Constants.TeacherNavigation.classid, subjectid = headId });
             }
         }
         [HttpPost]
         public IActionResult AddChildSubjectGrades()
         {
+            double headSubjectAverage = 0;
+            double sum = 0;
+            var HeadId = Int32.Parse(Request.Form["headId"]);
+            var studentId = Int32.Parse(Request.Form["studentId"]);
+            var subjects = Request.Form["subject"];
+            var grades = Request.Form["grades"];
+            var quarter = Int32.Parse(Request.Form["quarter"]);
+            var gradeLevel = _studentService.GetStudent(studentId).CurrGrade;
             try
-            {
-                double headSubjectAverage = 0;
-                double sum = 0;
-                var HeadId = Int32.Parse(Request.Form["headId"]);
-                var studentId = Int32.Parse(Request.Form["studentId"]);
-                var subjects = Request.Form["subject"];
-                var grades = Request.Form["grades"];
-                var quarter = Int32.Parse(Request.Form["quarter"]);
-                var gradeLevel = _studentService.GetStudent(studentId).CurrGrade;                
-
+            {                             
                 for(int x=0; x<subjects.Count;x++)
                 {
                     var subjectId = Int32.Parse(subjects[x]);
@@ -566,23 +690,25 @@ namespace Basecode.WebApp.Controllers
                 _studentManagementService.SubmitGrade(studentId, HeadId, (int)headSubjectAverage, quarter);               
                 if(quarter == 4)
                 {
-                    var suminner = 0;
+                    var suminner = 0.0;
                     double avg = 0;
                     var MainSubjectGrade = _studentManagementService.GetStudentGradeBySubject(studentId, HeadId);
                     foreach(var grade in MainSubjectGrade.Grades) 
                     {
                         suminner += grade.Grade;
                     }
-                    avg = suminner / MainSubjectGrade.Grades.Count;
+                    avg = Math.Round(suminner / MainSubjectGrade.Grades.Count, MidpointRounding.AwayFromZero);
                     _studentManagementService.SubmitGrade(studentId, HeadId, (int)avg, quarter+1);
                 }
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully added student grades.";
                 return RedirectToAction("ChildSubjectGrades", new { headId = HeadId, studentId = studentId });
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
-                ViewBag.ErrorMessage = ex.Message;
-                return RedirectToAction("Index");
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                return RedirectToAction("ChildSubjectGrades", new { headId = HeadId, studentId = studentId });
             }
         }
         public IActionResult AddStudentAttendance(AttendanceContainer container)

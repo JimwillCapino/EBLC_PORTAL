@@ -41,7 +41,7 @@
                 { "data": "lastname", "name": "lastname" },
                 {
                     data: null, render: function (data, type, row) {
-                        return "<a href='#' onclick=redirectToSubmitGradePage('" + row.studentid + "','" + @Model+ "') class='btn btn-success'>Values</a> <a href='#' onclick=redirectToAttendanccePage('" + row.studentid + "') class='btn btn-warning'>Attendance</a>";
+                        return "<a href='#' onclick=redirectToSubmitGradePage('" + row.studentid + "','" + @Model+ "') class='btn btn-success'>Values</a> <a href='#' onclick=redirectToAttendanccePage('" + row.studentid + "') class='btn btn-warning'>Attendance</a>  <a href='#' onclick=redirectToStudentInfo('" + row.studentid + "','"+@Model+"') class='btn btn-danger'>Student Information</a>";
                     }
                 }                              
             ]
@@ -83,6 +83,9 @@
         }
         function redirectToAttendanccePage(student_Id) {
             window.location.href = '@Url.Action("StudentAttendance", "Teacher")?studentId=' + student_Id;
+        }
+        function redirectToStudentInfo(studentId, classId) {
+                window.location.href = '@Url.Action("StudentInfo", "Teacher")?studentId=' + studentId + '&classId=' + classId;
         }
     </script>
 </div>
