@@ -155,9 +155,9 @@ namespace Basecode.Data.Repositories
             {
                 var schoolYearsWithGradeList = new List<string>();
                 var schoolYears = this.GetDbSet<Grades>()
-                    .Where(g => g.Student_Id == student_Id).Select(p => p.School_Year).Distinct();
+                    .Where(g => g.Student_Id == student_Id).ToList().Select(p => p.School_Year).Distinct();
                 var grades = this.GetDbSet<Grades>()
-                    .Where(g => g.Student_Id == student_Id);                
+                    .Where(g => g.Student_Id == student_Id).ToList();                
                 foreach ( var schoolYear in schoolYears)
                 {
                     var gradelevel = grades.FirstOrDefault(g => g.School_Year == schoolYear).Grade_Level.ToString();
@@ -216,12 +216,12 @@ namespace Basecode.Data.Repositories
             {
                 //Get the grade(S) of a particular student along with the choosen school Year
                 var grades = this.GetDbSet<Grades>().Where(g => g.Student_Id == student_Id)
-                   .Where(g => g.School_Year == school_year);
-                var subjects = this.GetDbSet<Subject>();
+                   .Where(g => g.School_Year == school_year).ToList();
+                var subjects = this.GetDbSet<Subject>().ToList();
                 //Get the subjects with child subjects
-                var HeadSubjects = this.GetDbSet<Subject>().Where(p => p.HasChild == true);
+                var HeadSubjects = this.GetDbSet<Subject>().Where(p => p.HasChild == true).ToList();
                 //Get the Child Subjects
-                var childSubjects = this.GetDbSet<ChildSubject>();
+                var childSubjects = this.GetDbSet<ChildSubject>().ToList();
                 //Join the childSubject table to the Subject Table to get the child subject details e.g name                
                 var childSubjectsUnion = from s in subjects
                                          join

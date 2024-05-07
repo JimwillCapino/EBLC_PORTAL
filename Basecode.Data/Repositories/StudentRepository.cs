@@ -90,7 +90,22 @@ namespace Basecode.Data.Repositories
         {
             try
             {
-                var studentsCount = this.GetDbSet<UsersPortal>().Where(p => p.FirstName.ToLower().Equals(student.FirstName) && p.MiddleName.ToLower().Equals(student.MiddleName)
+                var studentTable = this.GetDbSet<Student>();
+                var user = this.GetDbSet<UsersPortal>();
+                var unionportal = from s in studentTable
+                                  join
+                                  u in user on s.UID equals u.UID
+                                  select new UsersPortal
+                                  {
+                                      UID = u.UID,
+                                      FirstName = u.FirstName,
+                                      LastName = u.LastName,
+                                      MiddleName = u.MiddleName,
+                                      Birthday = u.Birthday,
+                                      ProfilePic = u.ProfilePic,
+                                      sex = u.sex,
+                                  };
+                var studentsCount = unionportal.Where(p => p.FirstName.ToLower().Equals(student.FirstName) && p.MiddleName.ToLower().Equals(student.MiddleName)
                 && p.LastName.ToLower().Equals(student.LastName)).Count();
                 return studentsCount > 0;
             }

@@ -71,9 +71,7 @@
                             </p>
                         }
 
-                        <div class="d-flex justify-content-center mb-2">
-                            <a asp-action="UpdateStudentDetailsPage" asp-route-studentId="@Model.Student.Student_ID"><button type="button" class="btn btn-warning">Edit</button></a>
-                            <a asp-action="RemoveStudent" asp-route-studentId="@Model.Student.Student_ID" class="btn btn-danger mx-2">Delete</a>
+                        <div class="d-flex justify-content-center mb-2">                           
                             <div class="btn-group">
                                 <button type="button" class="btn btn-success ms-1 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                     Document
@@ -136,7 +134,7 @@
                 <div id="Grades" class="tabcontent">
                     <div class="card">
                         <div class="card-body">
-                            <p>Select a School Year. Note that after selecting a school year, the page will reload thus going back to the grades tab.</p>
+                            <p>Student Grades for this school year.</p>
                             <div class="btn-group">                             
                             </div>
                             <div class="table-responsive">

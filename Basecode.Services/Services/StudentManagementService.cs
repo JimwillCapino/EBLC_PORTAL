@@ -207,8 +207,10 @@ namespace Basecode.Services.Services
                 student.TotalHeadSubjectCount = unionHeadSubject.Where(p => p.grade == gradeLevel).Count();
                 student.SchoolYear = school_year;
                 student.Parent = await _parentRepository.GetParentDetailById(student_Id);
-                student.PassingGrade = _settingsService.GetSettings().PassingGrade;
-                var schoolYearForAll = _settingsRepository.GetSchoolYear() + " Grade:" + gradeLevel;
+                student.PassingGrade = _settingsService.GetSettings().PassingGrade;               
+                
+                int gradeLevelCurrent = _studentManagementRepository.GradeLevel(student_Id, _settingsRepository.GetSchoolYear());
+                var schoolYearForAll = _settingsRepository.GetSchoolYear() + " Grade:" + gradeLevelCurrent;
                 if (!student.School_Years.Contains(schoolYearForAll) && student.Student.Status == "Enrolled")
                 {
                     student.School_Years.Add(schoolYearForAll);
