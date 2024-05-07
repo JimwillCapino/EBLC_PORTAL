@@ -80,7 +80,7 @@
 
                         <div class="d-flex justify-content-center mb-2">
                             <a asp-action="UpdateStudentDetailsPage" asp-route-studentId="@Model.Student.Student_ID"><button type="button" class="btn btn-warning">Edit</button></a>
-                            <a asp-action="RemoveStudent" asp-route-studentId="@Model.Student.Student_ID" class="btn btn-danger mx-2">Delete</a>
+                            <a id="deleteLink" data-toggle="modal" data-target="#exampleModal" class="btn btn-danger mx-2">Delete</a>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-success ms-1 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                    Document
@@ -95,7 +95,16 @@
                             <div class="col align-self-center">
                                 @if (Model.Student.Status.Equals("Not Enrolled"))
                                 {
-                                    <a asp-action="EnrollAndPromoteStudent" asp-route-id="@Model.Student.Student_ID"><button type="button" class="btn btn-warning">Enroll Student</button></a>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-warning ms-1 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Enroll
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a asp-action="EnrollAndPromoteStudent" asp-route-id="@Model.Student.Student_ID"><button type="button" class="btn btn-warning">Promote</button></a></li>
+                                            <li><a asp-action="EnrollAndRetainStudent" asp-route-id="@Model.Student.Student_ID"><button type="button" class="btn btn-warning">Retain</button></a></li>
+                                        </ul>
+                                    </div>
+                                    
                                 }
                             </div>                           
                         </div>
@@ -380,6 +389,28 @@
             </div>
           </div>
     </div>
-        
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="exampleModalLabel">Warning</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to permanently remove student from the database?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a id="deleteLink" asp-action="RemoveStudent" asp-route-studentId="@Model.Student.Student_ID" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>
 </div>

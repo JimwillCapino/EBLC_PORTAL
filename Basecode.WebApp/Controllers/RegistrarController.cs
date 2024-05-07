@@ -202,6 +202,25 @@ namespace Basecode_WebApp.Controllers
             }
 
         }
+        public async Task<IActionResult> EnrollAndRetainStudent(int id)
+        {
+            try
+            {
+                var student = _studentService.GetStudent(id);
+                student.status = "Enrolled";               
+                await _studentService.UpdateStudentAsync(student);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully Enrolled and Promoted Student";
+                return RedirectToAction("StudentInfo", new { student_Id = id });
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("StudentInfo", new { student_Id = id });
+            }
+        }
         public async Task<IActionResult> EnrollAndPromoteStudent(int id)
         {
             try

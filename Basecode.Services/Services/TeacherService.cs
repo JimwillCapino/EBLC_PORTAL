@@ -197,6 +197,10 @@ namespace Basecode.Services.Services
                 await _UserManager.DeleteAsync(user);
                 _UsersRepository.RemoveUser(userportal);               
             }
+            catch(NullReferenceException ex)
+            {
+                throw new Exception("User not found");
+            }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);

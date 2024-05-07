@@ -49,7 +49,7 @@
                 { "data": "email", "name": "email" },
                 {
                     data: null, render: function (data, type, row) {
-                        return "<a href='#' onclick=RemoveTeacher('" + row.id + "') class='btn btn-danger'>Delete</a>";
+                        return "<a href='#' data-toggle='modal' data-target='#exampleModal3' onclick=removeAlert('" + row.id + "') class='btn btn-danger'>Delete</a>";
                     }
                 }
 
@@ -63,12 +63,7 @@
 <div class ="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5" style="height:400px; overflow-y: auto;">      
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a>List of Teachers</a></li>
-            </ol>
-        </nav>
+        
             @if (successValue == 0)
             {
                 <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
@@ -94,10 +89,20 @@
         <div class="container">
             
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1></h1>
-                <button type="button" class="btn btn-warning" onclick="RedirectToRequestPage()">Add</button>
+                                            
             </div>                                      
                 <div style="width:95%; margin:0 auto;">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a>List of Teachers</a></li>
+                    </ol>
+                </nav>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1></h1>
+                    <button type="button" class="btn btn-warning" onclick="RedirectToRequestPage()">Add</button>
+                </div>
+                
                 <h3>Manage Teachers</h3>
                     <table id="table" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
                         <thead>
@@ -118,13 +123,39 @@
         </div>
     </div>  
 </div>
+
+<!-- Modal for delete alert -->
+<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="exampleModalLabel">Warning</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="aspid" />
+                Are you sure you want to remove the teacher? By removing the teacher, all of his/her data shall be deleted. Furthermore, he/she can no longer access the portal.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" onclick="RemoveTeacher()" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
     function RedirectToRequestPage() {
         window.location.href = '@Url.Action("TeacherRegistration", "Registrar")';
     }
-    function RemoveTeacher(aspid){
-        if (confirm("Are you sure you want to remove the teacher? By removing the teacher, all of his/her data shall be deleted. Furthermore, he/she can no longer access the portal.")) {
-            window.location.href = '@Url.Action("RemoveTeacher", "Registrar")?aspid=' + aspid;
-        }
+    function RemoveTeacher(){
+        var aspid = document.getElementById("aspid").value;
+        window.location.href = '@Url.Action("RemoveTeacher", "Registrar")?aspid=' + aspid;        
+    }
+    function removeAlert(aspid) {
+        document.getElementById("aspid").value = aspid;
     }
 </script>
