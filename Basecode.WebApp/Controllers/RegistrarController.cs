@@ -66,11 +66,11 @@ namespace Basecode_WebApp.Controllers
                 Constants.ViewDataErrorHandling.Success = 0;
                 Constants.ViewDataErrorHandling.ErrorMessage = "The School Year has Ended. Go to settings to set date of Start and End Classes.";
                 if(_studentService.GetUnEnrolledCount() == 0)
-                    _studentService.UnEnrollStudents();
+                    _studentService.UnEnrollStudents().RunSynchronously();
             }
                 
         }
-        public async Task<IActionResult> Index(int gradeLevel, int quarter, int rank)
+        public async Task<IActionResult> Index()
         {
             try
             {
@@ -81,8 +81,7 @@ namespace Basecode_WebApp.Controllers
                     return RedirectToAction("RegistrarProfileRegistration");
                 }
                 var dashboard = await _usersService.SetRegisrarDashBoard();
-                dashboard.SchoolYear = _settingsService.GetSchoolYear();
-                dashboard.StudentRanking = _studentManagementService.GetStudentRanking(gradeLevel, quarter, rank);
+                dashboard.SchoolYear = _settingsService.GetSchoolYear();                
                 return View(dashboard);
             }
             catch (Exception ex)
@@ -115,6 +114,24 @@ namespace Basecode_WebApp.Controllers
                 Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
                 return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        public IActionResult QueryDashboadRanking()
+        {
+            try
+            {
+                var gradeLevel = Int32.Parse(Request.Form["grade"]);
+                var quarter = Int32.Parse(Request.Form["quarter"]);
+                var rank = Int32.Parse(Request.Form["rank"]);
+                 
+                var studentRanking = _studentManagementService.GetStudentRanking(gradeLevel, quarter, rank);
+                return PartialView("_StudentRankingTable", studentRanking);
+            }
+            catch (Exception ex)
+            {
+                var errorModel = new ErrorModel { ErrorMessage = ex.Message };
+                return PartialView("ErrorMessage", errorModel);
             }
         }
         public IActionResult RegistrarProfileRegistration()
@@ -1391,10 +1408,13 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("StudentRecord");
             }
         }
+        [HttpPost]
         public async Task<IActionResult> UpdateStudentDetails(StudentDetailsContainer studentDetails)
         {
             try
             {
+                var status = Request.Form["status"];
+                studentDetails.Student.status = Boolean.Parse(status);
                 await _studentManagementService.UpdateStudentDetails(studentDetails);
                 Constants.ViewDataErrorHandling.Success = 1;
                 Constants.ViewDataErrorHandling.ErrorMessage = "Successfully updated the student!";

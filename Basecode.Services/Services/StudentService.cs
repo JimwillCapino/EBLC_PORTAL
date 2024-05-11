@@ -16,6 +16,7 @@ namespace Basecode.Services.Services
 {
     public class StudentService : IStudentService
     {
+        IClassManagementRepository _classmanagement;
         IStudentRepository _studentRepository;
         IUsersRepository _usersRepository;
         IParentRepository _parentRepository;
@@ -25,13 +26,15 @@ namespace Basecode.Services.Services
             IUsersRepository usersRepository,
             IParentRepository parentRepository,
             IRTPRepository rtpRepository,
-            IMapper mapper) 
+            IMapper mapper,
+            IClassManagementRepository classManagement) 
         { 
             _studentRepository = studentRepository;
             _usersRepository = usersRepository;
             _parentRepository = parentRepository;
             _rtpRepository = rtpRepository;
             _mapper = mapper;
+            _classmanagement = classManagement;
         }
         public void AddStudent(Student student)
         {
@@ -156,15 +159,19 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
-        public void UnEnrollStudents()
+        public async Task UnEnrollStudents()
         {
             try
             {
-                var students = _studentRepository.GetAllStudent();
-                foreach(var student in students)
+                var students = _studentRepository.GetAllStudent();   
+                foreach (var student in students)
                 {
+                    var classbelong = await _classmanagement.GetClassWhereStudentBelong(student.Student_Id, student.CurrGrade);
+                    var ClassStudentViewModel = _classmanagement.GetClassStudents(classbelong.id).FirstOrDefault(p => p.studentid == student.Student_Id);
+                    var classStudent = _classmanagement.GetClassStudentsById(ClassStudentViewModel.id);
                     student.status = "Not Enrolled";
                     _studentRepository.UpdateStudent(student);
+                    _classmanagement.RemoveClassStudents(classStudent);
                 }
             }
             catch (Exception ex)

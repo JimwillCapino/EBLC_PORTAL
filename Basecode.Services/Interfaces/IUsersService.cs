@@ -20,6 +20,7 @@ namespace Basecode.Services.Interfaces
         public Task<RegistrarDashboard> SetRegisrarDashBoard();
         public Task NewUserDetailsRegistration(ProfileViewModel profile);
         public Task<bool> IsNewUser(string AspUserId);
-        public TeacherDashboard SetTeacherDashboard(string teacherid);       
+        public TeacherDashboard SetTeacherDashboard(string teacherid);
+        public Task<AdminDashboard> SetDashboardDashBoard();
     }
 }

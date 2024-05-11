@@ -14,16 +14,17 @@ namespace Basecode.Data.ViewModels
         public IFormFile? ProfilePicRecieve { get; set; }
         public int Student_ID { get; set; }
         [Required(ErrorMessage = "First Name is Required.")]
+
         public string FirstName { get; set; }
-        [Required(ErrorMessage = "First Name is Required.")]
-        public string MiddleName { get; set; }
+        
         [Required(ErrorMessage = "Middle Name is Required.")]
-        public string LastName { get; set; }
+        public string MiddleName { get; set; }
         [Required(ErrorMessage = "Last Name is Required.")]
+        public string LastName { get; set; }       
         public string Status { get; set; }
-        [Required(ErrorMessage = "Status is required")]
-        public DateTime Birthday { get; set; }
         [Required(ErrorMessage = "Birhtdate is required.")]
+        public DateTime Birthday { get; set; }
+        [Required(ErrorMessage = "First Name is Required.")]
         public string sex { get; set; }
         public byte[]? profilePicture { get; set; }
         [Required(ErrorMessage = "First Name is Required.")]
@@ -31,6 +32,7 @@ namespace Basecode.Data.ViewModels
         [Required(ErrorMessage = "grade Level Name is Required.")]
         public int Grade { get; set; }
         [Required(ErrorMessage = "LRN is Required.")]
-        public string lrn { get; set; }
+        public string lrn { get; set; }  
+        public bool status { get; set; } 
     }
 }

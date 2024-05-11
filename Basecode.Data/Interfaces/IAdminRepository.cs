@@ -1,4 +1,5 @@
 ﻿using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,7 @@ namespace Basecode.Data.Interfaces
     {
         public Task<IdentityResult> CreateRole(string roleName);
         public void AddUser(UsersPortal usersPortal);
+        public Task AddRegistrar(UsersRegistration account);
+        public Task<List<TeacherViewModel>> GetRegistrarsAsync();
     }
 }

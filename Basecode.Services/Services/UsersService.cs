@@ -26,6 +26,7 @@ namespace Basecode.Services.Services
         IClassManagementRepository _classManagementRepository;
         IStudentManagementRepository _studentManagementRepository;
         IStudentManagementService _studentManagementService;
+        IAdminRepository _adminRepository;
         public UsersService(IUsersRepository userRepository,
             IMapper mapper,
             UserManager<IdentityUser> userManager,
@@ -36,7 +37,8 @@ namespace Basecode.Services.Services
             IRTPUsersRepository rtpUsersRepository,
             IStudentManagementRepository studentManagementRepository,
             IClassManagementRepository classManagementRepository,
-            IStudentManagementService studentManagementService
+            IStudentManagementService studentManagementService,
+            IAdminRepository adminRepository
             )
         {
             _userRepository = userRepository;
@@ -50,6 +52,7 @@ namespace Basecode.Services.Services
             _studentManagementRepository = studentManagementRepository;
             _classManagementRepository = classManagementRepository;
             _studentManagementService = studentManagementService;
+            _adminRepository = adminRepository;
         }
         public int AddUser(UsersPortal user) 
         {
@@ -227,6 +230,24 @@ namespace Basecode.Services.Services
                 registrarDashboard.StudentEnrolledCount = _studentRepository.GetAllStudent().Where(p => p.status == "Enrolled").Count();
                 registrarDashboard.StudentNotEnrolledCount = _studentRepository.GetAllStudent().Where(p => p.status == "Not Enrolled").Count();
                 registrarDashboard.NewEnrolleeList = _newEnrolleeRepository.GetNewEnrolleeInitView().Where(P => P.ExamSchedule != null).ToList();
+                return registrarDashboard;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public async Task<AdminDashboard> SetDashboardDashBoard()
+        {
+            try
+            {
+                var registrarDashboard = new AdminDashboard();                
+                registrarDashboard.TeacherCount = _teacherRepository.GetAllTeachersInitViewAsync().Result.Count();
+                registrarDashboard.StudentEnrolledCount = _studentRepository.GetAllStudent().Where(p => p.status == "Enrolled").Count();
+                registrarDashboard.StudentNotEnrolledCount = _studentRepository.GetAllStudent().Where(p => p.status == "Not Enrolled").Count();
+                registrarDashboard.RegistrarsCount = _adminRepository.GetRegistrarsAsync().Result.Count();
+               
                 return registrarDashboard;
             }
             catch (Exception e)

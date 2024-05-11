@@ -10,6 +10,13 @@
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="ViewLearnersValues">Learners Values</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a>Update Learners Values</a></li>
+            </ol>
+        </nav>
         <form asp-action="UpdateBeheviouralStatement">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="mb-3">
@@ -25,7 +32,7 @@
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Behavioral Statement</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" asp-for="Behavioural_Statement"></textarea>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="10" asp-for="Behavioural_Statement"></textarea>
                 <span asp-validation-for="Behavioural_Statement" class="text-danger"></span>
             </div>
             <div class="row">

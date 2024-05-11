@@ -1,0 +1,22 @@
+﻿@using Basecode.Data.ViewModels
+
+@if (Model !=null)
+{
+    @foreach (var student in Model)
+    {
+        <tr>
+            <td>
+                @student.fullname
+            </td>
+            <td>
+                @student.Average
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr>
+        <td colspan="2">No Data to show</td>
+    </tr>
+}

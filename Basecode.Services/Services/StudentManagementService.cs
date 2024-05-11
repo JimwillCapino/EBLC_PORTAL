@@ -230,6 +230,8 @@ namespace Basecode.Services.Services
                 double sum;
                 int avg = 0;
                 var students = _studentManagementRepository.GetAllStudentPreview().Where(p => p.grade == gradeLevel);
+                if(students.Count() == 0)
+                    throw new Exception("Ranking failed. There are no enrolled students for this grade level.");
                 var RankOfStudents = new List<StudentQuarterlyAverage>();              
                 foreach (var student in students)
                 {
@@ -248,13 +250,13 @@ namespace Basecode.Services.Services
                             var selectedGrade = filteredSubject.Grades.FirstOrDefault(p => p.Quarter == quarter);
                             if (selectedGrade == null)
                             {
-                                throw new Exception("Ranking failed. A student has not been enrolled to a subject.");
+                                throw new Exception("Ranking failed. There are students that do not have grades on all subjects for this quarter.");
                             }
                             sum += selectedGrade.Grade;
                         }
                         else
                         {
-                            throw new Exception("Ranking failed. There are students that do not have grades on some subjects.");
+                            throw new Exception("Ranking failed. There are students that do not have grades on some subjects for this quarter.");
                         }
                     }
                     avg = (int)Math.Round(sum / subjects.Count(), MidpointRounding.AwayFromZero);
@@ -317,7 +319,7 @@ namespace Basecode.Services.Services
             try
             {
                 var schoolYears = _studentManagementRepository.GetSchoolYearsWithOutGradeLevel(studentId);
-                schoolYears.Add(_settingsRepository.GetSchoolYear());
+                //schoolYears.Add(_settingsRepository.GetSchoolYear());
                 var form137Container = new Form137Container();
                 form137Container.Student = _studentManagementRepository.GetStudent(studentId);
                 form137Container.Settings = _settingsRepository.GetSettings(); 
@@ -522,7 +524,7 @@ namespace Basecode.Services.Services
                     _studentManagementRepository.AddAttendance(attendance);
                 }
                 else
-                    throw new Exception("The attendance for this month is already Existing");
+                    throw new Exception("The attendance for this month is already exist");
             }
             catch(Exception ex)
             {
@@ -618,7 +620,12 @@ namespace Basecode.Services.Services
                 }
                               
                 student.LRN = studentDetails.Student.lrn;
-                student.status = studentDetails.Student.Status;
+                if (studentDetails.Student.status)
+                    student.status = "Enrolled";
+                else
+                    student.status = "Not Enrolled";
+
+                //student.status = studentDetails.Student.Status;
                 student.CurrGrade = studentDetails.Student.Grade;
 
                 await _usersRepository.UpdateUserPortal(studentUserPortal);

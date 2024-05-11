@@ -60,6 +60,28 @@ namespace Basecode.WebApp.Controllers
             };
             return View(dashboard);
         }
+        [HttpPost]
+        public IActionResult QueryDashboadRanking()
+        {
+            try
+            {
+                var classattended = Request.Form["class"].ToString();
+                var quarter = Int32.Parse(Request.Form["quarter"]);
+
+                string[] numbersArray = classattended.Split(' ');
+                int classid = Int32.Parse(numbersArray[0]);
+                int subjectid = Int32.Parse(numbersArray[1]);
+
+                var studentWithNoGrades = _studentManagementService.GetStudentWithNoGradePerQuarter(classid, subjectid, quarter);
+;
+                return PartialView("_StudentWithNoGradeTable", studentWithNoGrades);
+            }
+            catch (Exception ex)
+            {
+                var errorModel = new ErrorModel { ErrorMessage = ex.Message };
+                return PartialView("ErrorMessage", errorModel);
+            }
+        }
         public async Task<IActionResult> SignOut()
         {
             await _signInManager.SignOutAsync();

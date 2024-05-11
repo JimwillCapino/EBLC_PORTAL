@@ -11,13 +11,22 @@
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main">
+    
         <div class="container py-3 min-vh-100 d-flex flex-column">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="StudentRecord">List of Students</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a asp-action="StudentInfo" asp-route-student_Id="@Model.Student.Student_ID">Student Information</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a>Edit Student Information</a></li>
+                </ol>
+            </nav>
             <div class="card shadow rounded-3 my-auto">
                 <div class="card-header p-3 h4">
                     Enter Student Details
                 </div>
                 <div class="card-body p-4">
-                    <form role="form" enctype="multipart/form-data" class="row" asp-action="UpdateStudentDetails">
+                    <form role="form" enctype="multipart/form-data" method="post" class="row" asp-action="UpdateStudentDetails">
                         <div class="form-group col-lg-4">
                             <label for="inputEmail4">Profile Picture</label>
                             <input type="file" class="form-control" id="inputEmail4" placeholder="" asp-for="Student.ProfilePicRecieve">
@@ -53,6 +62,14 @@
                                 <option value="F">Female</option>
                             </select>
                             <span asp-validation-for="Student.sex" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputState">Enrollment Status</label>
+                            <select name="status" id="inputState" class="form-control">
+                                <option value="" selected>Select Enrollement Status</option>
+                                <option value="true">Enrolled</option>
+                                <option value="false">Not Enrolled</option>
+                            </select>                         
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputEmail4">Grade to Enroll</label>

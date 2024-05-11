@@ -103,7 +103,7 @@
                                     <div class="card-body p-4">
                                         <h5 class="card-title widget-card-title mb-4">Ranking of Students</h5>
                                         <div class="table-responsive" style="height:400px; overflow-y: auto;">
-                                            @using (Html.BeginForm("QueryDashboad", "Registrar", FormMethod.Post))
+                                            @using (Html.BeginForm("QueryDashboadRanking", "Registrar", FormMethod.Post, new { id = "queryForm" }))
                                             {
                                                 <div class="row">
                                                     <div class="col-sm-5">
@@ -142,7 +142,7 @@
                                             }
 
                                             <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0">
-                                                @if (Model.StudentRanking.Count() > 0)
+                                                @* @if (Model.StudentRanking.Count() > 0)
                                                 {
                                                     <thead>
                                                         <tr>
@@ -167,8 +167,10 @@
                                                 else
                                                 {
                                                     <p>No Data to show</p>
-                                                }
-
+                                                } *@
+                                                <tbody id="studentTableBody">
+                                                    @Html.Partial("_StudentRankingTable", Model.StudentRanking)
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -185,3 +187,28 @@
         </div> 
     </div>
    
+<script>
+    $(document).ready(function () {
+        $('#queryForm').submit(function (e) {
+            e.preventDefault(); // Prevent form submission
+
+            // Serialize form data
+            var formData = $(this).serialize();
+
+            // AJAX request
+            $.ajax({
+                type: "POST",
+                url: $(this).attr('action'), // Action URL from the form
+                data: formData,
+                success: function (data) {
+                    // Update table with new data
+                    $('#studentTableBody').html(data);
+                },
+                error: function () {
+                    // Handle errors
+                    console.log("Error fetching data");
+                }
+            });
+        });
+    });
+</script>
