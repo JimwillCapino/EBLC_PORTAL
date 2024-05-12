@@ -229,16 +229,20 @@ namespace Basecode.Services.Services
             {
                 double sum;
                 int avg = 0;
-                var students = _studentManagementRepository.GetAllStudentPreview().Where(p => p.grade == gradeLevel);
-                if(students.Count() == 0)
+                string schoolYear = _settingsRepository.GetSchoolYear();
+                var students = _studentManagementRepository.GetAllStudentPreview().Where(p => p.grade == gradeLevel).ToList();
+                var RankOfStudents = new List<StudentQuarterlyAverage>();
+
+                if (students.Count() == 0)
                     throw new Exception("Ranking failed. There are no enrolled students for this grade level.");
-                var RankOfStudents = new List<StudentQuarterlyAverage>();              
+                            
                 foreach (var student in students)
                 {
                     sum = 0.0;
-                    var studentgrade = _studentManagementRepository.GetStudentGrades(student.studentid, _settingsRepository.GetSchoolYear());
                     var subjects = _subjectRepository.GetAllSubjectTakenByStudent(student.studentid, gradeLevel);
-                    if(subjects.Count() == 0)
+
+                    var studentgrade = _studentManagementRepository.GetStudentGrades(student.studentid, schoolYear);
+                    if (subjects.Count() == 0)
                     {
                         throw new Exception("Ranking failed. There are students that has not been added to a class.");
                     }

@@ -124,7 +124,7 @@ namespace Basecode.Services.Services
         {
             try
             {
-                return _settingsRepository.GetSettings().WithHighestHonor;
+                return _settingsRepository.GetWithHighestHonor();
             }
             catch
             {
@@ -135,7 +135,7 @@ namespace Basecode.Services.Services
         {
             try
             {
-                return _settingsRepository.GetSettings().WithHighHonor;
+                return _settingsRepository.GetWithHighHonor();
             }
             catch
             {
@@ -146,7 +146,7 @@ namespace Basecode.Services.Services
         {
             try
             {
-                return _settingsRepository.GetSettings().WithHonor;
+                return _settingsRepository.GetWithHonor();
             }
             catch
             {

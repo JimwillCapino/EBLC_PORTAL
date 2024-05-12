@@ -7,8 +7,11 @@
     double avg = 0;
     int monthIdx = 1;
     var parentsex = "";
-    if (Model.Parent.Parentsex == "F") parentsex = "Female";
+    var childGender = "";
+    if (Model.Parent.Parentsex == "F") childGender = "Female";
     else parentsex = "Male";
+    if (Model.Student.sex == "F") parentsex = "Female";
+    else childGender = "Male";
     int successValue = (int)ViewData["Success"];
 }
 @using Basecode.Data
@@ -65,6 +68,8 @@
                         <p class="text-muted mb-1">@Model.Student.Status</p>
                         <p class="text-muted mb-4">Grade @Model.Student.Grade</p>
                         <p class="text-muted mb-4">@Model.Student.age years old</p>
+                        <p class="text-muted mb-4">Birthday: @Model.Student.Birthday.ToLongDateString()</p>
+                        <p class="text-muted mb-4">@childGender</p>
                         @if (Model.Student.lrn == null)
                         {
                             <p class="text-muted mb-4">

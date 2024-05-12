@@ -113,10 +113,11 @@ namespace Basecode.Data.Repositories
                                              Grade = reference.Grade,
                                              HasChild = reference.HasChild,
                                          };
-                foreach(var sub in unionHeadSubject)
+                var unionChildSubjectsToList = unionChildSubjects.ToList();
+                foreach (var sub in unionHeadSubject)
                 {
                     ChildSubjectContainer.Add(sub);
-                    var holder = unionChildSubjects.Where(p => p.HeadId == sub.Subject_Id);
+                    var holder = unionChildSubjectsToList.Where(p => p.HeadId == sub.Subject_Id);
                     foreach(var subs in holder)
                     {
                         var childsubject = new Subject

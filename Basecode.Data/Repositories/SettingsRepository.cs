@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Basecode.Data.Repositories
 {
@@ -45,7 +46,8 @@ namespace Basecode.Data.Repositories
         {
             try
             {
-                return _context.Settings.AsNoTracking().FirstOrDefault();
+                var query = this.GetDbSet<Settings>().ToList();
+                return query.FirstOrDefault();
             }
             catch(Exception ex)
             {
@@ -57,14 +59,48 @@ namespace Basecode.Data.Repositories
         {
             try
             {
-                var settings = this.GetSettings();
-                var schoolYear = settings.StartofClass.Value.Year.ToString() + "-" + settings.EndofClass.Value.Year.ToString();
+                string schoolYear;  
+                var settings = _context.Settings.ToList();
+                schoolYear = settings.FirstOrDefault()?.StartofClass.Value.Year.ToString() + "-" + settings.FirstOrDefault()?.EndofClass.Value.Year.ToString();
                 return schoolYear;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 throw;
+            }
+        }
+        public int? GetWithHighHonor()
+        {
+            try
+            {
+                return this.GetDbSet<Settings>().ToList().FirstOrDefault().WithHighHonor;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public int? GetWithHighestHonor()
+        {
+            try
+            {
+                return this.GetDbSet<Settings>().ToList().FirstOrDefault().WithHighestHonor;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public int? GetWithHonor()
+        {
+            try
+            {
+                return this.GetDbSet<Settings>().ToList().FirstOrDefault().WithHonor;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
             }
         }
     }

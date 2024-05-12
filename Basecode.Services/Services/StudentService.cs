@@ -163,7 +163,7 @@ namespace Basecode.Services.Services
         {
             try
             {
-                var students = _studentRepository.GetAllStudent();   
+                var students = _studentRepository.GetAllStudent().ToList();   
                 foreach (var student in students)
                 {
                     var classbelong = await _classmanagement.GetClassWhereStudentBelong(student.Student_Id, student.CurrGrade);

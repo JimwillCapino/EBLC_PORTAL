@@ -65,8 +65,8 @@ namespace Basecode_WebApp.Controllers
             {
                 Constants.ViewDataErrorHandling.Success = 0;
                 Constants.ViewDataErrorHandling.ErrorMessage = "The School Year has Ended. Go to settings to set date of Start and End Classes.";
-                if(_studentService.GetUnEnrolledCount() == 0)
-                    _studentService.UnEnrollStudents().RunSynchronously();
+                //if(_studentService.GetUnEnrolledCount() == 0)
+                //    _studentService.UnEnrollStudents();
             }
                 
         }
@@ -74,6 +74,13 @@ namespace Basecode_WebApp.Controllers
         {
             try
             {
+                var datToday = DateTime.Now;
+                var endSchoolDate = _settingsService.GetSettings().EndofClass;
+                if (endSchoolDate != null && datToday.CompareTo(endSchoolDate) >= 0)
+                {
+                    if (_studentService.GetUnEnrolledCount() == 0)
+                        await _studentService.UnEnrollStudents();
+                }
                 ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
                 ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
                 if (await _usersService.IsNewUser(_userManager.GetUserId(User)))
