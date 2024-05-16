@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int successValue = (int)ViewData["Success"];
 }
@@ -38,12 +38,12 @@
                     Dashboard
                 </h1>               
             </div>
-        <div class="container mt-3 gap-1">
-            <div class="row">
-                <div class="col-lg-3">
+        <div class="container mt-3">
+          
+                @* <div class="col-lg-3">
                     <div class="row">
                         <div class="col">
-                            <div class="card-counter danger">
+                            <div class="card-counter info">
                                 <i class="fa-solid fa-person-chalkboard"></i>
                                 <span class="count-numbers">@Model.TeacherCount</span>
                                 <span class="count-name">Teachers</span>
@@ -63,7 +63,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <div class="card-counter info">
+                            <div class="card-counter danger">
                                 <i class="fa-solid fa-user-xmark"></i>
                                 <span class="count-numbers">@Model.StudentNotEnrolledCount</span>
                                 <span class="count-name">Not Enrolled</span>
@@ -71,34 +71,55 @@
                         </div>
                         
                     </div>
-                </div>
-               @*  <div class="col-md-3">
-                    <div class="card-counter danger">
-                        <i class="fa-solid fa-person-chalkboard"></i>
-                        <span class="count-numbers">@Model.TeacherCount</span>
-                        <span class="count-name">Teachers</span>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card-counter success">
-                        <i class="  fa-solid fa-universal-access"></i>
-                        <span class="count-numbers">@Model.StudentEnrolledCount</span>
-                        <span class="count-name">Enrolled</span>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card-counter info">
-                        <i class="fa-solid fa-user-xmark"></i>
-                        <span class="count-numbers">@Model.StudentNotEnrolledCount</span>
-                        <span class="count-name">Not Enrolled</span>
+                    <div class="row">
+                        <div class="col">
+                            <div class="card-counter primary">
+                                <i class="  fa-solid fa-universal-access"></i>
+                                <span class="count-numbers">@Model.NewEnrolleeCount</span>
+                                <span class="count-name">New Enrollee</span>
+                            </div>
+                        </div>
                     </div>
                 </div> *@
-                <div class="col-md-9">
-                    <div class="container">
+
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card-counter info">
+                            <i class="fa-solid fa-person-chalkboard"></i>
+                            <span class="count-numbers">@Model.TeacherCount</span>
+                            <span class="count-name">Teachers</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card-counter success">
+                            <i class="  fa-solid fa-universal-access"></i>
+                            <span class="count-numbers">@Model.StudentEnrolledCount</span>
+                            <span class="count-name">Enrolled</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card-counter danger">
+                            <i class="fa-solid fa-user-xmark"></i>
+                            <span class="count-numbers">@Model.StudentNotEnrolledCount</span>
+                            <span class="count-name">Not Enrolled</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card-counter primary">
+                            <i class="  fa-solid fa-universal-access"></i>
+                            <span class="count-numbers">@Model.NewEnrolleeCount</span>
+                            <span class="count-name">New Enrollee</span>
+                        </div>
+                    </div>
+                </div>
+            <div class="row mt-5 g-0">
+                    <div class="col-lg-7">                   
                         <div class="row justify-content-center">
-                            <div class="col-12 col-lg-11 col-xl-10">
+                            <div class="col-12">
                                 <div class="card widget-card border-light shadow-sm">
                                     <div class="card-body p-4">
                                         <h5 class="card-title widget-card-title mb-4">Ranking of Students</h5>
@@ -144,29 +165,29 @@
                                             <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0">
                                                 @* @if (Model.StudentRanking.Count() > 0)
                                                 {
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Full name</th>
-                                                            <th>Grade</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach (var student in Model.StudentRanking)
-                                                        {
-                                                            <tr>
-                                                                <td>
-                                                                    @student.fullname
-                                                                </td>
-                                                                <td>
-                                                                    @student.Average
-                                                                </td>
-                                                            </tr>
-                                                        }
-                                                    </tbody>
+                                                <thead>
+                                                <tr>
+                                                <th>Full name</th>
+                                                <th>Grade</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach (var student in Model.StudentRanking)
+                                                {
+                                                <tr>
+                                                <td>
+                                                @student.fullname
+                                                </td>
+                                                <td>
+                                                @student.Average
+                                                </td>
+                                                </tr>
+                                                }
+                                                </tbody>
                                                 }
                                                 else
                                                 {
-                                                    <p>No Data to show</p>
+                                                <p>No Data to show</p>
                                                 } *@
                                                 <tbody id="studentTableBody">
                                                     @Html.Partial("_StudentRankingTable", Model.StudentRanking)
@@ -177,12 +198,82 @@
                                 </div>
                             </div>
                         </div>
+                    
                     </div>
+                <div class="col-lg-5">                   
+                        <div class="row justify-content-center">
+                            <div class="col-12">
+                                <div class="card widget-card border-light shadow-sm">
+                                    <div class="card-body p-4">
+                                    <h5 class="card-title widget-card-title mb-4">New enrollees for today's examination.</h5>
+                                        <div class="table-responsive" style="height:400px; overflow-y: auto;">
+                                            <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0">                                                
+                                                <tbody id="studentTableBody">
+                                                    @if(Model.NewEnrolleeList.Count() > 0)
+                                                    {
+                                                        <tr>
+                                                            <td><p class="lead">Name</p></td>
+                                                            <td><p class="lead">Grade</p></td>
+                                                            <td><p class="lead">Time</p></td>
+                                                        </tr>                                                       
+                                                        foreach (var enrollee in Model.NewEnrolleeList)
+                                                        {
+                                                            <tr>
+                                                                 <td>@enrollee.firstname @enrollee.lastname</td>
+                                                                 <td>@enrollee.gradeenrolled</td>
+                                                                 <td>@DateTime.Parse(enrollee.examschedule).ToShortTimeString()</td>
+                                                            </tr>                                                          
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>No new enrollees scheduled for today.</td>
+                                                    }
 
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    </div>
                 </div>
+
+               @*  <div class="col-md-3">
+                     <div class="card-counter info">
+                                <i class="fa-solid fa-person-chalkboard"></i>
+                                <span class="count-numbers">@Model.TeacherCount</span>
+                                <span class="count-name">Teachers</span>
+                            </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card-counter success">
+                                <i class="  fa-solid fa-universal-access"></i>
+                                <span class="count-numbers">@Model.StudentEnrolledCount</span>
+                                <span class="count-name">Enrolled</span>
+                            </div>
+                </div>
+
+                <div class="col-md-3">
+                   <div class="card-counter danger">
+                                <i class="fa-solid fa-user-xmark"></i>
+                                <span class="count-numbers">@Model.StudentNotEnrolledCount</span>
+                                <span class="count-name">Not Enrolled</span>
+                            </div>
+                </div>
+                <div class="card-counter primary">
+                                <i class="  fa-solid fa-universal-access"></i>
+                                <span class="count-numbers">@Model.NewEnrolleeCount</span>
+                                <span class="count-name">New Enrollee</span>
+                            </div>
+                
+                *@
+              
             </div>
             
-        </div>
         
         </div> 
     </div>

@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Submit grade";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int? max = 0;
     int successValue = (int)ViewData["Success"];
@@ -115,7 +115,7 @@
                             <div class="mb-3">
                                  <label for="recipient-name" class="col-form-label">@subject.Name:</label>
                                  <input type="hidden" value="@subject.subjectId" name="subject" />
-                                 <input type="text" class="form-control" id="recipient-name" name="grades" required>
+                                <input type="number" class="form-control" id="recipient-name" name="grades" min="50" max="100" required>
                             </div>
                         }
                     </div>
@@ -146,7 +146,7 @@
                         <input type="hidden" name="headid"  value="@Model.HeadId"/>
                         <div class="mb-3">
                             <label id="subname" for="recipient-name" class="col-form-label">:</label>
-                            <input type="text" class="form-control" id="grade" name="Grade" required>
+                            <input type="number" class="form-control" id="grade" name="Grade" min="50" max="100" required>
                         </div>
                     </div>
                     <div class="modal-footer">

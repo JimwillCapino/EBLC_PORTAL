@@ -25,5 +25,8 @@ namespace Basecode.Data.Models
         public int? WithHighestHonor { get; set; }
         public int? WithHighHonor { get; set; }
         public int? WithHonor { get; set; }
+        public string? SchoolEmail { get; set; }
+        public string? twoFPassword { get; set;}
+
     }
 }

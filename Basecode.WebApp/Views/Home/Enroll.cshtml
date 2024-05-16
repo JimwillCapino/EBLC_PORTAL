@@ -1,175 +1,236 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-    ViewData["Title"] = "Home Page";
-    Layout = "~/Views/Shared/NoLayout.cshtml";
+﻿@{
+    Layout = "EnrollLayout";
+    ViewData["Title"] = "Enroll page";
 }
-
 @using Basecode.Data.Models
 @model RegisterStudent
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-<link href="/css/Enroll.css" />
-<link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/contacts/contact-1/assets/css/contact-1.css" />
-
-<!-- Contact 1 - Bootstrap Brain Component -->
-@await Html.PartialAsync("./_HomePageNavBar")
-<section class="bg-light py-3 py-md-5">
-    <div class="container">
-        <div class="row justify-content-md-center">
-            <div class="col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6">
-                <h2 class="mb-4 display-5 text-center">Registration</h2>
-                <p class="text-secondary mb-5 text-center">Enter Student information</p>
-                <hr class="w-50 mx-auto mb-5 mb-xl-9 border-dark-subtle">
-            </div>
-        </div>
-    </div>
-    <div class="container">
-        <div class="row justify-content-lg-center">
-            <div class="col-12 col-lg-9">
-                <div class="bg-white border rounded shadow-sm overflow-hidden">
-
-                    <form method="post" enctype="multipart/form-data" asp-action="RegisterEnrollee">
-
-
-                        <div class="row gy-4 gy-xl-5 p-4 p-xl-5">
-
-                            <!--Students Information-->
-                            <p class="lead">Student's Information</p>
-                            <div class="col-12">
-                                <label for="fullname" class="form-label">First Name <span class="text-danger">*</span></label>
-                                <input type="text" asp-for="FirstName" class="form-control" id="fullname"   required>
+<!-- Flatpickr JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<!-- Include Bootstrap Datepicker CSS and JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<nav >
+    <!-- Container wrapper -->
+    <div class="container-fluid font-robo">
+        <!-- Navbar brand -->       
+        <ul style="background-color: #de3f4e;list-style-type: none;margin: 3;padding: 0; overflow: hidden;">
+            <li style="float: left;"><a class="active" asp-action="Index" style=" display: block;color: white; text-align: center;padding: 24px 16px; margin-left:50px; text-decoration: none;"><h3 class="title">EBLC Portal</h3></a></li>
+        </ul>
+    </div>       
+</nav>
+<div class="page-wrapper bg-blue p-t-100 p-b-100 font-robo mt-1">
+    <div class="wrapper wrapper--w680">
+        <div class="card card-1">
+            <div class="card-heading"></div>
+            <div class="card-body">
+                <h2 class="title">Registration Info</h2>
+                <form asp-action="RegisterEnrollee" enctype="multipart/form-data" method="POST">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <div class="input-group">
+                                <input class="input--style-1" type="text" placeholder="FIRSTNAME" asp-for="FirstName">
+                                <span asp-validation-for="FirstName" style="color:red"></span>
                             </div>
-                            <div class="col-12">
-                                <label for="fullname" class="form-label">Middle Name <span class="text-danger">*</span></label>
-                                <input type="text" asp-for="MiddleName" class="form-control" id="fullname" required>
+                        </div>
+                        <div class="col-2">
+                            <div class="input-group">
+                                <input class="input--style-1" type="text" placeholder="MIDDLENAME" asp-for="MiddleName">
+                                <span asp-validation-for="MiddleName" style="color:red"></span>
                             </div>
-                            <div class="col-12">
-                                <label for="fullname" class="form-label">Last Name <span class="text-danger">*</span></label>
-                                <input type="text" asp-for="LastName" class="form-control" id="fullname"  required>
+                        </div>
+                        <div class="col-2">
+                            <div class="input-group">
+                                <input class="input--style-1" type="text" placeholder="LASTNAME" asp-for="LastName">
+                                <span asp-validation-for="LastName" style="color:red"></span>
                             </div>
-                     
-                            <div class="col-12 col-md-6">
-                                <label for="gender" class="form-label">Gender</label>
-                                <br />
-                                <select class="form-select" asp-for="sex" aria-label="Default select example">
-                                    <option selected>Open this select menu</option>
-                                    <option value="M">Male</option>
-                                    <option value="F">Female</option>
-                                </select>
+                        </div>                       
+                    </div>                   
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <div class="input-group">
+                                <input asp-for="Birthday" id="datetimePicker" class="input--style-1" type="text" placeholder="BIRTHDATE">
+                                <span asp-validation-for="Birthday" style="color:red"></span>
+                                
                             </div>
-                  
-                            <div class="col-12 col-md-6">
-                                <label for="fullname" class="form-label">Birthday <span class="text-danger">*</span></label>
-                                <input asp-for="Birthday"class="form-control" id="date" placeholder="MM/DD/YYY" type="date" />
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <label for="fullname" class="form-label">Grade to Enroll <span class="text-danger">*</span></label>
-                                <input type="number" asp-for="GradeEnrolled" class="form-control" id="fullname" required>
-                            </div>
-                            <div class="col-12">
-                                <label for="fullname" class="form-label">Birth Certificate<span class="text-danger">*</span></label>
-                                <div class="mb-3">
-                                    <input class="form-control" type="file" asp-for="BirthCertificateFile" id="formFile" name="BirthCertificateFile">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <label for="fullname" class="form-label">Form-138/TOR<span class="text-danger">*</span></label>
-                                <div class="mb-3">
-                                    
-                                    <input class="form-control" asp-for="TORFile" type="file" id="formFile" name ="TORFile">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <label for="fullname" class="form-label">Certificate of Good Moral<span class="text-danger">*</span></label>
-                                <div class="mb-3">
-
-                                    <input class="form-control" asp-for="CGMFile" type="file" id="formFile" name ="CGMFile">
-                                </div>
-                            </div>
-
-
-                            <!--Parents Information-->
-                            <p class="lead">Parent/Guardian Information</p>
-                            <div class="col-12">
-                                <label for="fullname" class="form-label">First Name <span class="text-danger">*</span></label>
-                                <input type="text" asp-for="ParentFirstName" class="form-control" id="fullname" required>
-                            </div>
-                            <div class="col-12">
-                                <label for="fullname" class="form-label">Middle Name <span class="text-danger">*</span></label>
-                                <input type="text" asp-for="ParentMiddleName" class="form-control" id="fullname" required>
-                            </div>
-                            <div class="col-12">
-                                <label for="fullname" class="form-label">Last Name <span class="text-danger">*</span></label>
-                                <input type="text" asp-for="ParentLastName" class="form-control" id="fullname" required>
-                            </div>
-                            <div class="col-12">
-                                <label for="fullname" class="form-label">Birthday <span class="text-danger">*</span></label>
-                                <input asp-for="ParentBirthday" class="form-control" id="date" placeholder="MM/DD/YYY" type="date" />
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <label for="gender" class="form-label">Gender</label>
-                                <br />
-                                <select class="form-select" asp-for="Parentsex" aria-label="Default select example">
-                                    <option selected>Open this select menu</option>
-                                    <option value="M">Male</option>
-                                    <option value="F">Female</option>
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <label for="fullname" class="form-label">Address <span class="text-danger">*</span></label>
-                                <input type="text" asp-for="Address" class="form-control" id="fullname" required>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
-                                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z" />
-                                        </svg>
-                                    </span>
-                                    <input type="email" asp-for="Email" class="form-control" id="email" required>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <label for="phone" class="form-label">Phone Number</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telephone" viewBox="0 0 16 16">
-                                            <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" />
-                                        </svg>
-                                    </span>
-                                    <input type="tel" asp-for="PhoneNumber" class="form-control" id="phone">
-                                </div>
-                            </div>                            
-                            <div class="col-12">
-                                <div class="d-grid">
-                                    <button class="btn btn-danger btn-lg" type="submit">Submit</button>
+                        </div>
+                        <div class="col-2">
+                            <div class="input-group">
+                                <div class="rs-select2 js-select-simple select--no-search">
+                                    <select asp-for="sex">
+                                        <option value="" disabled="disabled" selected="selected">SEX</option>
+                                        <option value="M">Male</option>
+                                        <option value="F">Female</option>
+                                    </select>
+                                    <div class="select-dropdown"></div>
+                                    <span asp-validation-for="sex" style="color:red"></span>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <div class="input-group">
+                                 <div class="rs-select2 js-select-simple select--no-search">
+                                    <select asp-for="GradeEnrolled">
+                                        <option value="" disabled="disabled" selected="selected">GRADE TO ENROLL</option>
+                                        <option value="Nursery">Nursery</option>
+                                        <option value="Kinder 1">Kinder 1</option>
+                                        <option value="Kinder 2">Kinder 2</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                    </select>
+                                    <div class="select-dropdown"></div>
+                                    <span asp-validation-for="sex" style="color:red"></span>
+                                </div>
+                                <span asp-validation-for="GradeEnrolled" style="color:red"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <div class="input-group">
+                                <label class="input--style-1"><input class="input--style-1" type="file" placeholder="STUDENT PICTURE" accept="image/*" asp-for="ProfilePicRecieve">STUDENT PICTURE</label>
+                                <span asp-validation-for="ProfilePicRecieve" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="input-group">
+                                <label class="input--style-1"><input class="input--style-1" type="file" placeholder="STUDENT PICTURE" accept=".pdf" asp-for="BirthCertificateFile">BIRTH CERTIFICATE</label>
+                                <span asp-validation-for="BirthCertificateFile" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="input-group">
+                                <label class="input--style-1"><input class="input--style-1" type="file" placeholder="STUDENT PICTURE" accept=".pdf" asp-for="TORFile">TOR</label>
+                                <span asp-validation-for="TORFile" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="input-group">
+                                <label class="input--style-1"><input class="input--style-1" type="file" placeholder="STUDENT PICTURE" accept=".pdf"  asp-for="CGMFile">CERTIFICATE OF GOOD MORAL</label>
+                                <span asp-validation-for="CGMFile" style="color:red"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="title">Guardian Info</h3>
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <div class="input-group">
+                                <input class="input--style-1" type="text" placeholder="PARENTS FIRSTNAME" asp-for="ParentFirstName">
+                                <span asp-validation-for="ParentFirstName" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="input-group">
+                                <input class="input--style-1" type="text" placeholder="PARENTS MIDDLENAME" asp-for="ParentMiddleName">
+                                <span asp-validation-for="ParentMiddleName" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="input-group">
+                                <input class="input--style-1" type="text" placeholder="PARENTS LASTNAME" asp-for="ParentLastName">
+                                <span asp-validation-for="ParentLastName" style="color:red"></span>
+                            </div>
+                        </div>
+                    </div>                  
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <div class="input-group">
+                                <input class="input--style-1" id="datetimePickerParent" type="date" placeholder="PARENT BIRTHDATE" asp-for="ParentBirthday">
+                              
+                                <span asp-validation-for="ParentBirthday" style="color:red"></span>
+                               
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="input-group">
+                                <div class="rs-select2 js-select-simple select--no-search">
+                                    <select asp-for="Parentsex">
+                                        <option value="" disabled="disabled" selected="selected">GENDER</option>
+                                        <option value="M">Male</option>
+                                        <option value="F">Female</option>
+                                    </select>
+                                    <div class="select-dropdown"></div>
+                                    <span asp-validation-for="Parentsex" style="color:red"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input class="input--style-1" type="text" placeholder="ADDRESS" asp-for="Address">
+                        <span asp-validation-for="Address" style="color:red"></span>
+                    </div>
+                    <div class="input-group">
+                        <input class="input--style-1" type="text" placeholder="EMAIL ADDRESS" asp-for="Email">
+                        <span asp-validation-for="Email" style="color:red"></span>
+                    </div>
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <div class="input-group">
+                                <input class="input--style-1" type="text" placeholder="PHONE NUMBER" asp-for="PhoneNumber">
+                                <span asp-validation-for="PhoneNumber" style="color:red"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-t-20">
+                        <button class="btn btn--radius btn--green" type="submit">Submit</button>
+                    </div>
+                </form>
 
-                </div>
             </div>
         </div>
     </div>
-</section>
+</div>
+<script>
+    flatpickr("#datetimePicker", {
+        enableTime: false, // Disable time picker
+        noCalendar: false, // Enable calendar (date picker)
+        allowInput: true, // Enable keyboard input
+        dateFormat: "m/d/Y", // Specify the date format (e.g., "Y-m-d" for "2024-05-16")
+        defaultDate: null, // Optional: set default date, remove this line if not needed
+        onChange: function (selectedDates, dateStr, instance) {
+            console.log(dateStr); // Handle formatted date string
+        }
+    });
+</script>
+<script>
+    flatpickr("#datetimePickerParent", {
+        enableTime: false, // Disable time picker
+        noCalendar: false, // Enable calendar (date picker)
+        allowInput: true, // Enable keyboard input
+        dateFormat: "m/d/Y", // Specify the date format (e.g., "Y-m-d" for "2024-05-16")
+        defaultDate: null, // Optional: set default date, remove this line if not needed
+        onChange: function (selectedDates, dateStr, instance) {
+            console.log(dateStr); // Handle formatted date string
+        }
+    });
+</script>
+<!-- Jquery JS-->
+<script src="/colorlib-regform-1/vendor/jquery/jquery.min.js"></script>
+<script>
+    $('.dateselect').datepicker({
+        format: 'mm/dd/yyyy',
+        // startDate: '-3d'
+    });
+</script>
+<!-- Vendor JS-->
+<script src="/colorlib-regform-1/vendor/select2/select2.min.js"></script>
+<script src="/colorlib-regform-1/vendor/datepicker/moment.min.js"></script>
+<script src="/colorlib-regform-1/vendor/datepicker/daterangepicker.js"></script>
 
-
-@if (ViewBag.ErrorMessage == "Success")
-{
-    <script>
-        alert("Success");
-    </script>
-}
-else if(ViewBag.ErrorMessage == null)
-{
-    //Do not do anything
-}
-else
-{
-    <script>
-        alert("@ViewBag.ErrorMessage");
-    </script>
+<!-- Main JS-->
+<script src="/colorlib-regform-1/js/global.js"></script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

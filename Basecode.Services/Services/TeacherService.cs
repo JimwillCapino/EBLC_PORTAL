@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,13 +23,15 @@ namespace Basecode.Services.Services
         RoleManager<IdentityRole> _roleManager;
         IRTPRepository _rtpCommons;
         IRTPUsersRepository _rtpusers;
+        ISettingsRepository _settingsRepository;
         public TeacherService(ITeacherRepository teacherRepository,
             IMapper mapper,
             IUsersRepository usersRepository,
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IRTPRepository rtpRepoistory,
-            IRTPUsersRepository rtpusers
+            IRTPUsersRepository rtpusers,
+            ISettingsRepository settingsRepository
             ) 
         {
             _TeacherRepository = teacherRepository;
@@ -38,6 +41,7 @@ namespace Basecode.Services.Services
             _roleManager = roleManager;
             _rtpCommons = rtpRepoistory;
             _rtpusers = rtpusers;
+            _settingsRepository = settingsRepository;
         }
         private IdentityUser CreateUser()
         {
@@ -89,7 +93,7 @@ namespace Basecode.Services.Services
             {
                 var teacherUser = new IdentityUser
                 {
-                    UserName = account.UserName, 
+                    UserName = account.EmailAddress, 
                     Email = account.EmailAddress                    
                 };
 
@@ -99,7 +103,28 @@ namespace Basecode.Services.Services
                 {
                     var userRole = _roleManager.FindByNameAsync("Teacher").Result;                  
                     if (userRole != null)
-                        await _UserManager.AddToRoleAsync(teacherUser, userRole.Name);                   
+                        await _UserManager.AddToRoleAsync(teacherUser, userRole.Name);
+
+
+                    MailMessage mail = new MailMessage();
+                    mail.To.Add(teacherUser.Email);
+                    mail.From = new MailAddress(_settingsRepository.GetSchoolEmail());
+                    mail.Subject = "Account in EBLC Portal";
+
+                    mail.Body = "Greetings from the EBLC management. Your account has been created." + Environment.NewLine +
+                   "Your credentials are:" + Environment.NewLine +
+                   "Username: " + teacherUser.Email + Environment.NewLine +
+                   "Password: " + account.Password;
+
+                    mail.IsBodyHtml = true;
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.Port = 587;
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new System.Net.NetworkCredential(_settingsRepository.GetSchoolEmail(), _settingsRepository.GetPassword()); // Enter seders User name and password       
+                    smtp.EnableSsl = true;
+                    smtp.Send(mail);
+
                 }
                 else
                 {

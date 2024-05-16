@@ -2,20 +2,161 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Enrollees";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
-@model IEnumerable<NewEnrolleeViewModel>
 
-<link rel="stylesheet" href="/css/TableInfo.css" />
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px; /* Adjust vertical spacing */
+        table-layout: fixed;
+    }
+
+    th, td {
+        padding: 10px; /* Adjust padding as needed */
+        text-align: center; /* Center align content */
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        var table = $("#table").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": true, // for disable multiple column at once
+            "ajax": {
+                "url": "/Registrar/EnrollmentTable",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columnDefs": [{
+                "targets": [0],
+                "orderable": true
+            },
+            {
+                "targets": [1],
+                "orderable": true
+            },
+            {
+                "targets": [2],
+                "orderable": true
+            },
+            {
+                "targets": [3],
+                "orderable": true
+            },
+            {
+                "targets": [4],
+                "orderable": true
+            }
+           ],
+
+            "columns": [
+                { "data": "firstname", "name": "firstname" },
+                { "data": "middlename", "name": "middlename" },
+                { "data": "lastname", "name": "lastname" },
+                { "data": "sex", "name": "sex" },                             
+                 { "data": "gradeenrolled", "name": "gradeenrolled" }
+            ]
+        });
+
+        $('#table tbody').on('click', 'tr', function () {
+            // Get data for the clicked row
+            var rowData = table.row(this).data();
+
+            // Redirect to another page with the row data
+            window.location.href = '@Url.Action("NewEnrolleeInfo", "Registrar")?studentId=' + rowData.id; // Adjust the URL as per your MVC route
+        });
+    });
+
+
+    function DeleteData(CustomerID) {
+        if (confirm("Are you sure you want to delete ...?")) {
+            Delete(CustomerID);
+        } else {
+            return false;
+        }
+    }
+
+
+    function Delete(CustomerID) {
+        var url = '@Url.Content("~/")' + "DemoGrid/Delete";
+
+        $.post(url, { ID: CustomerID }, function (data) {
+            if (data) {
+                oTable = $('#example').DataTable();
+                oTable.draw();
+            } else {
+                alert("Something Went Wrong!");
+            }
+        });
+    }
+
+</script>
+
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
     <div class="main p-5">
-        <h1>
-            Manage New Enrollees
-        </h1>
-        <div class="tab mt-3">
+       
+        <div class="container">
+
+            @if (successValue == 0)
+            {
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-exclamation-octagon-fill"></i>
+                    <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+            }
+            else if (successValue == 1)
+            {
+                <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-check-circle-fill"></i>
+                    <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @{
+                Constants.ViewDataErrorHandling.Success = -1;
+                Constants.ViewDataErrorHandling.ErrorMessage = null;
+            }
+            <br />
+            <div style="width:90%; margin:0 auto;">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a>List of Enorllees</a></li>
+                    </ol>
+                </nav>
+                <h1>
+                    Manage New Enrollees
+                </h1>
+                <div style="width:100%; margin:0 auto;">
+                    <table id="table" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Middle Name</th>
+                                <th>Last Name</th>
+                                <th>Gender</th>
+                                <th>Grade to Enroll</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+       @*  <div class="tab mt-3">
             <button class="tablinks" onclick="tabs(event, 'newEnrollment')" id="defaultOpen">New Enrollees</button>
             <button class="tablinks" onclick="tabs(event, 'approval')">Approval</button>
         </div>
@@ -85,6 +226,7 @@
                                     <td class="pt-3">@student.GradeEnrolled</td>
                                     <td class="pt-3">@age</td>
                                     <td class="pt-3">
+                                        <a href="" onclick="admitStudent(@student.Id)"
                                         <a href="" onclick="admitStudent(@student.Id)" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-check-to-slot fa-lg px-3"></i></a>
                                         <a asp-action="RejectNewEnrollee" asp-route-id="@student.Id"><i class="fa-solid fa-x fa-lg"></i></a>
                                     </td>
@@ -98,7 +240,7 @@
                 </table>
             </div>
         </div>
-    </div>
+    </div> *@
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

@@ -8,6 +8,7 @@ using Basecode.Data.ViewModels;
 using Basecode.Data;
 using Basecode.Data.Repositories;
 using Basecode.Data.Interfaces;
+using System.Globalization;
 namespace Basecode.WebApp.Controllers
 {
     [Authorize(Roles = "Teacher")]
@@ -56,7 +57,9 @@ namespace Basecode.WebApp.Controllers
                 NumberOfClass = _classManagementService.GetTeacherClassDetails(id).Count(),
                 NumberOfHomeroom = _classManagementService.GetTeacherHomeRoom(id).Count(),
                 ListOfStudentsWithNoGrade = _studentManagementService.GetStudentWithNoGradePerQuarter(classid, subjectid, quarter),
-                ClassesOfTeacher = _classManagementService.GetTeacherClassDetails(id)
+                ClassesOfTeacher = _classManagementService.GetTeacherClassDetails(id).OrderBy(p => DateTime.TryParseExact(p.schedule, "h:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedTime)
+                        ? parsedTime
+                        : DateTime.MinValue).ToList()
             };
             return View(dashboard);
         }
@@ -106,41 +109,36 @@ namespace Basecode.WebApp.Controllers
                 return RedirectToAction("HomeRoomStudents",new { classid = classId });
             }
         }
-        public async Task<IActionResult> GeneratePdf(int StudentId, string SchoolYear, int documentType)
+        public async Task<IActionResult> GeneratePdf(int StudentId, string SchoolYear)
         {
             try
             {
                 ReportCardContents studentCard = new ReportCardContents();
                 studentCard.Settings = _settingsService.GetSettings();
-                if (documentType == 0)
+                Console.Write(SchoolYear);
+                studentCard.StudentDetails = await _studentManagementService.GetStudentGrades(StudentId, _settingsService.GetSchoolYear());
+                if (studentCard.StudentDetails.studentClass == null)
                 {
-                    studentCard.StudentDetails = await _studentManagementService.GetStudentGrades(StudentId, SchoolYear);
-                    if (studentCard.StudentDetails.studentClass == null)
-                    {
-                        Constants.ViewDataErrorHandling.Success = 0;
-                        Constants.ViewDataErrorHandling.ErrorMessage = "The student is currently not added to any class.";
-                        return RedirectToAction("StudentInfo", new { student_Id = StudentId });
-                    }
-                    var document = new Rotativa.AspNetCore.ViewAsPdf("PDFView/ReportCardPDF", studentCard)
-                    {
-                        //FileName = studentCard.StudentDetails.Student.lastname+"_"+ studentCard.StudentDetails.Student.firstname+"Report_Card.pdf",
-                        PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
-                        PageMargins = { Left = 10, Bottom = 10, Right = 10, Top = 10 }
-                    };
-                    return document;
+                    Constants.ViewDataErrorHandling.Success = 0;
+                    Constants.ViewDataErrorHandling.ErrorMessage = "The student is currently not added to any class.";
+                    return RedirectToAction("StudentInfo", new { student_Id = StudentId });
                 }
-                else
+                //else { throw new Exception("Student did not belong to any class."); }
+                var document = new Rotativa.AspNetCore.ViewAsPdf("PDFView/ReportCardPDF", studentCard)
                 {
-                    var form137 = await _studentManagementService.GetStudentForm137(StudentId);
-                    return new Rotativa.AspNetCore.ViewAsPdf("PDFView/Form137PDF", form137);
-                }
+                    //FileName = studentCard.StudentDetails.Student.lastname+"_"+ studentCard.StudentDetails.Student.firstname+"Report_Card.pdf",
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
+                    PageMargins = { Left = 10, Bottom = 10, Right = 10, Top = 10 }
+                };
+                return document;
 
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
-                Console.WriteLine(ex);
-                return RedirectToAction("Index");
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);            
+                return RedirectToAction("StudentInfo",new{ studentId= StudentId , classId = Constants.TeacherNavigation.classid});
             }
         }
         [HttpPost]
@@ -363,13 +361,23 @@ namespace Basecode.WebApp.Controllers
                         asEnumcustomerData = sortColumnDirection.ToLower() == "asc" ? asEnumcustomerData.OrderBy(p => p.subjectname) :
                             asEnumcustomerData.OrderByDescending(p => p.subjectname);
                     }
+                    else if (sortColumn.Equals("schedule"))
+                    {
+                        asEnumcustomerData = sortColumnDirection.ToLower() == "asc" ? asEnumcustomerData.OrderBy(p => DateTime.TryParseExact(p.schedule, "h:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedTime)
+                        ? parsedTime
+                        : DateTime.MinValue) :
+                            asEnumcustomerData.OrderByDescending(p => DateTime.TryParseExact(p.schedule, "h:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedTime)
+                        ? parsedTime
+                        : DateTime.MinValue);
+                    }
 
                 }
                 //Search  
                 if (!string.IsNullOrEmpty(searchValue))
                 {
                     asEnumcustomerData = customerData.Where(m => m.classname.ToLower().Contains(searchValue.ToString().ToLower())
-                      || m.grade.ToString().Contains(searchValue.ToString()) || m.subjectname.ToLower().Contains(searchValue.ToString().ToLower()));
+                      || m.grade.ToString().Contains(searchValue.ToString()) || m.subjectname.ToLower().Contains(searchValue.ToString().ToLower()) ||
+                       m.schedule.ToLower().Contains(searchValue.ToString().ToLower()));
                 }
 
                 //total number of rows count   

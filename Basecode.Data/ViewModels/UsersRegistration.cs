@@ -10,20 +10,20 @@ namespace Basecode.Data.ViewModels
 {
     public class UsersRegistration
     {
-        [Required]
-        [JsonProperty(PropertyName = "uname")]
-        public string UserName { get; set; }
-
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [Display(Name = "Password")]
+        [Required(ErrorMessage = "The password field is required.")]
         [DataType(DataType.Password)]
-        [JsonProperty(PropertyName = "password")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$",
+     ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.")]
+        [StringLength(100, ErrorMessage = "The password must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
         public string Password { get; set; }
-
+        [Required]
         [DataType(DataType.Password)]
+        [Display(Name = "confrm password")]
         [JsonProperty(PropertyName = "confirm_pass")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+        [Required]
         [Display(Name = "email")]
         [JsonProperty(PropertyName = "email")]
         public string EmailAddress { get; set; }

@@ -47,12 +47,12 @@ namespace Basecode.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "lastname",
                 table: "UsersPortal",
-                newName: "LastName");
+                newName: "lastname");
 
             migrationBuilder.RenameColumn(
                 name: "firstname",
                 table: "UsersPortal",
-                newName: "FirstName");
+                newName: "firstname");
 
             migrationBuilder.RenameColumn(
                 name: "haschild",
@@ -77,27 +77,27 @@ namespace Basecode.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "Settings",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "RTPUsers",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "RTPCommons",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "RefreshToken",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "Parent",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "Gcash",
@@ -112,7 +112,7 @@ namespace Basecode.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "Learner_Values",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "studentid",
@@ -122,7 +122,7 @@ namespace Basecode.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "HeadSubject",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "grade",
@@ -142,12 +142,12 @@ namespace Basecode.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "Core_Values",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "ClassSubjects",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "subjectid",
@@ -157,7 +157,7 @@ namespace Basecode.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "ClassStudents",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "grade",
@@ -182,12 +182,12 @@ namespace Basecode.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "Class",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "ChildSubject",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "subjectid",
@@ -197,12 +197,12 @@ namespace Basecode.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "Behavioural_Statement",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "Attendance",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "email",
@@ -212,22 +212,22 @@ namespace Basecode.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "AspNetUsers",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "AspNetUserClaims",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "AspNetRoles",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.RenameColumn(
                 name: "id",
                 table: "AspNetRoleClaims",
-                newName: "Id");
+                newName: "id");
 
             migrationBuilder.AlterColumn<int>(
                 name: "Grade",
@@ -452,12 +452,12 @@ namespace Basecode.Data.Migrations
                 newName: "middlename");
 
             migrationBuilder.RenameColumn(
-                name: "LastName",
+                name: "lastname",
                 table: "UsersPortal",
                 newName: "lastname");
 
             migrationBuilder.RenameColumn(
-                name: "FirstName",
+                name: "firstname",
                 table: "UsersPortal",
                 newName: "firstname");
 
@@ -482,27 +482,27 @@ namespace Basecode.Data.Migrations
                 newName: "studentid");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "Settings",
                 newName: "id");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "RTPUsers",
                 newName: "id");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "RTPCommons",
                 newName: "id");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "RefreshToken",
                 newName: "id");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "Parent",
                 newName: "id");
 
@@ -517,7 +517,7 @@ namespace Basecode.Data.Migrations
                 newName: "grade");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "Learner_Values",
                 newName: "id");
 
@@ -527,7 +527,7 @@ namespace Basecode.Data.Migrations
                 newName: "studentid");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "HeadSubject",
                 newName: "id");
 
@@ -547,12 +547,12 @@ namespace Basecode.Data.Migrations
                 newName: "studentid");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "Core_Values",
                 newName: "id");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "ClassSubjects",
                 newName: "id");
 
@@ -562,7 +562,7 @@ namespace Basecode.Data.Migrations
                 newName: "subjectid");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "ClassStudents",
                 newName: "id");
 
@@ -587,12 +587,12 @@ namespace Basecode.Data.Migrations
                 newName: "adviser");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "Class",
                 newName: "id");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "ChildSubject",
                 newName: "id");
 
@@ -602,12 +602,12 @@ namespace Basecode.Data.Migrations
                 newName: "subjectid");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "Behavioural_Statement",
                 newName: "id");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "Attendance",
                 newName: "id");
 
@@ -617,22 +617,22 @@ namespace Basecode.Data.Migrations
                 newName: "email");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "AspNetUsers",
                 newName: "id");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "AspNetUserClaims",
                 newName: "id");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "AspNetRoles",
                 newName: "id");
 
             migrationBuilder.RenameColumn(
-                name: "Id",
+                name: "id",
                 table: "AspNetRoleClaims",
                 newName: "id");
 

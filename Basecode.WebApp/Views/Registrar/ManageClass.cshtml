@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "List of classes";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int successValue = (int)ViewData["Success"];
 }
@@ -148,7 +148,18 @@
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Grade:</label>
-                            <input type="text" class="form-control" id="recipient-name" asp-for="grade" >
+                            <select asp-for="grade" class="form-control">
+                                <option value="" disabled="disabled" selected="selected">GRADE TO ENROLL</option>
+                                <option value="Nursery">Nursery</option>
+                                <option value="Kinder 1">Kinder 1</option>
+                                <option value="Kinder 2">Kinder 2</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
                             <span asp-validation-for="grade" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
@@ -196,7 +207,18 @@
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Grade:</label>
-                            <input type="text" class="form-control" id="grade" asp-for="grade">
+                            <select asp-for="grade">
+                                <option value="" disabled="disabled" selected="selected">GRADE TO ENROLL</option>
+                                <option value="Nursery">Nursery</option>
+                                <option value="Kinder 1">Kinder 1</option>
+                                <option value="Kinder 2">Kinder 2</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
                             <span asp-validation-for="grade" class="text-danger"></span>
                         </div>
                         <div class="mb-3">

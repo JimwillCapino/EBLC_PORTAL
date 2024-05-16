@@ -12,7 +12,7 @@ namespace Basecode.Data.ViewModels
         public int Id { get; set; }        
         public string Adviser {  get; set; }
         public byte[]? ProfilePic { get; set; }
-        public int Grade { get; set; }
+        public string Grade { get; set; }
         public int ClassSize { get; set; }
         public string? ClassName { get; set; }
         public string AdviserName { get; set; }       

@@ -10,6 +10,6 @@ namespace Basecode.Data.ViewModels
     {
         public int classid { get; set; }
         public string classname { get; set; }
-        public int grade { get; set; }        
+        public string grade { get; set; }        
     }
 }

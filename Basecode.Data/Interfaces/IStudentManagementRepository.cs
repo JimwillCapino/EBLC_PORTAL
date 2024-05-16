@@ -40,7 +40,7 @@ namespace Basecode.Data.Interfaces
         public int GetBehavioralMaxQuarter(int studentId, int BehavioralId, string schoolYear);
         public Behavioural_Statement GetBehavioural_Statement(int id);
         public void DeleteBehavioralStatement(Behavioural_Statement statement);
-        public int GradeLevel(int studentId, string schoolYear);
+        public string GradeLevel(int studentId, string schoolYear);
         public List<string> GetSchoolYearsWithOutGradeLevel(int student_Id);
 
     }

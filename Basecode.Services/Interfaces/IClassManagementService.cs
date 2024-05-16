@@ -12,9 +12,9 @@ namespace Basecode.Services.Interfaces
     {
         public void AddClass(Class classroom);
         public void AddClass(ClassViewModel classViewModel);
-        public void AddClassSubjects(ClassSubjects classSubjects);
+        public Task AddClassSubjects(ClassSubjects classSubjects);
         public void AddClassStudent(ClassStudents student);
-        public ClassViewModel InitilaizeClassViewModel(int grade);
+        public ClassViewModel InitilaizeClassViewModel(string grade);
         public Task<ClassDetailsViewModel> GetAllClass();
         public Task<ClassViewModel> GetClassViewModelById(int id);
         public void RemoveClassStudent(int id);
@@ -26,5 +26,6 @@ namespace Basecode.Services.Interfaces
         public void AddClassStudents(List<ClassStudents> students);
         public List<ClassStudentViewModel> GetClassStudents(int classId);
         public TeacherClassDetails GetTeacherSubjectDetails(int classid, int subjectId);
+        public Task<int> isScheduleCollided(string schedule, string teacherId);
     }
 }

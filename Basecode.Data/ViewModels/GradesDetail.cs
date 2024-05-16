@@ -13,8 +13,10 @@ namespace Basecode.Data.ViewModels
         public int Subject_Id { get; set; }
         public int class_id { get; set; }
         public int Quarter { get; set; }
+        [Display(Name ="grade input")]
         [Required]
         [RegularExpression(@"^\d+$", ErrorMessage = "The field must be a whole number.")]
+        [Range(60, 100, ErrorMessage = "Grade must be between 50 and 100.")]
         public int GradeInput { get; set; }
         public List<GradesViewModel> Grades { get; set; }
     }

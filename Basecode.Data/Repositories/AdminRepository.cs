@@ -38,7 +38,7 @@ namespace Basecode.Data.Repositories
             {
                 var user = new IdentityUser()
                 {
-                    UserName = account.UserName,
+                    UserName = account.EmailAddress,
                     Email = account.EmailAddress
                 };
                 var result = await _userManager.CreateAsync(user, account.Password);

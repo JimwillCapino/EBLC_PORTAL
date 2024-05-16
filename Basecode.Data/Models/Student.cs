@@ -15,6 +15,6 @@ namespace Basecode.Data.Models
         public string? status { get; set; }
         public string? LRN { get; set; }   
         public int ParentId {  get; set; }
-        public int CurrGrade { get; set; }
+        public string CurrGrade { get; set; }
     }
 }

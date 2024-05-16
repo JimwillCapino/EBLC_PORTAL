@@ -12,7 +12,7 @@ namespace Basecode.Data.Models
         [Key]
         public int Subject_Id { get; set; }
         public string Subject_Name { get; set; }    
-        public int Grade { get; set; }   
+        public string Grade { get; set; }   
         public bool HasChild { get; set; }
     }
 }

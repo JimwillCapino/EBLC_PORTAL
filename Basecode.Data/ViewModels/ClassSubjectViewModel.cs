@@ -13,5 +13,6 @@ namespace Basecode.Data.ViewModels
         public string TeacherId {  get; set; }
         public string SubjectName { get; set; }
         public string TeacherName { get; set; }
+        public string Schedule { get; set; }
     }
 }

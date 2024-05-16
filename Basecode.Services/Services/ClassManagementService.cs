@@ -78,16 +78,25 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
-        public void AddClassSubjects(ClassSubjects classSubjects)
+        public async Task AddClassSubjects(ClassSubjects classSubjects)
         {
             try
             {
+                int checkSched = await this.isScheduleCollided(classSubjects.Schedule, classSubjects.Teacher_Id);
+                if(checkSched == 1)
+                {
+                    throw new Exception("The schedule conflicts with another schedule within the class.");
+                }
+                else if(checkSched == 2)
+                {
+                    throw new Exception("The schedule conflicts with another schedule in another class of the teacher.");
+                }
                 _repository.AddClassSubject(classSubjects);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                throw new Exception(Constants.Exception.DB);
+                throw new Exception(ex.Message);
             }
         }
         public void AddClassStudent(ClassStudents student)
@@ -115,7 +124,7 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
-        public ClassViewModel InitilaizeClassViewModel(int grade)
+        public ClassViewModel InitilaizeClassViewModel(string grade)
         {
             try
             {
@@ -259,6 +268,29 @@ namespace Basecode.Services.Services
                     ClassSize = classdetails.ClassSize
                 };
                 _repository.UpdateClass(classTable);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public async Task<int> isScheduleCollided(string schedule, string teacherId)
+        {
+            try
+            {
+                var classes = await _repository.GetAllClass();
+                
+                foreach(var clazz in classes)
+                {                   
+                    var teacherSubjects = _repository.GetTeacherClassDetails(teacherId);
+                    if (teacherSubjects.Where(p => p.schedule == schedule).Count() > 0)
+                        return 2;
+                    var subjects = await _repository.GetClassSubjects(clazz.id);
+                    if (subjects.Where(p => p.Schedule == schedule).Count() > 0)
+                        return 1;
+                }
+                return 0;
             }
             catch (Exception ex)
             {

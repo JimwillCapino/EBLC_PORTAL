@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Add student attendance";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int x = 1;
     int successValue = (int)ViewData["Success"];
@@ -190,7 +190,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Attendance</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form asp-action="UpdateStudentAttendance">
@@ -210,24 +210,24 @@
                         </div>
                         <div class="mb-3">
                             <label for="recipient-name" class="col-form-label">Days of School:</label>
-                            <input type="text" class="form-control" id="dayOfSchool" asp-for="Days_of_School">
+                            <input type="number" class="form-control" id="dayOfSchool" asp-for="Days_of_School">
                             <span asp-validation-for="Days_of_School" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Days of Present:</label>
-                            <input type="text" class="form-control" id="daysOfPresent" asp-for="Days_of_Present">
+                            <input type="number" class="form-control" id="daysOfPresent" asp-for="Days_of_Present">
                             <span asp-validation-for="Days_of_Present" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Time of Tardy:</label>
-                            <input type="text" class="form-control" id="timeOfTardy" asp-for="Time_of_Tardy">
+                            <input type="number" class="form-control" id="timeOfTardy" asp-for="Time_of_Tardy">
                             <span asp-validation-for="Time_of_Tardy" class="text-danger"></span>
                         </div>
 
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="submit" class="btn btn-danger">Save Changes</button>
                     </div>
                 </form>
             </div>

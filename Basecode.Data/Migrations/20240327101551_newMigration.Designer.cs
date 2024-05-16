@@ -281,10 +281,10 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ExamSchedule")
+                    b.Property<DateTime?>("examschedule")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("GradeEnrolled")
+                    b.Property<int>("gradeenrolled")
                         .HasColumnType("int");
 
                     b.Property<int>("ParentID")
@@ -488,7 +488,7 @@ namespace Basecode.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UID"));
 
-                    b.Property<DateTime>("Birthday")
+                    b.Property<DateTime>("birthday")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("firstname")

@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Update student details";
     Layout = "~/Views/Shared/NoLayout.cshtml";
 }
 
@@ -32,7 +32,7 @@
                             <input type="file" class="form-control" id="inputEmail4" placeholder="" asp-for="Student.ProfilePicRecieve">
                             <span asp-validation-for="Student.ProfilePicRecieve" class="text-danger"></span>
                         </div>
-                        <input type="hidden" asp-for="Student.Status"/>
+                        
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <input type="hidden" asp-for="Student.Student_ID" />
                         <div class="form-group col-lg-4">
@@ -65,15 +65,26 @@
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputState">Enrollment Status</label>
-                            <select name="status" id="inputState" class="form-control">
+                            <select asp-for="Student.Status" id="inputState" class="form-control" required>
                                 <option value="" selected>Select Enrollement Status</option>
-                                <option value="true">Enrolled</option>
-                                <option value="false">Not Enrolled</option>
+                                <option value="Enrolled">Enrolled</option>
+                                <option value="Not Enrolled">Not Enrolled</option>
                             </select>                         
                         </div>
                         <div class="form-group col-lg-4">
                             <label for="inputEmail4">Grade to Enroll</label>
-                            <input type="number" class="form-control" id="inputEmail4" placeholder="" asp-for="Student.Grade">
+                            <select asp-for="Student.Grade" class="form-control">
+                                <option value="" disabled="disabled" selected="selected">GRADE TO ENROLL</option>
+                                <option value="Nursery">Nursery</option>
+                                <option value="Kinder 1">Kinder 1</option>
+                                <option value="Kinder 2">Kinder 2</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
                             <span asp-validation-for="Student.Grade" class="text-danger"></span>
                         </div>
                         <div class="form-group col-lg-4">

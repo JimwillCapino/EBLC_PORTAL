@@ -12,8 +12,9 @@ namespace Basecode.Data.ViewModels
         public int subjectid { get; set; }
         public string subjectname { get; set; }
         public string classname { get; set; }
-        public int grade { get; set; } 
+        public string grade { get; set; } 
         public bool haschild { get; set; }
+        public string schedule { get; set; }
         //public List<ClassStudentViewModel> Students { get; set; }
     }
 }

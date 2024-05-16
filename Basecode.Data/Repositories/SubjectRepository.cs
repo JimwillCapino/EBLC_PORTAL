@@ -32,7 +32,7 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
-       public List<Subject> GetAllSubjectTakenByStudent(int studentId, int gradeLevel)
+       public List<Subject> GetAllSubjectTakenByStudent(int studentId, string gradeLevel)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-       public List<Subject> GetAllSubjects(int studentId, int gradeLevel) 
+       public List<Subject> GetAllSubjects(int studentId, string gradeLevel) 
        {
             try
             {

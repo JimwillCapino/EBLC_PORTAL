@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Settings";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int successValue = (int)ViewData["Success"];
 }
@@ -62,6 +62,9 @@
                             </a>     *@ 
                             <a class="list-group-item list-group-item-action" data-toggle="list" href="#gradeEval" role="tab">
                                 Grade Evaluation
+                            </a>
+                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#emailService" role="tab">
+                                Email Service
                             </a>
                         </div>
                     </div>
@@ -137,36 +140,37 @@
                                         <div class="form-group">
                                             <label for="inputPasswordCurrent">School Name</label>
                                             <input type="text" class="form-control" id="" asp-for="School_Name">
-                                            <span asp-validation-for="School_Name"></span>
+                                            <span asp-validation-for="School_Name" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputPasswordNew2">School  Administrator</label>
                                             <input type="text" class="form-control" id="" asp-for="Administrator">
-                                            <span asp-validation-for="Administrator"></span>
+                                            <span asp-validation-for="Administrator" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputPasswordNew">Region</label>
                                             <input type="text" class="form-control" id="" asp-for="Region">
-                                            <span asp-validation-for="Region"></span>
+                                            <span asp-validation-for="Region" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputPasswordNew2">Division</label>
                                             <input type="text" class="form-control" id="" asp-for="Division">
-                                            <span asp-validation-for="Division"></span>
+                                            <span asp-validation-for="Division" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputPasswordNew2">District</label>
                                             <input type="text" class="form-control" id="" asp-for="District">
-                                            <span asp-validation-for="District"></span>
+                                            <span asp-validation-for="District" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputPasswordNew2">School ID</label>
                                             <input type="text" class="form-control" id="" asp-for="SchoolId">
+                                            <span asp-validation-for="SchoolId" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
                                             <label for="inputPasswordNew2">Address</label>
                                             <input type="text" class="form-control" id="" asp-for="Address">
-                                            <span asp-validation-for="Address"></span>
+                                            <span asp-validation-for="Address" class="text-danger"></span>
                                         </div>
                                         <button type="submit" class="btn btn-danger mt-4">Save changes</button>                                    
                                 </div>
@@ -183,25 +187,44 @@
                                                 <div class="form-group">
                                                     <label for="inputUsername">Passing Grade</label>
                                                     <input type="text" class="form-control" id="inputUsername" placeholder="Enter Passing Grade" asp-for="PassingGrade">
-                                                    <span asp-validation-for="PassingGrade"></span>
+                                                    <span asp-validation-for="PassingGrade" class="text-danger"></span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="inputUsername">With Highest Honor Threshold</label>
                                                     <input type="text" class="form-control" id="inputUsername" placeholder="With Highest Honor Threshold" asp-for="WithHighestHonor">
-                                                    <span asp-validation-for="WithHighestHonor"></span>
+                                                    <span asp-validation-for="WithHighestHonor" class="text-danger"></span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="inputUsername">With High Honor Threshold</label>
                                                     <input type="text" class="form-control" id="inputUsername" placeholder="With High Honor Threshold" asp-for="WithHighHonor">
-                                                    <span asp-validation-for="WithHighHonor"></span>
+                                                    <span asp-validation-for="WithHighHonor" class="text-danger"></span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="inputUsername">With Honor Threshold</label>
                                                     <input type="text" class="form-control" id="inputUsername" placeholder="With Honor Threshold" asp-for="WithHonor">
-                                                    <span asp-validation-for="WithHonor"></span>
+                                                    <span asp-validation-for="WithHonor" class="text-danger"></span>
                                                 </div>
                                             </div>
                                         </div>
+                                        <button type="submit" class="btn btn-danger mt-4">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="emailService" role="tabpanel">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">School Email</h5>
+                                                                                
+                                        <div class="form-group">
+                                            <label for="inputPasswordNew">Email</label>
+                                            <input type="email" class="form-control" id="" asp-for="SchoolEmail">
+                                            <span asp-validation-for="SchoolEmail" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputPasswordNew2">Password (Generated using google's 2 Factor Authorization generated password)</label>
+                                            <input type="password" class="form-control" id="" asp-for="twoFPassword">
+                                            <span asp-validation-for="twoFPassword" class="text-danger"></span>
+                                        </div>                                     
                                         <button type="submit" class="btn btn-danger mt-4">Save changes</button>
                                     </div>
                                 </div>

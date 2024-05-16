@@ -12,45 +12,81 @@ namespace Basecode.Data.Models
     public class RegisterStudent
     {
         public int Id { get; set; }
-        [Required(ErrorMessage = "First Name is Required.")]
+        [Display(Name = "first name")]
+        [Required]
+        [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.", MinimumLength = 1)]
         public string FirstName { get; set; }
-        [Required(ErrorMessage = "Middle Name is Required.")]
+        [Display(Name = "middle name")]
+        [Required]
+        [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
         public string MiddleName { get; set; }
-        [Required(ErrorMessage = "Last Name is Required.")]
+        [Display(Name = "last name")]
+        [Required]
+        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
         public string LastName { get; set;}
-        [Required(ErrorMessage = "First Name is Required.")]
+        [Display(Name = "birthday")]
+        [Required]
         public DateTime Birthday { get; set; }
-        public IFormFile? BirthCertificateFile { get; set; }
+        [Display(Name = "birth certificate")]
+        [Required]
+        [RegularExpression(@"^.*\.pdf$", ErrorMessage = "Please upload a PDF file.")]
+        public IFormFile? BirthCertificateFile { get; set; }    
         public byte[]? ProfilePic { get; set; }
+        [Display(Name = "profile picture")]
+        [Required]
+        [RegularExpression(@"^.*\.jpg", ErrorMessage = "Please upload a JPG file.")]
         public IFormFile? ProfilePicRecieve { get; set; }
-        [Required(ErrorMessage = "gender is Required.")]
+        [Display(Name = "sex")]
+        [Required]
         public string sex { get; set; }
-        [Required(ErrorMessage = "grade is Required.")]
-        public  int GradeEnrolled { get; set; }        
+        [Display(Name = "grade to enroll")]
+        [Required]
+        public  string GradeEnrolled { get; set; }
+        [Display(Name = "LRN")]
+        [Required]
         public string? LRN { get; set; }
+        [Display(Name = "Certificate of Good Moral")]
+        [Required]
+        [RegularExpression(@"^.*\.pdf$", ErrorMessage = "Please upload a PDF file.")]
         public IFormFile? CGMFile { get; set; }
+        [Display(Name = "TOR")]
+        [Required]
+        [RegularExpression(@"^.*\.pdf$", ErrorMessage = "Please upload a PDF file.")]
         public IFormFile? TORFile { get; set; }
         public byte[]? BirthCertificateRecieve { get; set; }
         public byte[]? CGMRecieve { get; set; }
         public byte[]? TORRecieve { get; set; }
-        public DateTime? ExamSchedule { get; set; }
-        [Required(ErrorMessage = "First Name is Required.")]
+        public string? ExamSchedule { get; set; }
+        [Display(Name = "parent first name")]
+        [Required]
+        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
         public string ParentFirstName { get; set; }
-        [Required(ErrorMessage = "Middle Name is Required.")]
+        [Display(Name = "parent middle name")]
+        [Required]
+        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
         public string ParentMiddleName { get; set; }
-        [Required(ErrorMessage = "Last Name is Required.")]
-        public string ParentLastName { get; set; }
-        [Required(ErrorMessage = "Phone number is Required.")]
-        [StringLength(11)]
+        [Display(Name = "parent last name")]
+        [Required]
+        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
+        public string ParentLastName { get; set; }  
+        [Display(Name = "phone number")]
+        [Required]
+        [StringLength(11, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 11)]
         public string PhoneNumber { get; set; }
-        [Required(ErrorMessage = "Address is Required.")]
+        [Display(Name = "address")]
+        [Required]
+        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
         public string Address { get; set; }
-        [Required(ErrorMessage = "email is Required.")]
+        [Display(Name = "email")]
+        [Required]
         [EmailAddress]
         public string Email { get; set; }
-        [Required(ErrorMessage = "Birthday is Required.")]
+        [Display(Name = "parent's birthday")]
+        [Required]
         public DateTime ParentBirthday { get; set; }
-        [Required(ErrorMessage = "gender is Required.")]
+
+        [Display(Name = "parent sex")]
+        [Required]
         public string Parentsex { get; set; }                  
     }
 }

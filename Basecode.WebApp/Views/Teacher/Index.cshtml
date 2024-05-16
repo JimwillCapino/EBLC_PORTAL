@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Teacher";
+    ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int successValue = (int)ViewData["Success"];
 }
@@ -63,52 +63,75 @@
                         </div>
                                             
                    </div>
-                </div>
-                <div class="col">
-                    <div class="container" >
-                        <div class="row justify-content-center">
-                            <div class="col-12 col-lg-9 col-xl-8">
-                                <div class="card widget-card border-light shadow-sm">
-                                    <div class="card-body p-4">
-                                        <h5 class="card-title widget-card-title mb-4">Students with no grades</h5>
-                                        <h5>@Model.SubjectName</h5>
-                                        <div class="table-responsive" style="height:400px; overflow-y: auto;">
-                                            @using (Html.BeginForm("QueryDashboadRanking", "Teacher", FormMethod.Post, new { id = "queryForm" }))
-                                            {
-                                                <div class="row">
-                                                    <div class="col-sm-5">
-                                                        <select class="form-select mb-3" aria-label="Default select example" name="class" required>
-                                                            <option value="">Class</option>
-                                                            @foreach (var classofteacher in Model.ClassesOfTeacher)
-                                                            {
-                                                                <option value="@classofteacher.classid @classofteacher.subjectid">Grade @classofteacher.grade, @classofteacher.classname @classofteacher.subjectname</option>
-                                                            }
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <select class="form-select mb-3" aria-label="Default select example" name="quarter" required>
-                                                            <option value="" selected>Quarter</option>
-                                                            <option value="1">One</option>
-                                                            <option value="2">Two</option>
-                                                            <option value="3">Three</option>
-                                                            <option value="4">four</option>
-                                                            <option value="5">final</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <button type="submit" class="btn btn-warning">Search</button>
-                                                    </div>                                                   
-                                                </div>
-                                            }                                                                                                                                            
-                                                                                                                                 
-                                            <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0" >
-                                                <tbody id="studentTableBody">
-                                                    @Html.Partial("_StudentWithNoGradeTable", Model.ListOfStudentsWithNoGrade)
-                                                </tbody>
-                                            </table>
-                                        </div>
+                   <div class="row">
+                       <div class="col">
+                            <div class="card widget-card border-light shadow-sm">
+                                <div class="card-body p-4">
+                                    <h5 class="card-title widget-card-title mb-4">Your Schedule</h5>
+                                    <h5>@Model.SubjectName</h5>
+                                    <div class="table-responsive" style="height:400px; overflow-y: auto;">
+                                        <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0">
+                                            <thead>                                           
+                                            <th>Class</th>
+                                            <th>Subject</th>
+                                            <th>Schedule</th>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var clazz in Model.ClassesOfTeacher)
+                                                {
+                                                    <tr>
+                                                        <td>@clazz.classname @clazz.grade</td>
+                                                        <td>@clazz.subjectname</td>
+                                                        <td>@clazz.schedule</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                   </div>
+                </div>
+                <div class="col">
+                    <div class="card widget-card border-light shadow-sm">
+                        <div class="card-body p-4">
+                            <h5 class="card-title widget-card-title mb-4">Students with no grades</h5>
+                            <h5>@Model.SubjectName</h5>
+                            <div class="table-responsive" style="height:400px; overflow-y: auto;">
+                                @using (Html.BeginForm("QueryDashboadRanking", "Teacher", FormMethod.Post, new { id = "queryForm" }))
+                                {
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <select class="form-select mb-3" aria-label="Default select example" name="class" required>
+                                                <option value="">Class</option>
+                                                @foreach (var classofteacher in Model.ClassesOfTeacher)
+                                                {
+                                                    <option value="@classofteacher.classid @classofteacher.subjectid">Grade @classofteacher.grade, @classofteacher.classname @classofteacher.subjectname</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <select class="form-select mb-3" aria-label="Default select example" name="quarter" required>
+                                                <option value="" selected>Quarter</option>
+                                                <option value="1">One</option>
+                                                <option value="2">Two</option>
+                                                <option value="3">Three</option>
+                                                <option value="4">four</option>
+                                                <option value="5">final</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <button type="submit" class="btn btn-warning">Search</button>
+                                        </div>
+                                    </div>
+                                }
+
+                                <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0">
+                                    <tbody id="studentTableBody">
+                                        @Html.Partial("_StudentWithNoGradeTable", Model.ListOfStudentsWithNoGrade)
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

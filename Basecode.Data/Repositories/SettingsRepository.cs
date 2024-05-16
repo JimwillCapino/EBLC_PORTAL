@@ -46,7 +46,7 @@ namespace Basecode.Data.Repositories
         {
             try
             {
-                var query = this.GetDbSet<Settings>().ToList();
+                var query = this.GetDbSet<Settings>().AsNoTracking().ToList();
                 return query.FirstOrDefault();
             }
             catch(Exception ex)
@@ -60,7 +60,7 @@ namespace Basecode.Data.Repositories
             try
             {
                 string schoolYear;  
-                var settings = _context.Settings.ToList();
+                var settings = _context.Settings.AsNoTracking().ToList();
                 schoolYear = settings.FirstOrDefault()?.StartofClass.Value.Year.ToString() + "-" + settings.FirstOrDefault()?.EndofClass.Value.Year.ToString();
                 return schoolYear;
             }
@@ -97,6 +97,28 @@ namespace Basecode.Data.Repositories
             try
             {
                 return this.GetDbSet<Settings>().ToList().FirstOrDefault().WithHonor;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public string? GetSchoolEmail()
+        {
+            try
+            {
+                return this.GetDbSet<Settings>().ToList().FirstOrDefault().SchoolEmail;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public string? GetPassword()
+        {
+            try
+            {
+                return this.GetDbSet<Settings>().ToList().FirstOrDefault().twoFPassword;
             }
             catch
             {

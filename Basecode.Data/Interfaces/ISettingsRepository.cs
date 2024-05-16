@@ -16,6 +16,8 @@ namespace Basecode.Data.Interfaces
         public int? GetWithHighHonor();
         public int? GetWithHighestHonor();
         public int? GetWithHonor();
+        public string? GetSchoolEmail();
+        public string? GetPassword();
 
     }
 }

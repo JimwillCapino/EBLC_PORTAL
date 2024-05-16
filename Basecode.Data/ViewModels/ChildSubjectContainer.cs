@@ -10,6 +10,7 @@ namespace Basecode.Data.ViewModels
     public  class ChildSubjectContainer
     {
         public int HeadId { get; set; }
+        [Display(Name = "subject name")]
         [Required]
         public string Name { get; set; }
         public int ChildSubId { get; set; }

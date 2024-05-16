@@ -2,23 +2,37 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Class details";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int successValue = (int)ViewData["Success"];
 }
 @using Basecode.Data
 @using Basecode.Data.ViewModels
 @model ClassViewModel
+
 <!-- Styles -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 <!-- Or for RTL support -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
 
+
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Flatpickr JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!-- Include Moment.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+
 <script>
     function RemoveStudent(id,classId)
     {
@@ -103,6 +117,7 @@
                                 <tr>
                                     <th>Subject</th>
                                     <th>Teacher</th>
+                                    <th>Schedule</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -110,12 +125,13 @@
                                 @foreach(var classSubject in Model.ClassSubjects)
                                 {
                                     <tr class="bg-blue">                                    
-                                            <td class="pt-3 mt-1">@classSubject.SubjectName</td>
-                                            <td class="pt-3">@classSubject.TeacherName</td> 
-                                            <td class="pt-3">
+                                         <td class="pt-3 mt-1">@classSubject.SubjectName</td>
+                                        <td class="pt-3">@classSubject.TeacherName</td>
+                                        <td class="pt-3">@classSubject.Schedule</td>
+                                        <td class="pt-3">
                                             @* <i class="lni lni-trash-can" onclick="RemoveClassSubject(@classSubject.Id,@Model.Id)"></i> *@
                                             <a asp-action="RemoveClassSubject" asp-route-id="@classSubject.Id" asp-route-classId="@Model.Id" class="btn btn-danger">Delete</a>
-                                            </td> 
+                                        </td> 
                                     </tr>
                                     <tr id="spacing-row">
                                         <td> </td>
@@ -165,7 +181,7 @@
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Input Subject Details</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                @using (Html.BeginForm("AddClassSubjects", "Registrar", FormMethod.Post))
+                @using (Html.BeginForm("AddClassSubjects", "Registrar", FormMethod.Post, new { id = "addClassSubjectsForm" }))
                 {
                     <div class="modal-body">   
                         <input type="hidden" value="@Model.Id" name="classId"/>
@@ -182,17 +198,22 @@
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Teacher:</label>
                             <select class="form-select" aria-label="Default select example" name="teacherId" required>
-                                <option selected>Open this select menu</option>
+                                <option value="" selected>Open this select menu</option>
                                 @foreach (var teacher in Model.Teachers)
                                 {
                                     <option value="@teacher.id">@teacher.firstname @teacher.middlename @teacher.lastname</option>
                                 }
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Schedule:</label>
+                            <input type="text" id="datetimePicker" name="schedule" class="form-control flatpickr-input" required>
+                            <span id="errorMessage" class="text-danger"></span>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-danger">Add Subjects</button>
+                        <button type="submit" id="submitForm" class="btn btn-danger">Add Subjects</button>
                     </div>
                 }
             </div>
@@ -311,5 +332,50 @@
         width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
         placeholder: $(this).data('placeholder'),
         closeOnSelect: false,
+    });
+</script>
+<script>
+    $(function () {
+        $('#submitForm').click(function (e) {
+            // Prevent default form submission behavior
+            e.preventDefault();
+
+            // Serialize form data
+            var formData = $('#addClassSubjectsForm').serialize();
+           
+            // AJAX request
+            $.ajax({
+                url: '@Url.Action("AddClassSubjects", "Registrar")',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    // Handle success response
+                    if (response.success) {
+                        // Redirect to a success page or perform any other action
+                        window.location.href = '@Url.Action("ClassDetails", "Registrar")?classId='+@Model.Id;
+                    } else {
+                        // Display error message in span
+                        $('#errorMessage').text(response.message);
+                    }
+                },
+                error: function () {
+                    // Handle error
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        });
+    });
+</script>
+<script>
+    flatpickr("#datetimePicker", {      
+        enableTime: true,
+        noCalendar: true,
+        allowInput: true, // Enable keyboard input
+        dateFormat: "h:i K", // Optional: specify time format
+        time_24hr: false, // Set to true for 24-hour format
+        defaultDate: "12:00", // Optional: set default time
+        onChange: function (selectedDates, dateStr, instance) {
+            console.log(dateStr); // Handle formatted time string
+        }
     });
 </script>

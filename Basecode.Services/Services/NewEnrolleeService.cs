@@ -11,7 +11,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Net.Mail;
 namespace Basecode.Services.Services
 {
     public class NewEnrolleeService:INewEnrolleeService
@@ -24,6 +24,7 @@ namespace Basecode.Services.Services
         IParentService _parentService;
         IStudentService _studentService;
         IRTPUsersRepository _rtpUserRepository;
+        ISettingsRepository _settingsRepository;
         public NewEnrolleeService(INewEnrolleeRepository repository,
             IMapper mapper,
             IUsersService userService,
@@ -31,7 +32,8 @@ namespace Basecode.Services.Services
             IParentService parentService,
             IStudentService studentService,
             UserManager<IdentityUser> userManager,
-            IRTPUsersRepository rTPUsersRepository) 
+            IRTPUsersRepository rTPUsersRepository,
+            ISettingsRepository settingsRepository) 
         { 
             _repository = repository;
             _mapper = mapper;
@@ -41,11 +43,28 @@ namespace Basecode.Services.Services
             _studentService = studentService;
             _userManager = userManager;
             _rtpUserRepository = rTPUsersRepository;
+            _settingsRepository = settingsRepository;
         }
         public void RegisterStudent(RegisterStudent student)
         {
                 NewEnrollee enrollee = _mapper.Map<NewEnrollee>(student);
-                Constants.Enrollee.id = _usersService.AddUser(_mapper.Map<UsersPortal>(student));
+                var studentUser = _mapper.Map<UsersPortal>(student);
+
+            if(student.ProfilePicRecieve != null)
+            {
+                using (MemoryStream profilePic = new MemoryStream())
+                {
+                    student.ProfilePicRecieve.CopyTo(profilePic);
+                    studentUser.ProfilePic = profilePic.ToArray();
+                }
+            }
+            else
+            {
+                student.ProfilePic = null;
+            }
+
+
+                Constants.Enrollee.id = _usersService.AddUser(studentUser);
                 enrollee.UID = Constants.Enrollee.id;
                 var parent = new UsersPortal();
                 Parent parentDetails =_mapper.Map<Parent>(student);
@@ -116,6 +135,7 @@ namespace Basecode.Services.Services
                         enrollee.TOR = torMemory.ToArray();
                     }              
                 }
+
                enrollee.ParentID = parentid;
                if (!_repository.RegisterStudent(enrollee))
                    throw new Exception(Constants.Exception.DB);
@@ -148,19 +168,60 @@ namespace Basecode.Services.Services
                 throw new Exception(ex.Message);
             }
         }
-        public void AddSchedule(int id, DateTime Schedule)
+        public bool isScheduleConflict(string schedule)
         {
             try
             {
-               //DateTime parseSched = DateTime.ParseExact(Schedule, "2024-02-10 12:30:45", CultureInfo.InvariantCulture);
+                var sched = _repository.GetNewEnrolleeInitView().ToList();
+                var filteredSched = sched.Where(p => p.examschedule == schedule);
+                return filteredSched.Count() > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public void AddSchedule(int id, string Schedule)
+        {
+            try
+            {
+               //DateTime parseSched = DateTime.ParseExact(schedule, "2024-02-10 12:30:45", CultureInfo.InvariantCulture);
                 var enrollee = _repository.GetEnrolleeByID(id);
                 enrollee.ExamSchedule = Schedule;
+                if (isScheduleConflict(Schedule))
+                    throw new Exception("Selected schedule conflicts with other schedule");
                 _repository.AddSchedule(enrollee);
+
+                var parent = _parentService.GetParentById(enrollee.ParentID);
+
+                // Send Email to parent
+                MailMessage mail = new MailMessage();
+                mail.To.Add(parent.Email);
+                mail.From = new MailAddress(_settingsRepository.GetSchoolEmail());
+                mail.Subject = "Enrollment in EBLC";
+                mail.Body = "Greetings! Your child has been scheduled to a screening examination on " 
+                   + Environment.NewLine
+                   + DateTime.Parse(Schedule).ToLongDateString() +" "+ DateTime.Parse(Schedule).ToLongTimeString()
+                   + " "
+                   + "."
+                   + Environment.NewLine
+                   + "Please make sure to attend on time."
+                   + Environment.NewLine
+                   + "Thank you and God bless.";
+
+                mail.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new System.Net.NetworkCredential(_settingsRepository.GetSchoolEmail(), _settingsRepository.GetPassword()); // Enter seders User name and password       
+                smtp.EnableSsl = true;
+                smtp.Send(mail);
             }
             catch(Exception ex) 
             {
                 Console.WriteLine(ex);
-                throw new Exception(Constants.Exception.DB);
+                throw new Exception(ex.Message);
             }
             
         }
@@ -185,12 +246,27 @@ namespace Basecode.Services.Services
                 var parent =  _parentService.GetParentById(newEnrolle.ParentID);
                 var parentUser = _usersService.GetUserById(parent.UID);
                 //var parentRTP = _rtpService.GetRTPCommonsByUID(parent.UID);
-
+                var email = parent.Email;
                 _repository.RemoveEnrollee(newEnrolle);
                 _usersService.RemoveUser(userNewEnrolle);
                 _parentService.RemoveParent(parent);
                 //_rtpService.RemoveRTP(parentRTP);
-                _usersService.RemoveUser(parentUser);              
+                _usersService.RemoveUser(parentUser);
+
+                // Send Email to parent
+                MailMessage mail = new MailMessage();
+                mail.To.Add(email);
+                mail.From = new MailAddress(_settingsRepository.GetSchoolEmail());
+                mail.Subject = "Enrollment in EBLC";
+                mail.Body = "Greetings from the EBLC management. We regret to inform you that your application to enroll has been rejected. If you have any questions regarding the rejection, please feel free to reach out to us.";
+                mail.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new System.Net.NetworkCredential(_settingsRepository.GetSchoolEmail(), _settingsRepository.GetPassword()); // Enter seders User name and password       
+                smtp.EnableSsl = true;
+                smtp.Send(mail);
             }
             catch (Exception ex)
             {
@@ -202,16 +278,44 @@ namespace Basecode.Services.Services
         {
             try
             {
-                var newenrollee = _repository.GetEnrolleeByID(id);
+                var newenrollee = _repository.GetEnrolleeByID(id);                
                 var student = new Student();
                 student.UID = newenrollee.UID;
                 student.ParentId = newenrollee.ParentID;
                 student.CurrGrade = newenrollee.GradeEnrolled;
                 student.status = "Enrolled";
-                student.LRN = lrn;
+                student.LRN = lrn;               
                 _studentService.AddStudent(student);
                 _repository.RemoveEnrollee(newenrollee);
+
+                var parent = _parentService.GetParentById(newenrollee.ParentID);
+
+                // Send Email to parent
+                MailMessage mail = new MailMessage();
+                mail.To.Add(parent.Email);
+                mail.From = new MailAddress(_settingsRepository.GetSchoolEmail());
+                mail.Subject = "Enrollment in EBLC";
+                mail.Body = "Congratulations! Your child has been accepted. Please go to the registrar's office to complete the enrollment process."
+                           + Environment.NewLine
+                           + "Additionally, please bring hard copies of the following documents:"
+                           + Environment.NewLine
+                           + "- Birth Certificate"
+                           + Environment.NewLine
+                           + "- Good Moral Certificate"
+                           + Environment.NewLine
+                           + "- Transcript of Records"
+                           + Environment.NewLine
+                           + "Thank you and God bless."; ;
+                mail.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new System.Net.NetworkCredential(_settingsRepository.GetSchoolEmail(),_settingsRepository.GetPassword()); // Enter seders User name and password       
+                smtp.EnableSsl = true;
+                smtp.Send(mail);
             }
+
             catch (Exception ex)
             {
                 Console.WriteLine(ex);

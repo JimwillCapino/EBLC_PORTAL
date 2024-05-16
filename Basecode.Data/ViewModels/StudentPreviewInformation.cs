@@ -13,6 +13,6 @@ namespace Basecode.Data.ViewModels
         public string? status { get; set; }
         public int? age { get; set; }
         public string? lrn { get; set; }
-        public int? grade { get; set; }
+        public string? grade { get; set; }
     }
 }

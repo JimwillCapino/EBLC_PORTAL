@@ -128,7 +128,7 @@ namespace Basecode_WebApp.Controllers
         {
             try
             {
-                var gradeLevel = Int32.Parse(Request.Form["grade"]);
+                var gradeLevel = Request.Form["grade"];
                 var quarter = Int32.Parse(Request.Form["quarter"]);
                 var rank = Int32.Parse(Request.Form["rank"]);
                  
@@ -269,15 +269,199 @@ namespace Basecode_WebApp.Controllers
         {
             return View();
         }
+        public IActionResult EnrollmentApproval()
+        {
+            try
+            {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
+                return View();
+            }
+            catch(Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> ApprovalEnrollment()
+        {
+            //var classes = await _classManagementService.GetAllClass();
+            //return View(classes);
+            try
+            {
+                var draw = int.Parse(Request.Form["draw"]);
+                var start = int.Parse(Request.Form["start"]);
+                var length = int.Parse(Request.Form["length"]);
+                var searchValue = Request.Form["search[value]"];
+
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                // Sort Column Direction (asc, desc)  
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+
+                //Paging Size (10,25,50,100)  
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int recordsTotal = 0;
+
+                // Getting all Customer data  
+                var customerData = _newEnrolleeService.GetNewEnrolleeInitView().Where(p => p.examschedule != null);
+
+                //Sorting
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    if (sortColumn.Equals("firstname"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.firstname).ToList() :
+                            customerData.OrderByDescending(p => p.firstname).ToList();
+                    }
+                    else if (sortColumn.Equals("lastname"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.lastname).ToList() :
+                            customerData.OrderByDescending(p => p.lastname).ToList();
+                    }
+                    else if (sortColumn.Equals("middlename"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.middlename).ToList() :
+                           customerData.OrderByDescending(p => p.middlename).ToList();
+                    }
+                    else if (sortColumn.Equals("sex"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.sex).ToList() :
+                           customerData.OrderByDescending(p => p.sex).ToList();
+                    }
+                    else if (sortColumn.Equals("gradeenrolled"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.gradeenrolled).ToList() :
+                           customerData.OrderByDescending(p => p.gradeenrolled).ToList();
+                    }
+                    else if (sortColumn.Equals("birthday"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.birthday).ToList() :
+                           customerData.OrderByDescending(p => p.birthday).ToList();
+                    }
+
+                }
+                //Search  
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    customerData = customerData.Where(m => m.firstname.ToLower().Contains(searchValue.ToString().ToLower()) ||
+                      m.middlename.ToLower().Contains(searchValue.ToString().ToLower()) ||
+                       m.lastname.ToLower().Contains(searchValue.ToString().ToLower())
+                      || m.gradeenrolled.ToString().Equals(searchValue)
+                      || m.birthday.ToString().Equals(searchValue)
+                     || m.sex.ToLower().Contains(searchValue.ToString().ToLower())).ToList();
+                }
+
+                //total number of rows count   
+                recordsTotal = customerData.Count();
+                //Paging   
+                var data = customerData.Skip(skip).Take(pageSize).ToList();
+                //Returning Json Data  
+                var test = Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
+                return test;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> EnrollmentTable()
+        {
+            //var classes = await _classManagementService.GetAllClass();
+            //return View(classes);
+            try
+            {
+                var draw = int.Parse(Request.Form["draw"]);
+                var start = int.Parse(Request.Form["start"]);
+                var length = int.Parse(Request.Form["length"]);
+                var searchValue = Request.Form["search[value]"];
+
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                // Sort Column Direction (asc, desc)  
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+
+                //Paging Size (10,25,50,100)  
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int recordsTotal = 0;
+
+                // Getting all Customer data  
+                var customerData = _newEnrolleeService.GetNewEnrolleeInitView().Where(p => p.examschedule == null);
+
+                //Sorting
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    if (sortColumn.Equals("firstname"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.firstname).ToList() :
+                            customerData.OrderByDescending(p => p.firstname).ToList();
+                    }
+                    else if (sortColumn.Equals("lastname"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.lastname).ToList() :
+                            customerData.OrderByDescending(p => p.lastname).ToList();
+                    }
+                    else if (sortColumn.Equals("middlename"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.middlename).ToList() :
+                           customerData.OrderByDescending(p => p.middlename).ToList();
+                    }
+                    else if (sortColumn.Equals("sex"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.sex).ToList() :
+                           customerData.OrderByDescending(p => p.sex).ToList();
+                    }
+                    else if (sortColumn.Equals("gradeenrolled"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.gradeenrolled).ToList() :
+                           customerData.OrderByDescending(p => p.gradeenrolled).ToList();
+                    }
+                    else if (sortColumn.Equals("birthday"))
+                    {
+                        customerData = sortColumnDirection.ToLower() == "asc" ? customerData.OrderBy(p => p.birthday).ToList() :
+                           customerData.OrderByDescending(p => p.birthday).ToList();
+                    }
+
+                }
+                //Search  
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    customerData = customerData.Where(m => m.firstname.ToLower().Contains(searchValue.ToString().ToLower()) ||
+                      m.middlename.ToLower().Contains(searchValue.ToString().ToLower()) ||
+                       m.lastname.ToLower().Contains(searchValue.ToString().ToLower())
+                      || m.gradeenrolled.ToString().Equals(searchValue) 
+                      || m.birthday.ToString().Equals(searchValue)
+                     || m.sex.ToLower().Contains(searchValue.ToString().ToLower())).ToList();
+                }
+
+                //total number of rows count   
+                recordsTotal = customerData.Count();
+                //Paging   
+                var data = customerData.Skip(skip).Take(pageSize).ToList();
+                //Returning Json Data  
+                var test = Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
+                return test;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public IActionResult Enrollment()
         {
             try
             {
-                return View(_newEnrolleeService.GetNewEnrolleeInitView());
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
+                return View();
             }
-            catch
+            catch(Exception ex)
             {
-                ViewBag.ErrorMessage = Constants.Exception.DB;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 return RedirectToAction("Index");
             }
         }
@@ -285,6 +469,8 @@ namespace Basecode_WebApp.Controllers
         {
             try
             {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
                 return View(_newEnrolleeService.GetStudent(studentId));
             }
             catch
@@ -298,19 +484,21 @@ namespace Basecode_WebApp.Controllers
         public IActionResult AddSchedule()
         {
             var Schedule = Request.Form["datetime"];
-            DateTime parseSched = DateTime.Parse(Schedule);
-            int id = Int32.Parse(Request.Form["id"]);
+            
+            int id = Int32.Parse(Request.Form["Id"]);
             try
             {
-                _newEnrolleeService.AddSchedule(id, parseSched);
-                ViewBag.Success=true;
-                return RedirectToAction("Enrollment");
+                _newEnrolleeService.AddSchedule(id, Schedule);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "A student has been successfully scheduled for examination.";
+                return Json(new { success = true });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                ViewBag.Success = false;
-                ViewBag.ErrorMessage = ex.Message;
-                return RedirectToAction("NewEnrolleeInfo",id);
+                //Constants.ViewDataErrorHandling.Success = 0;
+                //Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return Json(new { success = false, message = ex.Message });
             }
         }
         public IActionResult RejectNewEnrollee(int id)
@@ -318,13 +506,33 @@ namespace Basecode_WebApp.Controllers
             try
             {
                 _newEnrolleeService.RejectNewEnrollee(id);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "A student has been Rejected";
                 return RedirectToAction("Enrollment");
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
-                ViewBag.ErrorMessage = ex.Message;
+
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 return RedirectToAction("NewEnrolleeInfo", id);
+            }
+        }
+        public IActionResult UltimatelyRejectNewEnrollee(int id)
+        {
+            try
+            {
+                _newEnrolleeService.RejectNewEnrollee(id);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "A student has been Rejected";
+                return RedirectToAction("EnrollmentApproval");
+            }
+            catch (Exception ex)
+            {
+
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                return RedirectToAction("EnrollmentApproval");
             }
         }
         [HttpPost]
@@ -335,13 +543,15 @@ namespace Basecode_WebApp.Controllers
                 var id = Int32.Parse(Request.Form["studentId"]);
                 var lrn = Request.Form["lrn"];
                  _newEnrolleeService.AdmitNewEnrollee(id, lrn);
-                ViewBag.Success = true;
-                return RedirectToAction("Enrollment");
+
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Student Successfully admitted.";
+                return RedirectToAction("EnrollmentApproval");
             }
             catch (Exception ex)
             {
-                ViewBag.Success = false;
-                ViewBag.ErrorMessage = ex.Message;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;               
                 return RedirectToAction("Enrollee");
             }
         }
@@ -572,7 +782,7 @@ namespace Basecode_WebApp.Controllers
         public IActionResult AddChildSubject()
         {
             var headId = Int32.Parse(Request.Form["headId"]);
-            var grade = Int32.Parse(Request.Form["grade"]);
+            var grade = Request.Form["grade"];
             var input = Request.Form["inputSubname"];
             try
             {                             
@@ -870,33 +1080,35 @@ namespace Basecode_WebApp.Controllers
             }
         }
         [HttpPost]
-        public IActionResult AddClassSubjects()
+        public async Task<IActionResult> AddClassSubjects()
         {
             try
             {
                 var classId = Int32.Parse(Request.Form["classId"]);
                 var subjectId = Int32.Parse(Request.Form["subjectId"]);
                 var teacherId = Request.Form["teacherId"];
+                var schedule = Request.Form["schedule"];
 
                 var classSubjects = new ClassSubjects
                 {
                     ClassId = classId,
                     Subject_Id = subjectId,
-                    Teacher_Id = teacherId
+                    Teacher_Id = teacherId,
+                    Schedule = schedule
                 };
 
-                _classManagementService.AddClassSubjects(classSubjects);
+                await _classManagementService.AddClassSubjects(classSubjects);
                 Constants.ViewDataErrorHandling.Success = 1;
                 Constants.ViewDataErrorHandling.ErrorMessage = "Successfully added a subject to this class.";
 
-                return RedirectToAction("ClassDetails", new { classId = classId });
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                Constants.ViewDataErrorHandling.Success = 0;
-                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                //Constants.ViewDataErrorHandling.Success = 0;
+                //Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex);
-                return RedirectToAction("ManageClass");
+                return Json(new { success = false, message = ex.Message });
             }
         }       
         public IActionResult AddClassStudents(ClassViewModel model)
@@ -1420,8 +1632,7 @@ namespace Basecode_WebApp.Controllers
         {
             try
             {
-                var status = Request.Form["status"];
-                studentDetails.Student.status = Boolean.Parse(status);
+               
                 await _studentManagementService.UpdateStudentDetails(studentDetails);
                 Constants.ViewDataErrorHandling.Success = 1;
                 Constants.ViewDataErrorHandling.ErrorMessage = "Successfully updated the student!";

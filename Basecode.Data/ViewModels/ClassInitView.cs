@@ -10,7 +10,7 @@ namespace Basecode.Data.ViewModels
     {
         public int id { get; set; }
         public string adviserid { get; set; }
-        public int grade { get; set; }
+        public string grade { get; set; }
         public int classsize { get; set; }
         public string? classname { get; set; }
         public string advisername { get; set; }

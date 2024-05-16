@@ -96,14 +96,14 @@ namespace Basecode.Data.Repositories
                                    join u in usersPortal on e.UID equals u.UID
                                    select new NewEnrolleeViewModel
                                    {
-                                       Id = e.Enrollee_Id,                                       
-                                       FirstName = u.FirstName,
-                                       Middlename = u.MiddleName,
-                                       LastName = u.LastName,
-                                       sex = u.sex,                                   
-                                       GradeEnrolled = e.GradeEnrolled,
-                                       Birthday = u.Birthday,
-                                       ExamSchedule = e.ExamSchedule
+                                       id = e.Enrollee_Id,                                       
+                                       firstname = u.FirstName,
+                                       middlename = u.MiddleName,
+                                       lastname = u.LastName,
+                                       sex = u.sex.Equals("M")?"Male":"Female",                                   
+                                       gradeenrolled = e.GradeEnrolled,
+                                       birthday = u.Birthday.Date,
+                                       examschedule = e.ExamSchedule,                                      
                                    };
                 return newviewmodel;
             }
@@ -144,6 +144,7 @@ namespace Basecode.Data.Repositories
                     Address = rtpCommons.Address,                    
                     ParentBirthday = userParent.Birthday,
                     Parentsex = userParent.sex,
+                    ProfilePic = userStudent.ProfilePic
                 };
                 return CompleteInfo;
             }

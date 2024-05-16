@@ -7,6 +7,7 @@ using Basecode.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -134,7 +135,7 @@ namespace Basecode.Services.Services
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw new Exception(Constants.Exception.DB);
+                throw new Exception(e.Message);
             }
         }
         public async Task<bool> IsNewUser(string AspUserId)
@@ -229,7 +230,12 @@ namespace Basecode.Services.Services
                 registrarDashboard.TeacherCount = _teacherRepository.GetAllTeachersInitViewAsync().Result.Count();
                 registrarDashboard.StudentEnrolledCount = _studentRepository.GetAllStudent().Where(p => p.status == "Enrolled").Count();
                 registrarDashboard.StudentNotEnrolledCount = _studentRepository.GetAllStudent().Where(p => p.status == "Not Enrolled").Count();
-                registrarDashboard.NewEnrolleeList = _newEnrolleeRepository.GetNewEnrolleeInitView().Where(P => P.ExamSchedule != null).ToList();
+                TimeZoneInfo phTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila");
+                // Get the current time in the Philippines
+                DateTime phTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, phTimeZone);
+                registrarDashboard.NewEnrolleeList = _newEnrolleeRepository.GetNewEnrolleeInitView().Where(P => P.examschedule != null && phTime.Date.Equals(DateTime.Parse(P.examschedule).Date))
+
+                        .OrderBy(p => DateTime.Parse(p.examschedule).ToShortTimeString()).ToList();
                 return registrarDashboard;
             }
             catch (Exception e)
@@ -246,8 +252,7 @@ namespace Basecode.Services.Services
                 registrarDashboard.TeacherCount = _teacherRepository.GetAllTeachersInitViewAsync().Result.Count();
                 registrarDashboard.StudentEnrolledCount = _studentRepository.GetAllStudent().Where(p => p.status == "Enrolled").Count();
                 registrarDashboard.StudentNotEnrolledCount = _studentRepository.GetAllStudent().Where(p => p.status == "Not Enrolled").Count();
-                registrarDashboard.RegistrarsCount = _adminRepository.GetRegistrarsAsync().Result.Count();
-               
+                registrarDashboard.RegistrarsCount = _adminRepository.GetRegistrarsAsync().Result.Count();              
                 return registrarDashboard;
             }
             catch (Exception e)

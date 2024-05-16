@@ -15,7 +15,7 @@ namespace Basecode.Data.Models
         public int Subject_Id { get; set; } 
         public int Grade { get; set; }
         public int? Quarter { get; set; }
-        public int Grade_Level { get; set; }
+        public string Grade_Level { get; set; }
         public string School_Year { get; set; }
     }
 }

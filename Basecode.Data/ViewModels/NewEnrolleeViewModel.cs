@@ -8,13 +8,13 @@ namespace Basecode.Data.ViewModels
 {
     public class NewEnrolleeViewModel
     {
-        public int Id { get; set; }        
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Middlename { get; set; }        
+        public int id { get; set; }        
+        public string firstname { get; set; }
+        public string lastname { get; set; }
+        public string middlename { get; set; }        
         public string sex { get; set; }
-        public int GradeEnrolled {  get; set; }
-        public DateTime Birthday { get; set; }
-        public DateTime? ExamSchedule { get; set; }
+        public string gradeenrolled {  get; set; }
+        public DateTime birthday { get; set; }
+        public string? examschedule { get; set; }
     }
 }

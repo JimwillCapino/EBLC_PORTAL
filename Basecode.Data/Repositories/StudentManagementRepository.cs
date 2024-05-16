@@ -193,7 +193,7 @@ namespace Basecode.Data.Repositories
             }
         }
         
-        public int GradeLevel(int studentId, string schoolYear)
+        public string GradeLevel(int studentId, string schoolYear)
         {
             try
             {

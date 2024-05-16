@@ -13,7 +13,7 @@ namespace Basecode.Data.Models
         public int Id { get; set; }
         public string? ClassName { get; set; }
         public string Adviser { get; set; }
-        public int Grade { get; set; }
+        public string Grade { get; set; }
         public int ClassSize { get; set; }
         //public string SchoolYear{get; set;}
     }

@@ -184,7 +184,7 @@ namespace Basecode.Services.Services
         {
             try
             {
-                int gradeLevel = _studentManagementRepository.GradeLevel(student_Id, school_year);
+                string gradeLevel = _studentManagementRepository.GradeLevel(student_Id, school_year);
                 var headSubjects = _subjectRepository.GetAllHeadSubject();
                 var student = new StudentDetailsWithGrade();
                 student.School_Years = _studentManagementRepository.GetSchoolYears(student_Id);
@@ -209,7 +209,7 @@ namespace Basecode.Services.Services
                 student.Parent = await _parentRepository.GetParentDetailById(student_Id);
                 student.PassingGrade = _settingsService.GetSettings().PassingGrade;               
                 
-                int gradeLevelCurrent = _studentManagementRepository.GradeLevel(student_Id, _settingsRepository.GetSchoolYear());
+                string gradeLevelCurrent = _studentManagementRepository.GradeLevel(student_Id, _settingsRepository.GetSchoolYear());
                 var schoolYearForAll = _settingsRepository.GetSchoolYear() + " Grade:" + gradeLevelCurrent;
                 if (!student.School_Years.Contains(schoolYearForAll) && student.Student.Status == "Enrolled")
                 {
@@ -223,7 +223,7 @@ namespace Basecode.Services.Services
             }
         }
 
-        public List<StudentQuarterlyAverage> GetStudentRanking(int gradeLevel, int quarter, int rank)
+        public List<StudentQuarterlyAverage> GetStudentRanking(string gradeLevel, int quarter, int rank)
         {
             try
             {
@@ -624,10 +624,7 @@ namespace Basecode.Services.Services
                 }
                               
                 student.LRN = studentDetails.Student.lrn;
-                if (studentDetails.Student.status)
-                    student.status = "Enrolled";
-                else
-                    student.status = "Not Enrolled";
+                student.status = studentDetails.Student.Status;
 
                 //student.status = studentDetails.Student.Status;
                 student.CurrGrade = studentDetails.Student.Grade;

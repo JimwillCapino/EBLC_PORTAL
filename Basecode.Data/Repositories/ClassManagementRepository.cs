@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -153,7 +154,7 @@ namespace Basecode.Data.Repositories
         {
             return _subjectRepository.GetSubjects();
         }
-        public List<ClassStudentViewModel> GetStudents(int grade)
+        public List<ClassStudentViewModel> GetStudents(string grade)
         {
             try
             {
@@ -223,10 +224,18 @@ namespace Basecode.Data.Repositories
                                     Subject_Id = subs.Subject_Id,
                                     TeacherId = t.id,
                                     SubjectName = subs.Subject_Name,
-                                    TeacherName = t.firstname+ " " +t.lastname
+                                    TeacherName = t.firstname+ " " +t.lastname,
+                                    Schedule = classsub.Schedule
                                 };
-                return classSubs.ToList();
-                                
+                var orderedClassSubs = classSubs
+    .Where(p => p.Schedule != null) // Filter out null schedule values
+    .OrderBy(p => DateTime.TryParseExact(p.Schedule, "h:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedTime)
+                        ? parsedTime
+                        : DateTime.MinValue) // Handle invalid schedule values
+    .ToList();
+
+                return orderedClassSubs;
+
             }
             catch (Exception ex)
             {
@@ -279,6 +288,7 @@ namespace Basecode.Data.Repositories
                 classdetails.Students = this.GetStudents(selectedClass.Grade).Where(s => !studentExist.Any(st => st.Student_Id == s.studentid)).ToList();
                 classdetails.Subjects = this.GetSubjects().Where(s => (!subs.Any(cs => cs.Subject_Id == s.Subject_Id)) && s.Grade == selectedClass.Grade).ToList();
 
+
                 return classdetails;
             }
             catch (Exception ex)
@@ -307,7 +317,8 @@ namespace Basecode.Data.Repositories
                                subjectname = s.Subject_Name,
                                classname = ac.ClassName,
                                grade = ac.Grade,
-                               haschild =s.HasChild
+                               haschild =s.HasChild,
+                               schedule = cl.Schedule
                            };
                 var list1 = list.ToList();
                 ////Initialize students belonging to the class
@@ -366,7 +377,7 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }        
-        public async Task<ClassInitView> GetClassWhereStudentBelong(int studentId, int gradeLevel)
+        public async Task<ClassInitView> GetClassWhereStudentBelong(int studentId, string gradeLevel)
         {
             try
             {
@@ -395,7 +406,7 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-        public async Task<int> GetStudentYearLevel(int studentId)
+        public async Task<string> GetStudentYearLevel(int studentId)
         {
             try
             {

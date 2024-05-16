@@ -21,15 +21,16 @@ namespace Basecode.Data.Interfaces
         public void RemoveClassSubjects(ClassSubjects subjects);
         public void RemoveClassStudents(ClassStudents student);
         public List<Subject> GetSubjects();
-        public List<ClassStudentViewModel> GetStudents(int grade);
+        public List<ClassStudentViewModel> GetStudents(string grade);
         public Class GetClass(int id);
         public void RemoveClass(Class classroom);
         public List<TeacherClassDetails> GetTeacherClassDetails(string teacher_Id);
         public List<HomeRoom> GetTeacherHomeRoom(string teacher_Id);
-        public Task<ClassInitView> GetClassWhereStudentBelong(int studentId, int gradeLevel);
-        public Task<int> GetStudentYearLevel(int studentId);
+        public Task<ClassInitView> GetClassWhereStudentBelong(int studentId, string gradeLevel);
+        public Task<string> GetStudentYearLevel(int studentId);
         public void UpdateClass(Class classroom);
         public List<ClassStudentViewModel> GetClassStudents(int classId);
         public TeacherClassDetails GetTeacherSubjectDetails(int classid, int subjectId);
+        public  Task<List<ClassSubjectViewModel>> GetClassSubjects(int classId);
     }
 }

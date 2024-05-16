@@ -39,10 +39,14 @@ namespace Basecode.Main.Controllers
 
         public IActionResult Index()
         {
+            ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+            ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
             return View();
         }
         public IActionResult Enroll()
         {
+            ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+            ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
             return View();
         }
         public IActionResult Privacy()
@@ -54,13 +58,15 @@ namespace Basecode.Main.Controllers
         {          
             try
             {           
-                _newEnrolleeService.RegisterStudent(registerStudent);              
-                ViewBag.ErrorMessage = "Success";
+                _newEnrolleeService.RegisterStudent(registerStudent);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Your registration is now being processed. Please wait for an email for updates";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
                 Console.WriteLine(ex.Message);
                 return RedirectToAction("Enroll");
             }

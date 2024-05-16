@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Submit grade";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int? max = 0;
     int finalGrade = 0;
@@ -225,8 +225,8 @@
                     <input type="hidden" value="@Model.Subject_Id" asp-for="Subject_Id" />
                     <input type="hidden" value="@Model.Student_Id" asp-for="Student_Id" />
                     <input type="hidden" value="@(max+1)" asp-for="Quarter" />
-                    <label for="inputPassword5" class="form-label">Grade</label>
-                    <input type="text" id="inputPassword5" asp-for="GradeInput" class="form-control mb-3" required />
+                    <label  class="form-label">Grade</label>
+                    <input type="number" asp-for="GradeInput" class="form-control mb-3" required min="0" max="100" />
                     <span asp-validation-for="GradeInput" class="text-danger"></span><br />
                     <button type="submit" class="btn btn-outline-danger" id="submit">Submit</button>
                 </form>                                             
@@ -260,7 +260,7 @@
                             <input type="hidden" value="" name="Quarter" id="quarter"/>
                             <div class="mb-3">
                                 <label for="inputPassword5" class="form-label">Grade</label>
-                                <input type="text" id="grade" name="Grade" class="form-control" required />
+                            <input type="number" id="grade" name="Grade" class="form-control" min="50" max="100" required/>
                             </div>
                             
                         
