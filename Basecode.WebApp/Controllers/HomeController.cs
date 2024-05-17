@@ -64,7 +64,7 @@ namespace Basecode.Main.Controllers
             {           
                 _newEnrolleeService.RegisterStudent(registerStudent);
                 Constants.ViewDataErrorHandling.Success = 1;
-                Constants.ViewDataErrorHandling.ErrorMessage = "Your registration is now being processed. Please wait for an email for updates";
+                Constants.ViewDataErrorHandling.ErrorMessage = "Your registration is now being processed. Please wait for an email with updates.";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
