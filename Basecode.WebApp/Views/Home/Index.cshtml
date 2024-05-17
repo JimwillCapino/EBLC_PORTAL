@@ -56,7 +56,8 @@
                                         <p class="lead fw-normal text-white-50 mb-4">"Train up a child in a way he should go. For when he is old, he will not depart from it."</p>
                                         <div class="d-grid gap-3 d-sm-flex">
                                             <a class="btn btn-danger btn-lg px-4 me-sm-3" asp-action="Enroll">Enroll Now</a>
-                                            <a class="btn btn-outline-light btn-lg px-4" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                                            <a class="btn btn-outline-light btn-lg px-4" id="login"  asp-action="LogIn">Login</a>
+                                             @* asp-area="Identity" asp-page="/Account/Login" *@
                                         </div>
                                     </div>
                                 </div>
@@ -64,7 +65,8 @@
                         </div>
                     </div>
                 </div>
-        </div>
+        </div
+       
    @*  <div class="container d-flex justify-content-center align-items-center min-vh-100 mt-4">
         <!----------------------- Login Container -------------------------->
         <div class="row border rounded-5 p-3 bg-white shadow box-area">
