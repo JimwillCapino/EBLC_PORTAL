@@ -10,6 +10,8 @@ namespace Basecode.Data.Interfaces
 {
     public interface IClassManagementRepository
     {
+        public StudentAdviser GetStudentAdviserByStudentId(int id, string schoolYear);
+        public void AddStudentAdviser(StudentAdviser studentAdviser);
         public int AddClass(Class classroom);
         public void AddClassSubject(ClassSubjects classSubjects);
         public void AddClassStudent(ClassStudents students);
@@ -32,5 +34,15 @@ namespace Basecode.Data.Interfaces
         public List<ClassStudentViewModel> GetClassStudents(int classId);
         public TeacherClassDetails GetTeacherSubjectDetails(int classid, int subjectId);
         public  Task<List<ClassSubjectViewModel>> GetClassSubjects(int classId);
+        public ScholasticRecords GetScholasticRecordsById(int id);
+        public ScholasticRecords GetScholasticRecords(int studentId, string SchoolYear);
+        public RemedialClass GetRemedialById(int id);
+        public RemedialClass GetRemedial(int studentId, int scholasticId);
+        public List<RemedialDetails> GetRemedialDetailsByClass(int RemedialClassId);
+        public int AddSholasticRecord(ScholasticRecords scholasticRecords);
+        public int AddRemedialClass(RemedialClass remedial);
+        public void AddRemedialDetails(RemedialDetails details);
+        public void UpdateScholasticRecords(ScholasticRecords records);
+        public int UpdateRemedialClass(RemedialClass remedialClass);
     }
 }

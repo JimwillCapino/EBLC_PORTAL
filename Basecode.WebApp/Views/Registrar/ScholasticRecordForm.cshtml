@@ -1,0 +1,212 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Add new enrollee";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+    int max;
+}
+
+@using Basecode.Data.ViewModels
+@model SchoolasticViewModel
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main" style="height:400px; overflow-y: auto;">
+        <div class="container py-3 min-vh-100 d-flex flex-column">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="StudentRecord">List of Students</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="StudentInfo" asp-route-student_Id="@Model.StudentId" asp-route-school_year="@Model.SchoolYear">Student information</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a>Scholastic Records Form</a></li>
+                </ol>
+            </nav>
+            <form role="form" enctype="multipart/form-data" class="row" asp-action="AddScholasticRecordForm">
+                <div class="card shadow rounded-3 my-auto">
+                    <div class="card-header p-3 h4">
+                        Enter student previous school information
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="StudentId" />
+                            <div class="form-group col-lg-4">
+                                <label for="inputEmail4">School</label>
+                                <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="School">
+                                <span asp-validation-for="School" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label for="inputEmail4">School ID</label>
+                                <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="SchoolId">
+                                <span asp-validation-for="SchoolId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label for="inputEmail4">Division</label>
+                                <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="Division">
+                                <span asp-validation-for="Division" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label for="inputEmail4">Region</label>
+                                <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="Region">
+                                <span asp-validation-for="Region" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label for="inputEmail4">District</label>
+                                <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="District">
+                                <span asp-validation-for="District" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label for="inputEmail4">Classified as Grade</label>
+                                <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="Grade">
+                                <span asp-validation-for="Grade" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label for="inputEmail4">Section</label>
+                                <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="Section">
+                                <span asp-validation-for="Section" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label for="inputEmail4">School Year</label>
+                                <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="SchoolYear">
+                                <span asp-validation-for="Section" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label for="inputEmail4">Name of Adviser/Teacher</label>
+                                <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="Adviser">
+                                <span asp-validation-for="Section" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                       
+                                     
+                </div>
+                <div class="card shadow rounded-3 my-auto mt-2">
+                    <div class="card-header p-3 h4">
+                        Enter Student Grades
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Subjects</th>
+                                        <th>1</th>
+                                        <th>2</th>
+                                        <th>3</th>
+                                        <th>4</th>
+                                        <th>Final</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   @foreach(var subject in Model.subjects)
+                                    {
+                                        <tr>
+                                            <td>@subject.Subject_Name</td>
+                                            <input type="hidden" name="Subject_Id" value="@subject.Subject_Id"/>
+                                            <input type ="hidden" name="quarter" value="1" />
+                                            <td><input type="number" class="form-control" name="graderate" max="100" /></td>
+
+                                            <input type="hidden" name="Subject_Id" value="@subject.Subject_Id" />
+                                            <input type="hidden" name="quarter" value="2" />
+                                            <td><input type="number" class="form-control" name="graderate" max="100" /></td>
+
+                                            <input type="hidden" name="Subject_Id" value="@subject.Subject_Id" />
+                                            <input type="hidden" name="quarter" value="3" />
+                                            <td><input type="number" class="form-control" name="graderate" max="100" /></td>
+
+                                            <input type="hidden" name="Subject_Id" value="@subject.Subject_Id" />
+                                            <input type="hidden" name="quarter" value="4" />
+                                            <td><input type="number" class="form-control" name="graderate" max="100" /></td>
+
+                                            <input type="hidden" name="Subject_Id" value="@subject.Subject_Id" />
+                                            <input type="hidden" name="quarter" value="5" />
+                                            <td><input type="number" class="form-control" name="graderate" max="100" /></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                           
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow rounded-3 my-auto mt-2">
+                    <div class="card-header p-3 h4">
+                        Enter Student Remedial Classes (Leave blank if no remedial classes)
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col">Conducted from: <input type="date" asp-for="from"/></div>
+                            <div class="col">To: <input type="date" asp-for="to"/></div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table" id="remedialClassesTable">
+                                <thead>
+                                    <tr>
+                                        <th>Learning Areas</th>
+                                        <th>Final Rating</th>
+                                        <th>Remedial Class Mark</th>
+                                        <th>Recomputed Final Grade</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- New rows will be added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" class="btn btn-danger" onclick="addRow()">Add Row</button>
+                    </div>
+                </div>
+                <div class="form-group col-lg-12">
+                    <button type="submit" class="btn btn-warning float-end mt-2" for="form-group-input">Submit</button>
+                </div>
+            </form>            
+        </div>
+    </div>
+</div>
+<script>
+    function addRow() {
+        // Get the table body element
+        var tableBody = document.getElementById('remedialClassesTable').getElementsByTagName('tbody')[0];
+
+        // Define the names for each column
+        var columnNames = ['learningAreas', 'finalRating', 'remedialClassMark', 'recomputedFinalGrade', 'remarks'];
+
+        // Create a new row element
+        var newRow = document.createElement('tr');
+
+        // Create and append new cells to the row
+        for (var i = 0; i < columnNames.length; i++) {
+            var newCell = document.createElement('td');
+            var input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'form-control';
+            input.name = columnNames[i]; // Set the name attribute
+            input.required = true; // Add the required attribute
+            newCell.appendChild(input);
+            newRow.appendChild(newCell);
+        }
+
+        // Create and append the remove button cell
+        var actionCell = document.createElement('td');
+        var removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.className = 'btn btn-remove';
+        removeButton.onclick = function () {
+            // Remove the current row
+            var row = this.parentElement.parentElement;
+            row.parentElement.removeChild(row);
+        };
+        actionCell.appendChild(removeButton);
+        newRow.appendChild(actionCell);
+
+        // Append the new row to the table body
+        tableBody.appendChild(newRow);
+    }
+</script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

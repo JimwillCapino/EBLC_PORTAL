@@ -9,7 +9,7 @@ namespace Basecode.Services.Interfaces
 {
     public interface IStudentService
     {
-        public void AddStudent(Student student);
+        public int AddStudent(Student student);
         public Student GetStudent(int id);
         public void AddStudent(RegisterStudent newStudent);
         public Task UpdateStudentAsync(Student student);

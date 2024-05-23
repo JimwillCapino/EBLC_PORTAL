@@ -6,6 +6,13 @@
 }
 @using Basecode.Data.ViewModels
 @model ReportCardContents
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/site.css" />
+<link href="/css/styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/studentrecordcss.css" />
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
 <style>
     .flexrow {
         display: -webkit-box;
@@ -107,7 +114,7 @@
                         <h2><b>School Administrator</b></h2>
                     </div>
                     <div class="col">
-                        <h2><u>@Model.StudentDetails.studentClass.advisername</u></h2>
+                        <h2><u>@Model.StudentDetails.AdviserName</u></h2>
                         <h2><b>Teacher</b></h2>
                     </div>
                 </div>

@@ -6,6 +6,7 @@
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int? max = 0;
     int successValue = (int)ViewData["Success"];
+    int finalgrade = 0;
 }
 @using Basecode.Data
 @using Basecode.Data.ViewModels
@@ -85,10 +86,22 @@
                                 @foreach(var grade in Model.HeadSubjectGrade.Grades)
                                 {
                                     <td>@grade.Grade</td>
+                                    finalgrade = grade.Grade;
                                 }
                             </tr>
                         </tbody>
-                    </table>                   
+                    </table>
+                    @if (max == 4)
+                    {
+                        @if (finalgrade >= Model.passingGrade)
+                        {
+                            <p>Remarks: Passed</p>
+                        }
+                        else
+                        {
+                            <p>Remarks: Failed</p>
+                        }
+                    }
                 </div>              
             </div>
            
@@ -151,7 +164,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Submit Grade</button>
+                        <button type="submit" class="btn btn-danger">Submit Grade</button>
                     </div>
                 }
             </div>

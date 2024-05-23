@@ -25,6 +25,7 @@ namespace Basecode.Services.Services
         IStudentService _studentService;
         IRTPUsersRepository _rtpUserRepository;
         ISettingsRepository _settingsRepository;
+        IClassManagementRepository _classManagementRepository;
         public NewEnrolleeService(INewEnrolleeRepository repository,
             IMapper mapper,
             IUsersService userService,
@@ -33,7 +34,8 @@ namespace Basecode.Services.Services
             IStudentService studentService,
             UserManager<IdentityUser> userManager,
             IRTPUsersRepository rTPUsersRepository,
-            ISettingsRepository settingsRepository) 
+            ISettingsRepository settingsRepository,
+            IClassManagementRepository classManagementRepository) 
         { 
             _repository = repository;
             _mapper = mapper;
@@ -44,6 +46,7 @@ namespace Basecode.Services.Services
             _userManager = userManager;
             _rtpUserRepository = rTPUsersRepository;
             _settingsRepository = settingsRepository;
+            _classManagementRepository = classManagementRepository;
         }
         public void RegisterStudent(RegisterStudent student)
         {
@@ -89,54 +92,47 @@ namespace Basecode.Services.Services
                 rtpcommons.UID = id;
                 _rtpService.addRTPCommons(rtpcommons);
 
-                //Student Files processing
-                if ((student.BirthCertificateFile == null && student.BirthCertificateFile.Length == 0)
-                    && (student.CGMFile == null && student.CGMFile.Length == 0)
-                    && (student.TORFile == null && student.TORFile.Length == 0))
+            //Student Files processing
+            if (student.BirthCertificateFile == null || student.BirthCertificateFile.Length == 0)
+            {
+                enrollee.BirthCertificate = null;
+            }
+            else
+            {
+                using (MemoryStream birthCertificateMemory = new MemoryStream())
                 {
-                    enrollee.BirthCertificate = null;
-                    enrollee.CGM = null;
-                    enrollee.TOR = null;
+                    student.BirthCertificateFile.CopyTo(birthCertificateMemory);
+                    enrollee.BirthCertificate = birthCertificateMemory.ToArray();
                 }
-                else
+            }
+
+            if (student.CGMFile == null || student.CGMFile.Length == 0)
+            {
+                enrollee.CGM = null;
+            }
+            else
+            {
+                using (MemoryStream cgmMemory = new MemoryStream())
                 {
-                    using (MemoryStream birthCertificateMemory = new MemoryStream())
-                    {
-                        student.BirthCertificateFile.CopyTo(birthCertificateMemory);
-                        enrollee.BirthCertificate = birthCertificateMemory.ToArray();
-                    }
-
-                    using (MemoryStream cgmMemory = new MemoryStream())
-                    {
-                        student.CGMFile.CopyTo(cgmMemory);
-                        enrollee.CGM = cgmMemory.ToArray();
-                    }
-
-                    using (MemoryStream torMemory = new MemoryStream())
-                    {
-                        student.TORFile.CopyTo(torMemory);
-                        enrollee.TOR = torMemory.ToArray();
-                    }
-                    using (MemoryStream birthCertificateMemory = new MemoryStream())
-                    {
-                        student.BirthCertificateFile.CopyTo(birthCertificateMemory);
-                        enrollee.BirthCertificate = birthCertificateMemory.ToArray();
-                    }
-
-                    using (MemoryStream cgmMemory = new MemoryStream())
-                    {
-                        student.CGMFile.CopyTo(cgmMemory);
-                        enrollee.CGM = cgmMemory.ToArray();
-                    }
-
-                    using (MemoryStream torMemory = new MemoryStream())
-                    {
-                        student.TORFile.CopyTo(torMemory);
-                        enrollee.TOR = torMemory.ToArray();
-                    }              
+                    student.CGMFile.CopyTo(cgmMemory);
+                    enrollee.CGM = cgmMemory.ToArray();
                 }
+            }
 
-               enrollee.ParentID = parentid;
+            if (student.TORFile == null || student.TORFile.Length == 0)
+            {
+                enrollee.TOR = null;
+            }
+            else
+            {
+                using (MemoryStream torMemory = new MemoryStream())
+                {
+                    student.TORFile.CopyTo(torMemory);
+                    enrollee.TOR = torMemory.ToArray();
+                }
+            }
+
+            enrollee.ParentID = parentid;
                if (!_repository.RegisterStudent(enrollee))
                    throw new Exception(Constants.Exception.DB);
         }
@@ -185,7 +181,14 @@ namespace Basecode.Services.Services
         {
             try
             {
-               //DateTime parseSched = DateTime.ParseExact(schedule, "2024-02-10 12:30:45", CultureInfo.InvariantCulture);
+                //DateTime parseSched = DateTime.ParseExact(schedule, "2024-02-10 12:30:45", CultureInfo.InvariantCulture);
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new System.Net.NetworkCredential(_settingsRepository.GetSchoolEmail(), _settingsRepository.GetPassword()); // Enter seders User name and password       
+                smtp.EnableSsl = true;
+
                 var enrollee = _repository.GetEnrolleeByID(id);
                 enrollee.ExamSchedule = Schedule;
                 if (isScheduleConflict(Schedule))
@@ -196,26 +199,16 @@ namespace Basecode.Services.Services
 
                 // Send Email to parent
                 MailMessage mail = new MailMessage();
+                mail.IsBodyHtml = true;
                 mail.To.Add(parent.Email);
                 mail.From = new MailAddress(_settingsRepository.GetSchoolEmail());
-                mail.Subject = "Enrollment in EBLC";
-                mail.Body = "Greetings! Your child has been scheduled to a screening examination on " 
-                   + Environment.NewLine
-                   + DateTime.Parse(Schedule).ToLongDateString() +" "+ DateTime.Parse(Schedule).ToLongTimeString()
-                   + " "
-                   + "."
-                   + Environment.NewLine
-                   + "Please make sure to attend on time."
-                   + Environment.NewLine
-                   + "Thank you and God bless.";
+                mail.Subject = "Enrollment in EBLC(Donot Reply)";
+                mail.Body = "Greetings! Your child has been scheduled to a screening examination on <br>"
+                    + DateTime.Parse(Schedule).ToLongDateString() + " " + DateTime.Parse(Schedule).ToLongTimeString() + "<br>"
+                    + "Please make sure to attend on time.<br>"
+                    + "Thank you and God bless.";
 
-                mail.IsBodyHtml = true;
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = "smtp.gmail.com";
-                smtp.Port = 587;
-                smtp.UseDefaultCredentials = false;
-                smtp.Credentials = new System.Net.NetworkCredential(_settingsRepository.GetSchoolEmail(), _settingsRepository.GetPassword()); // Enter seders User name and password       
-                smtp.EnableSsl = true;
+
                 smtp.Send(mail);
             }
             catch(Exception ex) 
@@ -241,6 +234,13 @@ namespace Basecode.Services.Services
         {
             try
             {
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new System.Net.NetworkCredential(_settingsRepository.GetSchoolEmail(), _settingsRepository.GetPassword()); // Enter seders User name and password       
+                smtp.EnableSsl = true;
+
                 var newEnrolle = _repository.GetEnrolleeByID(id);
                 var userNewEnrolle = _usersService.GetUserById(newEnrolle.UID);
                 var parent =  _parentService.GetParentById(newEnrolle.ParentID);
@@ -255,17 +255,14 @@ namespace Basecode.Services.Services
 
                 // Send Email to parent
                 MailMessage mail = new MailMessage();
+                mail.IsBodyHtml = true;
                 mail.To.Add(email);
                 mail.From = new MailAddress(_settingsRepository.GetSchoolEmail());
                 mail.Subject = "Enrollment in EBLC";
-                mail.Body = "Greetings from the EBLC management. We regret to inform you that your application to enroll has been rejected. If you have any questions regarding the rejection, please feel free to reach out to us.";
-                mail.IsBodyHtml = true;
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = "smtp.gmail.com";
-                smtp.Port = 587;
-                smtp.UseDefaultCredentials = false;
-                smtp.Credentials = new System.Net.NetworkCredential(_settingsRepository.GetSchoolEmail(), _settingsRepository.GetPassword()); // Enter seders User name and password       
-                smtp.EnableSsl = true;
+                mail.Body = "Greetings from the EBLC management.<br><br>"
+                    + "We regret to inform you that your application to enroll has been rejected.<br><br>"
+                    + "If you have any questions regarding the rejection, please feel free to reach out to us.";
+               
                 smtp.Send(mail);
             }
             catch (Exception ex)
@@ -278,6 +275,13 @@ namespace Basecode.Services.Services
         {
             try
             {
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new System.Net.NetworkCredential(_settingsRepository.GetSchoolEmail(), _settingsRepository.GetPassword()); // Enter seders User name and password       
+                smtp.EnableSsl = true;
+
                 var newenrollee = _repository.GetEnrolleeByID(id);                
                 var student = new Student();
                 student.UID = newenrollee.UID;
@@ -285,34 +289,40 @@ namespace Basecode.Services.Services
                 student.CurrGrade = newenrollee.GradeEnrolled;
                 student.status = "Enrolled";
                 student.LRN = lrn;               
-                _studentService.AddStudent(student);
+                var studId = _studentService.AddStudent(student);
                 _repository.RemoveEnrollee(newenrollee);
 
                 var parent = _parentService.GetParentById(newenrollee.ParentID);
+                var settings = _settingsRepository.GetSettings();
+                var scholasticRecords = new ScholasticRecords()
+                {
+                    School = settings.School_Name,
+                    SchoolYear = _settingsRepository.GetSchoolYear(),
+                    SchoolId = settings.SchoolId.Value,
+                    District = settings.District,
+                    Division = settings.Division,
+                    Region = settings.Region,
+                    Section = "Not Set",
+                    Adviser = "Not Set",
+                    StudentId = studId,
+                    Grade = student.CurrGrade
+                };
+                _classManagementRepository.AddSholasticRecord(scholasticRecords);
 
                 // Send Email to parent
                 MailMessage mail = new MailMessage();
+                mail.IsBodyHtml = true;
                 mail.To.Add(parent.Email);
                 mail.From = new MailAddress(_settingsRepository.GetSchoolEmail());
                 mail.Subject = "Enrollment in EBLC";
-                mail.Body = "Congratulations! Your child has been accepted. Please go to the registrar's office to complete the enrollment process."
-                           + Environment.NewLine
-                           + "Additionally, please bring hard copies of the following documents:"
-                           + Environment.NewLine
-                           + "- Birth Certificate"
-                           + Environment.NewLine
-                           + "- Good Moral Certificate"
-                           + Environment.NewLine
-                           + "- Transcript of Records"
-                           + Environment.NewLine
-                           + "Thank you and God bless."; ;
-                mail.IsBodyHtml = true;
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = "smtp.gmail.com";
-                smtp.Port = 587;
-                smtp.UseDefaultCredentials = false;
-                smtp.Credentials = new System.Net.NetworkCredential(_settingsRepository.GetSchoolEmail(),_settingsRepository.GetPassword()); // Enter seders User name and password       
-                smtp.EnableSsl = true;
+                mail.Body = "Congratulations! Your child has been accepted. Please go to the registrar's office to complete the enrollment process.<br>"
+                            + "Additionally, please bring hard copies of the following documents:<br>"
+                            + "- Birth Certificate<br>"
+                            + "- Good Moral Certificate<br>"
+                            + "- Transcript of Records<br>"
+                            + "Thank you and God bless.";
+                
+
                 smtp.Send(mail);
             }
 

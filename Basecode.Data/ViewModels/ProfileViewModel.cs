@@ -18,15 +18,14 @@ namespace Basecode.Data.ViewModels
         public IFormFile? ProfilePicRecieve { get; set; }
         [Display(Name = "first Name")]
         [Required]
-        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
+        [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.", MinimumLength = 1)]
         public string FirstName { get; set; }
         [Display(Name = "middle Name")]
-        [Required]
-        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
+        [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.", MinimumLength = 1)]
         public string MiddleName { get; set; }
         [Display(Name = "last Name")]
         [Required]
-        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
+        [StringLength(50, ErrorMessage = " Must be at least {2} and at most {1} characters long.", MinimumLength = 1)]
         public string LastName { get; set; }
         [Display(Name = "birthday")]
         [Required]
@@ -39,10 +38,11 @@ namespace Basecode.Data.ViewModels
         public string Email { get; set; }
         [Display(Name = "adrress")]
         [Required]
-        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
+        [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.")]
         public string Address { get; set; }
         [Display(Name = "phone number")]
         [Required]
+        [RegularExpression(@"^0\d{9,14}$", ErrorMessage = "Please enter a valid phone number starting with zero.")]
         public string PhoneNumber { get; set; }
         [Required]
         [DataType(DataType.Password)]

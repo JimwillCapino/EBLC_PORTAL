@@ -3,6 +3,7 @@ using AutoMapper;
 using Basecode.Data;
 using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
+using Basecode.Data.Repositories;
 using Basecode.Data.ViewModels;
 using Basecode.Services.Interfaces;
 using System;
@@ -22,12 +23,14 @@ namespace Basecode.Services.Services
         IParentRepository _parentRepository;
         IRTPRepository _rtpRepository;
         IMapper _mapper;
+        ISettingsRepository _settingsRepository;
         public StudentService(IStudentRepository studentRepository,
             IUsersRepository usersRepository,
             IParentRepository parentRepository,
             IRTPRepository rtpRepository,
             IMapper mapper,
-            IClassManagementRepository classManagement) 
+            IClassManagementRepository classManagement,
+            ISettingsRepository settingsRepository) 
         { 
             _studentRepository = studentRepository;
             _usersRepository = usersRepository;
@@ -35,12 +38,13 @@ namespace Basecode.Services.Services
             _rtpRepository = rtpRepository;
             _mapper = mapper;
             _classmanagement = classManagement;
+            _settingsRepository = settingsRepository;
         }
-        public void AddStudent(Student student)
+        public int AddStudent(Student student)
         {
             try
             {
-                _studentRepository.AddStudent(student);
+                return _studentRepository.AddStudent(student);
             }
             catch (Exception ex)
             {
@@ -107,7 +111,22 @@ namespace Basecode.Services.Services
                     ParentId = parentId,
                     status = "Enrolled",
                 };
-                _studentRepository.AddStudent(student);
+                var studId = _studentRepository.AddStudent(student);
+                var settings = _settingsRepository.GetSettings();
+                var scholasticRecords = new ScholasticRecords()
+                {
+                    School = settings.School_Name,
+                    SchoolYear = _settingsRepository.GetSchoolYear(),
+                    SchoolId = settings.SchoolId.Value,
+                    District = settings.District,
+                    Division = settings.Division,
+                    Region = settings.Region,
+                    Section = "Not Set",
+                    Adviser = "Not Set",
+                    StudentId = studId,
+                    Grade = student.CurrGrade
+                };
+                _classmanagement.AddSholasticRecord(scholasticRecords);
             }
             catch (Exception ex)
             {

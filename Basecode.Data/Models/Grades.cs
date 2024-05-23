@@ -17,5 +17,6 @@ namespace Basecode.Data.Models
         public int? Quarter { get; set; }
         public string Grade_Level { get; set; }
         public string School_Year { get; set; }
+        public int? ScholasticRecords { get; set; }
     }
 }

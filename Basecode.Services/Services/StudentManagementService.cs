@@ -51,7 +51,9 @@ namespace Basecode.Services.Services
         {
             try
             {
-                return _studentManagementRepository.GetStudentGradeBySubject(student_Id, subject_Id);
+                var grades =  _studentManagementRepository.GetStudentGradeBySubject(student_Id, subject_Id);
+                grades.passingGrade = _settingsRepository.GetPassingGrade();
+                return grades;
             }
             catch
             {
@@ -73,6 +75,17 @@ namespace Basecode.Services.Services
                     School_Year =_settingsRepository.GetSchoolYear()
                 };
                 _studentManagementRepository.SubmitGrade(grades);
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public void SubmitGrade(Grades grade)
+        {
+            try
+            {                
+                _studentManagementRepository.SubmitGrade(grade);
             }
             catch
             {
@@ -112,8 +125,8 @@ namespace Basecode.Services.Services
                 childSubjectGrade.GradesContainer = new List<GradesDetail>();
                 childSubjectGrade.HeadSubjectName = headsub.Subject_Name;
                 childSubjectGrade.HeadId = headId;
-                childSubjectGrade.StudentId = studentId;               
-                
+                childSubjectGrade.StudentId = studentId;
+                childSubjectGrade.passingGrade = _settingsRepository.GetPassingGrade();
                 foreach (var subject in childSubjectGrade.ChildSubjects)
                 {
                     childSubjectGrade.GradesContainer.Add(_studentManagementRepository.GetStudentGradeBySubject(studentId, subject.subjectId));
@@ -185,17 +198,21 @@ namespace Basecode.Services.Services
             try
             {
                 string gradeLevel = _studentManagementRepository.GradeLevel(student_Id, school_year);
+                
                 var headSubjects = _subjectRepository.GetAllHeadSubject();
                 var student = new StudentDetailsWithGrade();
                 student.School_Years = _studentManagementRepository.GetSchoolYears(student_Id);
               
                 student.Student = _studentManagementRepository.GetStudent(student_Id);
                 student.grades = _studentManagementRepository.GetStudentGrades(student_Id,school_year);
+                
+
                 student.valuesGrades = _studentManagementRepository.GetValuesGrades(student_Id,school_year);
                 student.learnersValues = _studentManagementRepository.GetLearnersValues();
+                
                 student.StudentAttendance = this.GetStudentAttendance(student_Id,school_year);
                 student.Subjects = _subjectRepository.GetAllSubjects(student_Id, gradeLevel);
-                student.studentClass = await _classManagementRepository.GetClassWhereStudentBelong(student_Id, gradeLevel);
+                //student.studentClass = await _classManagementRepository.GetClassWhereStudentBelong(student_Id, gradeLevel);
                 var unionHeadSubject = from h in headSubjects
                                        join s in student.Subjects
                                         on h.Subect_Id equals s.Subject_Id
@@ -207,13 +224,23 @@ namespace Basecode.Services.Services
                 student.TotalHeadSubjectCount = unionHeadSubject.Where(p => p.grade == gradeLevel).Count();
                 student.SchoolYear = school_year;
                 student.Parent = await _parentRepository.GetParentDetailById(student_Id);
-                student.PassingGrade = _settingsService.GetSettings().PassingGrade;               
-                
+                student.PassingGrade = _settingsService.GetSettings().PassingGrade;
+                student.AdviserName = _classManagementRepository.GetStudentAdviserByStudentId(student_Id,school_year) != null? _classManagementRepository.GetStudentAdviserByStudentId(student_Id, school_year).AdviserName: "";
+
                 string gradeLevelCurrent = _studentManagementRepository.GradeLevel(student_Id, _settingsRepository.GetSchoolYear());
                 var schoolYearForAll = _settingsRepository.GetSchoolYear() + " Grade:" + gradeLevelCurrent;
                 if (!student.School_Years.Contains(schoolYearForAll) && student.Student.Status == "Enrolled")
                 {
                     student.School_Years.Add(schoolYearForAll);
+                }
+                student.ScholasticRecords = _classManagementRepository.GetScholasticRecords(student_Id, school_year);
+                if(student.ScholasticRecords!=null)
+                {
+                    student.RemedialClass = _classManagementRepository.GetRemedial(student_Id, student.ScholasticRecords.SKId);
+                }               
+                if(student.RemedialClass != null)
+                {
+                    student.RemedialDetails = _classManagementRepository.GetRemedialDetailsByClass(student.RemedialClass.Id);
                 }
                 return student;
             }
@@ -296,7 +323,7 @@ namespace Basecode.Services.Services
                         RankOfStudents.Add(studentRank);
                     }
                 }
-                return RankOfStudents;
+                return RankOfStudents.OrderByDescending(p => p.Average).ToList();
             }
             catch (Exception ex)
             {
@@ -336,7 +363,7 @@ namespace Basecode.Services.Services
                     form137.GradeLevel = _studentManagementRepository.GradeLevel(studentId,schoolYear);
                     form137.grades = _studentManagementRepository.GetStudentGrades(studentId, schoolYear);
                     form137.Subjects = _subjectRepository.GetAllSubjects(studentId, form137.GradeLevel);
-
+                    //form137.AdviserName = _classManagementRepository.GetStudentAdviserByStudentId(studentId,form137.SchoolYear).AdviserName;
                     var headSubjects = _subjectRepository.GetAllHeadSubject();
                     var unionHeadSubject = from h in headSubjects
                                            join s in form137.Subjects
@@ -346,6 +373,11 @@ namespace Basecode.Services.Services
 
                                            };
                     form137.TotalHeadSubjectCount = unionHeadSubject.Count();
+                    form137.ScholasticRecords = _classManagementRepository.GetScholasticRecords(studentId, schoolYear);
+                    form137.RemedialClass = _classManagementRepository.GetRemedial(studentId, form137.ScholasticRecords.SKId);
+                    if (form137.RemedialClass != null)
+                        form137.RemedialDetails = _classManagementRepository.GetRemedialDetailsByClass(form137.RemedialClass.Id);
+                   
                     form137Container.StudentForm137.Add(form137);
                 }
                 return form137Container;
@@ -463,7 +495,8 @@ namespace Basecode.Services.Services
                 valueswithgrades.Student_Id = StudentId;
                 valueswithgrades.School_Year = schoolyear;
                 valueswithgrades.Grades = _studentManagementRepository.GetValuesGrades(StudentId, schoolyear);
-                valueswithgrades.Values = _studentManagementRepository.GetLearnersValues();               
+                valueswithgrades.Values = _studentManagementRepository.GetLearnersValues();      
+                
                 return valueswithgrades;
             }
             catch

@@ -42,6 +42,6 @@ namespace Basecode.Data.Interfaces
         public void DeleteBehavioralStatement(Behavioural_Statement statement);
         public string GradeLevel(int studentId, string schoolYear);
         public List<string> GetSchoolYearsWithOutGradeLevel(int student_Id);
-
+        public void AddStudentAdviser(StudentAdviser studentAdviser);
     }
 }

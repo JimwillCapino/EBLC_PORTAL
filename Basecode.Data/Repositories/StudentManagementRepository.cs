@@ -32,6 +32,19 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        public void AddStudentAdviser(StudentAdviser studentAdviser)
+        {
+            try
+            {
+                _context.StudentAdviser.Add(studentAdviser);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
         public void AddCoreValues(Core_Values core_Values)
         {
             try
@@ -100,6 +113,7 @@ namespace Basecode.Data.Repositories
                     Subject_Id = subject_Id,
                     Grades =grades.ToList(),
                 };
+
                 return gradesDetails;
             }
             catch (Exception ex)
@@ -331,15 +345,17 @@ namespace Basecode.Data.Repositories
                                           SubjectId = s.Subject_Id,
                                           SubjectName = s.Subject_Name,
                                           Quarter = g.Quarter,
-                                          Grade = g.Grade
+                                          Grade = g.Grade,
+                                          ScholasticRecordId = g.ScholasticRecords
                                       };
 
-                var studentGrade = studentsubjects.GroupBy(g => new { g.SubjectName,g.SubjectId })
+                var studentGrade = studentsubjects.GroupBy(g => new { g.SubjectName,g.SubjectId, g.ScholasticRecordId})
                     .Select(group => new StudentGrades
                     {
                         HeadId  = 0,
                         SubjectId = group.Key.SubjectId,
                         SubjectName = group.Key.SubjectName,
+                        ScholasticRecordId = group.Key.ScholasticRecordId,
                         Grades = group.Select(g => new GradesViewModel
                         {
                             Grade = g.Grade,
@@ -369,6 +385,7 @@ namespace Basecode.Data.Repositories
                         BehaviouralId = p.Behavioural_Statement,
                         Grade = p.Grade,
                         Quarter = p.Quarter
+                        
                     }).ToList();
                 
                 return studentGrades;

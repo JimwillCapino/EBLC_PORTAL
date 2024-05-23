@@ -13,7 +13,9 @@
     if (Model.Student.sex == "F") parentsex = "Female";
     else childGender = "Male";
     int successValue = (int)ViewData["Success"];
+    int quartermax = 0;
 }
+@using Basecode.Data.Models
 @using Basecode.Data
 @using Basecode.Data.ViewModels
 @model StudentDetailsWithGrade
@@ -91,7 +93,7 @@
                                    Document
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">                             
-                                    <li> <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear="@Model.SchoolYear" asp-route-documentType="1"><button type="button" class="dropdown-item">Form-137</button></a></li>
+                                    <li> <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear="@Model.SchoolYear" asp-route-documentType="1"><button type="button" class="dropdown-item">SF10-ES</button></a></li>
                                     <li><a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear="@Model.SchoolYear" asp-route-documentType="0"><button type="button" class="dropdown-item">Report Card</button></a></li>
                                 </ul>
                             </div>                                                   
@@ -108,10 +110,11 @@
                                             <li><a asp-action="EnrollAndPromoteStudent" asp-route-id="@Model.Student.Student_ID"><button type="button" class="dropdown-item">Promote</button></a></li>
                                             <li><a asp-action="EnrollAndRetainStudent" asp-route-id="@Model.Student.Student_ID"><button type="button" class="dropdown-item">Retain</button></a></li>
                                         </ul>
-                                    </div>
-                                    
+                                    </div>                                  
                                 }
-                            </div>                           
+                                <a class="btn btn-primary" data-bs-toggle='modal' data-bs-target='#exampleModal1' >Add Scholastic Record</a>
+                            </div> 
+                            
                         </div>
                     </div>
                 </div>
@@ -148,7 +151,7 @@
                         </ul>
                     </div>
                 </div>
-              </div>
+               </div>
             <div class="col-lg-8 grid-margin stretch-card">
                 <div class="tab">                    
                     <button class="tablinks" onclick="tabs(event, 'Grades')" id="defaultOpen">Grades</button>
@@ -158,7 +161,55 @@
                 <div id="Grades" class="tabcontent">
                     <div class="card">
                         <div class="card-body">
-                            <p>Select a School Year. Note that after selecting a school year, the page will reload thus going back to the grades tab.</p>
+                            @if (Model.ScholasticRecords != null)
+                            {
+                                var record = Model.ScholasticRecords;
+                                <div class="row">
+                                    <div class="col">
+                                        <p> School: @record.School</p>
+                                    </div>
+                                   <div class="col">
+                                        <p>School ID: @record.SchoolId</p>
+                                   </div>
+                                </div>                                
+                                <div class="row">
+                                    <div class="col">
+                                        <p>District: @record.District</p>
+                                    </div>
+                                    <div class="col">
+                                        <p>Division: @record.Division</p>
+                                    </div>
+                                    <div class="col">
+                                        <p>Region: @record.Region</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p>Grade: @record.Grade</p>
+                                    </div>
+                                    <div class="col">
+                                        <p>Section: @record.Section</p>
+                                    </div>
+                                    <div class="col">
+                                        <p>Region: @record.SchoolYear</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p>Name of Teacher or Adviser/Teacher: @record.Adviser</p>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <a href="#" data-bs-toggle='modal' data-bs-target='#editModal1'><i class="lni lni-pencil"></i></a>
+                                    </div>
+                                </div>                    
+                            }
+                            else
+                            {
+                                <p>School Information not set</p>
+                            }
                             <div class="btn-group">
                                 <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                     School Year
@@ -189,7 +240,13 @@
                                         {
                                             <tr>
                                                 <td>@subject.Subject_Name</td>
-                                                @{var SubjectWithGrades = Model.grades.FirstOrDefault(p => p.SubjectId == subject.Subject_Id);}
+                                                @{
+                                                    var SubjectWithGrades = Model.grades.FirstOrDefault(p => p.SubjectId == subject.Subject_Id);
+                                                    if(SubjectWithGrades!= null && SubjectWithGrades.Grades.Where(p => p.Quarter == 5).Count() > 0)
+                                                    {
+                                                        quartermax += 1;
+                                                    }
+                                                }
                                                 @if(SubjectWithGrades != null)
                                                 {
                                                     @foreach (var grade in SubjectWithGrades.Grades)
@@ -213,11 +270,19 @@
                                         }
                                     </tbody>
                                 </table>
-                                <p class="lead">General Average: @Math.Floor(avg / Model.TotalHeadSubjectCount)</p>
-                                @if (Math.Floor(avg / Model.TotalHeadSubjectCount) >= Model.PassingGrade)
+                                @if(quartermax == Model.TotalHeadSubjectCount)
                                 {
-                                    <p class="lead">Promoted</p>
-                                }
+                                    <p class="lead">General Average: @Math.Floor(avg / Model.TotalHeadSubjectCount)</p>
+                                    if (Math.Floor(avg / Model.TotalHeadSubjectCount) >= Model.PassingGrade)
+                                    {
+                                        <p class="lead">Promoted</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="lead">Not Promoted</p>
+                                    }
+                                }                                
+                               
                                 @{avg = 0;}
                             </div>
                         </div>
@@ -386,14 +451,90 @@
                         </div>
                     </div>                   
                </div>
-                <div class="d-flex justify-content-center mb-2">
-                    
+                <div class="row mt-3">
+                    <div class="col-lg-10 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                @if(Model.RemedialClass != null)
+                                {
+                                    <a class="btn btn-danger" asp-action="AddRemedialClassDetailsForm" asp-route-remedialClassId="@Model.RemedialClass.Id"><i class="lni lni-plus"></i></a>
+                                }
+                                else
+                                {                                    
+                                    <a class="btn btn-danger" asp-action="AddRemedialClassDetailsForm" asp-route-remedialClassId="0" asp-route-studentId="@Model.Student.Student_ID" asp-route-schoolId="@Model.ScholasticRecords.SKId"><i class="lni lni-plus"></i></a>
+                                }
+                                @if (Model.RemedialClass != null)
+                                {
+                                    <h5>Remedial Classes</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h5>conducted from: @Model.RemedialClass.from.ToShortDateString()</h5>
+                                        </div>
+                                        <div class="col">
+                                            <h5>To: @Model.RemedialClass.to.ToShortDateString()</h5>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <td>
+                                                            Learning Areas
+                                                        </td>
+                                                        <td>
+                                                            Final Rating
+                                                        </td>
+                                                        <td>
+                                                            Remedial Class Mark
+                                                        </td>
+                                                        <td>
+                                                            Recomputed Final Grade
+                                                        </td>
+                                                        <td>
+                                                            Remarks
+                                                        </td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var remedial in Model.RemedialDetails)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @remedial.LearningAreas
+                                                            </td>
+                                                            <td>
+                                                                @remedial.FinalRating
+                                                            </td>
+                                                            <td>
+                                                                @remedial.RemidialClassMark
+                                                            </td>
+                                                            <td>
+                                                                @remedial.RecomputedFinalGrade
+                                                            </td>
+                                                            <td>
+                                                                @remedial.Remarks
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p>No remedial classes</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                </div>
-                </div>
-            </div>
-          </div>
+            </div>            
+        </div>       
     </div>
+</div>
+
 
 
 <!-- Modal -->
@@ -417,5 +558,97 @@
     </div>
 </div>
 
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Set Grade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            @using (Html.BeginForm("ScholasticRecordForm", "Registrar", FormMethod.Post))
+            {
+                <div class="modal-body">
+                    <input type="hidden" id="studentId" name="studentId" value="@Model.Student.Student_ID"/>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Grade:</label>
+                        <input type="text" class="form-control" id="lrn" name="grade" required>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Proceed</button>
+                </div>
+            }
+        </div>
+    </div>
 </div>
+
+<div class="modal fade" id="editModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Set Grade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="UpdateScholasticRecords">
+                <div class="modal-body">
+                    <input type="hidden" id="studentId" name="studentId" value="@Model.Student.Student_ID" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="ScholasticRecords.SKId"/>
+                    <input type="hidden" asp-for="ScholasticRecords.StudentId" />
+                    <div class="form-group">
+                        <label for="inputEmail4">School</label>
+                        <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="ScholasticRecords.School">
+                        <span asp-validation-for="ScholasticRecords.School" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail4">School ID</label>
+                        <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="ScholasticRecords.SchoolId">
+                        <span asp-validation-for="ScholasticRecords.SchoolId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail4">Division</label>
+                        <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="ScholasticRecords.Division">
+                        <span asp-validation-for="ScholasticRecords.Division" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail4">Region</label>
+                        <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="ScholasticRecords.Region">
+                        <span asp-validation-for="ScholasticRecords.Region" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail4">District</label>
+                        <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="ScholasticRecords.District">
+                        <span asp-validation-for="ScholasticRecords.District" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail4">Classified as Grade</label>
+                        <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="ScholasticRecords.Grade">
+                        <span asp-validation-for="ScholasticRecords.Grade" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail4">Section</label>
+                        <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="ScholasticRecords.Section">
+                        <span asp-validation-for="ScholasticRecords.Section" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail4">School Year</label>
+                        <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="ScholasticRecords.SchoolYear">
+                        <span asp-validation-for="ScholasticRecords.SchoolYear" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail4">Name of Adviser/Teacher</label>
+                        <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="ScholasticRecords.Adviser">
+                        <span asp-validation-for="ScholasticRecords.Adviser" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Proceed</button>
+                </div>
+             </form>                        
+        </div>
+    </div>
 </div>

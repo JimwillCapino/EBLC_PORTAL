@@ -13,6 +13,7 @@ namespace Basecode.Data.ViewModels
         public string School_Year { get; set; }
         public List<ValuesGrades> Grades { get; set; }
         public List<Learners_Values_Report> Values { get; set; }
+         
         //public List<string> Scool_Years { get; set; }
     }
 }

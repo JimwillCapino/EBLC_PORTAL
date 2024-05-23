@@ -124,8 +124,16 @@
                 <div id="Grades" class="tabcontent">
                    
                     <div class="card">
-                        <div class="card-body">                           
-                            <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.TORRecieve)" type="application/pdf" width="100%" height="600px" />                                             
+                        <div class="card-body">
+                            @if(@Model.TORRecieve != null)
+                            {
+                                <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.TORRecieve)" type="application/pdf" width="100%" height="600px" />
+                            }
+                            else
+                            {
+                                <p>No data to show</p>
+                            }
+
                         </div>
                     </div>
                 </div>
@@ -134,7 +142,15 @@
                     
                     <div class="card">
                         <div class="card-body">
-                            <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.BirthCertificateRecieve)" type="application/pdf" width="100%" height="600px" />
+                            @if(Model.BirthCertificateRecieve != null)
+                            {
+                                <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.BirthCertificateRecieve)" type="application/pdf" width="100%" height="600px" />
+                            }
+                            else
+                            {
+                                <p>No data to show</p>
+                            }
+                            
                         </div>
                     </div>
                 </div>
@@ -142,7 +158,14 @@
 
                     <div class="card">
                         <div class="card-body">
-                            <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.CGMRecieve)" type="application/pdf" width="100%" height="600px" />
+                            @if(Model.CGMRecieve != null)
+                            {
+                                <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.CGMRecieve)" type="application/pdf" width="100%" height="600px" />
+                            }
+                            else
+                            {
+                                <p>No data to show</p>
+                            }
                         </div>
                     </div>
                 </div>

@@ -137,9 +137,10 @@
                             <input type="hidden" asp-for="UID" />
                             <input type="hidden" asp-for="RTPCommonsId" />
                             <input type="hidden" asp-for="RTPUsersId" />
+                            <input type="hidden" asp-for="ProfilePic" />
                             <div class="form-group">
                                 <label for="exampleInputEmail1" class="form-label">Profile Picture</label>
-                                <input type="file" class="form-control" id="exampleInputEmail1" asp-for="ProfilePicRecieve">                                
+                                <input type="file" class="form-control" id="exampleInputEmail1" asp-for="ProfilePicRecieve">
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputEmail1" class="form-label">First Name</label>
@@ -149,10 +150,12 @@
                             <div class="form-group">
                                 <label for="exampleInputPassword1" class="form-label">Middle Name</label>
                                 <input type="text" class="form-control" id="exampleInputPassword1" asp-for="MiddleName">
+                                <span asp-validation-for="MiddleName"></span>
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1" class="form-label">Last Name</label>
                                 <input type="text" class="form-control" id="exampleInputPassword1" asp-for="LastName">
+                                <span asp-validation-for="LastName"></span>
                             </div>
                             <div class="form-group">
                                 <label for="disabledSelect" class="form-label">Gender</label>
@@ -160,22 +163,27 @@
                                     <option value="M">Male</option>
                                     <option value="F">Female</option>
                                 </select>
+                                <span asp-validation-for="sex"></span>
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1" class="form-label">Phone Number</label>
                                 <input type="text" class="form-control" id="exampleInputPassword1" asp-for="PhoneNumber">
+                                <span asp-validation-for="PhoneNumber"></span>
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1" class="form-label">Address</label>
                                 <input type="text" class="form-control" id="exampleInputPassword1" asp-for="Address">
+                                <span asp-validation-for="Address"></span>
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1" class="form-label">Birthday</label>
                                 <input type="date" class="form-control" id="exampleInputPassword1" asp-for="Birthday">
+                                <span asp-validation-for="Birthday"></span>
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputEmail1" class="form-label">Email address</label>
                                 <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" asp-for="Email">
+                                <span asp-validation-for="Email"></span>
                                 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
 
@@ -184,7 +192,7 @@
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-danger">Save Changes</button>
                         </div>
-                    </form>                    
+                    </form>
                 </div>
             </div>
         </div>

@@ -21,8 +21,7 @@ namespace Basecode.Data.ViewModels
         [Required]
         public string adviser { get; set; }
         [Display(Name = "grade")]
-        [Required]
-        [RegularExpression(@"^\d+$", ErrorMessage = "Please enter a valid integer.")]
+        [Required]        
         public string grade { get; set; }
         [Display(Name = "class size")]
         [Required]

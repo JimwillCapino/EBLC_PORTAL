@@ -33,19 +33,19 @@
                     <div class="row row-space">
                         <div class="col-2">
                             <div class="input-group">
-                                <input class="input--style-1" type="text" placeholder="FIRSTNAME" asp-for="FirstName">
+                                <input class="input--style-1" type="text" placeholder="FIRST NAME" asp-for="FirstName">
                                 <span asp-validation-for="FirstName" style="color:red"></span>
                             </div>
                         </div>
                         <div class="col-2">
                             <div class="input-group">
-                                <input class="input--style-1" type="text" placeholder="MIDDLENAME" asp-for="MiddleName">
+                                <input class="input--style-1" type="text" placeholder="MIDDLE NAME" asp-for="MiddleName">
                                 <span asp-validation-for="MiddleName" style="color:red"></span>
                             </div>
                         </div>
                         <div class="col-2">
                             <div class="input-group">
-                                <input class="input--style-1" type="text" placeholder="LASTNAME" asp-for="LastName">
+                                <input class="input--style-1" type="text" placeholder="LAST NAME" asp-for="LastName">
                                 <span asp-validation-for="LastName" style="color:red"></span>
                             </div>
                         </div>                       
@@ -89,9 +89,8 @@
                                         <option value="6">6</option>
                                     </select>
                                     <div class="select-dropdown"></div>
-                                    <span asp-validation-for="sex" style="color:red"></span>
-                                </div>
-                                <span asp-validation-for="GradeEnrolled" style="color:red"></span>
+                                    <span asp-validation-for="GradeEnrolled" style="color:red"></span>
+                                </div>                               
                             </div>
                         </div>
                     </div>
@@ -110,7 +109,7 @@
                         </div>
                         <div class="col-2">
                             <div class="input-group">
-                                <label class="input--style-1"><input class="input--style-1" type="file" placeholder="STUDENT PICTURE" accept=".pdf" asp-for="TORFile">TOR</label>
+                                <label class="input--style-1"><input class="input--style-1" type="file" placeholder="STUDENT PICTURE" accept=".pdf" asp-for="TORFile">FORM-137</label>
                                 <span asp-validation-for="TORFile" style="color:red"></span>
                             </div>
                         </div>
@@ -125,19 +124,19 @@
                     <div class="row row-space">
                         <div class="col-2">
                             <div class="input-group">
-                                <input class="input--style-1" type="text" placeholder="PARENTS FIRSTNAME" asp-for="ParentFirstName">
+                                <input class="input--style-1" type="text" placeholder="GUARDIAN FIRST NAME" asp-for="ParentFirstName">
                                 <span asp-validation-for="ParentFirstName" style="color:red"></span>
                             </div>
                         </div>
                         <div class="col-2">
                             <div class="input-group">
-                                <input class="input--style-1" type="text" placeholder="PARENTS MIDDLENAME" asp-for="ParentMiddleName">
+                                <input class="input--style-1" type="text" placeholder="GUARDIAN MIDDLE NAME" asp-for="ParentMiddleName">
                                 <span asp-validation-for="ParentMiddleName" style="color:red"></span>
                             </div>
                         </div>
                         <div class="col-2">
                             <div class="input-group">
-                                <input class="input--style-1" type="text" placeholder="PARENTS LASTNAME" asp-for="ParentLastName">
+                                <input class="input--style-1" type="text" placeholder="GUARDIAN LAST NAME" asp-for="ParentLastName">
                                 <span asp-validation-for="ParentLastName" style="color:red"></span>
                             </div>
                         </div>
@@ -145,7 +144,7 @@
                     <div class="row row-space">
                         <div class="col-2">
                             <div class="input-group">
-                                <input class="input--style-1" id="datetimePickerParent" type="date" placeholder="PARENT BIRTHDATE" asp-for="ParentBirthday">
+                                <input class="input--style-1" id="datetimePickerParent" type="date" placeholder="GUARDIANS BIRTHDATE" asp-for="ParentBirthday">
                               
                                 <span asp-validation-for="ParentBirthday" style="color:red"></span>
                                
@@ -155,7 +154,7 @@
                             <div class="input-group">
                                 <div class="rs-select2 js-select-simple select--no-search">
                                     <select asp-for="Parentsex">
-                                        <option value="" disabled="disabled" selected="selected">GENDER</option>
+                                        <option value="" disabled="disabled" selected="selected">SEX</option>
                                         <option value="M">Male</option>
                                         <option value="F">Female</option>
                                     </select>

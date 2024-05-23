@@ -19,5 +19,6 @@ namespace Basecode.Data.ViewModels
         [Range(60, 100, ErrorMessage = "Grade must be between 50 and 100.")]
         public int GradeInput { get; set; }
         public List<GradesViewModel> Grades { get; set; }
+        public int? passingGrade { get; set; }
     }
 }

@@ -23,9 +23,17 @@ namespace Basecode.Services.Interfaces
         public List<TeacherClassDetails> GetTeacherClassDetails(string teacher_Id);
         public List<HomeRoom> GetTeacherHomeRoom(string teacher_Id);
         public void UpdateClass(ClassViewModel classdetails);
-        public void AddClassStudents(List<ClassStudents> students);
+        public void AddClassStudents(List<ClassStudents> students, string teacher);
         public List<ClassStudentViewModel> GetClassStudents(int classId);
         public TeacherClassDetails GetTeacherSubjectDetails(int classid, int subjectId);
-        public Task<int> isScheduleCollided(string schedule, string teacherId);
+        public Task<int> isScheduleCollided(string schedule, string teacherId, int? classId);
+        public ScholasticRecords GetScholasticRecordsById(int id);
+        public RemedialClass GetRemedialById(int id);
+        public List<RemedialDetails> GetRemedialDetailsByClass(int RemedialClassId);
+        public int AddSholasticRecord(ScholasticRecords scholasticRecords);
+        public int AddRemedialClass(RemedialClass remedial);
+        public void AddRemedialDetails(RemedialDetails details);
+        public void UpdateScholasticRecords(ScholasticRecords records);
+        public int UpdateRemedialClass(RemedialClass remedialClass);
     }
 }

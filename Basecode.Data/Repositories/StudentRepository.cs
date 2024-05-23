@@ -17,12 +17,13 @@ namespace Basecode.Data.Repositories
         { 
             _context = context;
         }
-        public void AddStudent(Student student)
+        public int AddStudent(Student student)
         {
             try
             {
-                _context.Student.Add(student);
+               var entity = _context.Student.Add(student);
                 _context.SaveChanges();
+                return entity.Entity.Student_Id;
             }
             catch(Exception ex)
             {

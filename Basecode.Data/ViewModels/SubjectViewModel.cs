@@ -16,7 +16,7 @@ namespace Basecode.Data.ViewModels
         public string subjectname { get; set; }
         [Display(Name = "grade")]
         [Required]
-        [RegularExpression(@"^\d+$", ErrorMessage = "Please enter a valid integer.")]
+       
         public string grade { get; set; }
         [Display(Name = "component subject")]
         [Required]

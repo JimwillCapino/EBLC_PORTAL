@@ -26,6 +26,31 @@ namespace Basecode.Data.Repositories
             _teacherRepository = teacherRepository;
             _subjectRepository = subjectRepository;
         }
+        public void AddStudentAdviser(StudentAdviser studentAdviser)
+        {
+            try
+            {
+                _context.StudentAdviser.Add(studentAdviser);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+        public StudentAdviser GetStudentAdviserByStudentId(int id, string schoolYear)
+        {
+            try
+            {
+                return _context.StudentAdviser.FirstOrDefault(p => p.studentId == id && p.Schoolyear == schoolYear);              
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
         public int AddClass(Class classroom)
         {
             try
@@ -428,6 +453,135 @@ namespace Basecode.Data.Repositories
                                             advisername = t.firstname + " " + t.lastname,
                                         };
                 return unionClassDetails.OrderByDescending(p => p.grade).FirstOrDefault().grade;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public ScholasticRecords GetScholasticRecordsById(int id)
+        {
+            try
+            {
+                return _context.ScholasticRecords.Find(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public ScholasticRecords GetScholasticRecords(int studentId, string SchoolYear)
+        {
+            try
+            {
+                return _context.ScholasticRecords.FirstOrDefault(p => p.StudentId == studentId && p.SchoolYear == SchoolYear);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public int AddSholasticRecord(ScholasticRecords scholasticRecords)
+        {
+            try
+            {
+                var entity = _context.ScholasticRecords.Add(scholasticRecords);
+                _context.SaveChanges();
+                return entity.Entity.SKId;
+               
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public RemedialClass GetRemedialById(int id)
+        {
+            try
+            {
+                return _context.RemedialClass.Find(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public RemedialClass GetRemedial(int studentId, int scholasticId)
+        {
+            try
+            {
+                return _context.RemedialClass.FirstOrDefault(p => p.StudentId == studentId && p.SchoolId == scholasticId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public int AddRemedialClass(RemedialClass remedial)
+        {
+            try
+            {
+                var entity = _context.RemedialClass.Add(remedial);
+                _context.SaveChanges();
+                return entity.Entity.Id;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void AddRemedialDetails(RemedialDetails details)
+        {
+            try
+            {
+                _context.RemedialDetails.Add(details);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+       public List<RemedialDetails> GetRemedialDetailsByClass(int RemedialClassId)
+       {
+            try
+            {
+                return _context.RemedialDetails.Where(p => p.RemedialClass == RemedialClassId).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void UpdateScholasticRecords(ScholasticRecords records)
+        {
+            try
+            {
+                _context.ScholasticRecords.Update(records);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public int UpdateRemedialClass(RemedialClass remedialClass)
+        {
+            try
+            {
+                var entity = _context.RemedialClass.Update(remedialClass);
+                _context.SaveChanges();
+                return entity.Entity.Id;
             }
             catch (Exception ex)
             {

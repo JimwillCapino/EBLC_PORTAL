@@ -138,6 +138,18 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
+        public List<Subject> GetAllSubjects(int studentId, string gradelevel)
+        {
+            try
+            {
+                return _subjectRepository.GetAllSubjects(studentId, gradelevel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(ex.Message);
+            }
+        }
         public ChildSubjectContainer GetChildSubject(int headId)
         {
             try

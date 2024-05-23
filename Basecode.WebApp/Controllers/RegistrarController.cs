@@ -208,6 +208,197 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("Index");
             }         
         }
+        [HttpPost]
+        public IActionResult ScholasticRecordForm()
+        {
+            var studentId = Int32.Parse(Request.Form["studentId"]);
+            var gradeLevel = Request.Form["grade"];
+            try
+            {             
+                var scholasticForm = new SchoolasticViewModel()
+                {
+                    StudentId = studentId,
+                    subjects = _subjectService.GetAllSubjects(studentId, gradeLevel),
+                    Grade = gradeLevel
+                };
+                return View(scholasticForm);
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                return RedirectToAction("StudentInfo", new { student_Id = studentId });
+            }
+        }
+        [HttpPost]
+        public IActionResult AddScholasticRecordForm(SchoolasticViewModel schoolastic)
+        {
+            try 
+            {
+                var schoolInfo = new ScholasticRecords()
+                {
+                    StudentId = schoolastic.StudentId,
+                    School = schoolastic.School,
+                    SchoolId = schoolastic.SchoolId,
+                    District = schoolastic.District,
+                    Division = schoolastic.Division,
+                    Region = schoolastic.Region,
+                    Grade = schoolastic.Grade,
+                    Section = schoolastic.Section,
+                    SchoolYear = schoolastic.SchoolYear,
+                    Adviser = schoolastic.Adviser
+                };
+                var scholasticId = _classManagementService.AddSholasticRecord(schoolInfo);
+
+                var grades = Request.Form["graderate"];
+                var subjects = Request.Form["Subject_Id"];
+                var quarters = Request.Form["quarter"];
+
+                for(int x =0;x < grades.Count;x++)
+                {
+                    if (grades[x] != "")
+                    {
+                        var grade = new Grades()
+                        {
+                            Student_Id = schoolastic.StudentId,
+                            Grade_Level = schoolastic.Grade,
+                            Grade = Int32.Parse(grades[x]),
+                            Subject_Id = Int32.Parse(subjects[x]),
+                            ScholasticRecords = scholasticId,
+                            Quarter = Int32.Parse(quarters[x]),
+                            School_Year = schoolastic.SchoolYear,
+                        };
+                        _studentManagementService.SubmitGrade(grade);
+                    }                   
+                }
+                var learningAreas = Request.Form["learningAreas"];
+                var finalRating = Request.Form["finalRating"];
+                var remedialClassMark = Request.Form["remedialClassMark"];
+                var recomputedFinalGrade = Request.Form["recomputedFinalGrade"];
+                var remarks = Request.Form["remarks"];
+                if (learningAreas.Count > 0 && !schoolastic.from.Equals("") && !schoolastic.to.Equals(""))
+                {
+                    var remedialClass = new RemedialClass()
+                    {
+                        from = schoolastic.from,
+                        to = schoolastic.to,
+                        SchoolId = scholasticId,
+                        StudentId = schoolastic.StudentId
+                    };
+                    var id = _classManagementService.AddRemedialClass(remedialClass);
+                    
+                   for(int x =0; x < learningAreas.Count; x++)
+                   {
+                        var remedialDetails = new RemedialDetails()
+                        {
+                            RemedialClass = id,
+                            LearningAreas = learningAreas[x],
+                            FinalRating = Int32.Parse(finalRating[x]),
+                            RemidialClassMark = remedialClassMark[x],
+                            RecomputedFinalGrade = Int32.Parse(recomputedFinalGrade[x]),
+                            Remarks = remarks[x]
+                        };
+                        _classManagementService.AddRemedialDetails(remedialDetails);
+                   }
+                }
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully added scholastic records";
+                return RedirectToAction("StudentInfo", new { student_Id = schoolastic.StudentId, school_year = schoolastic.SchoolYear });
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("StudentInfo", new { student_Id = schoolastic.StudentId });
+            }
+        }
+        public IActionResult AddRemedialClassDetailsForm(int remedialClassId, int studentId, int schoolId)
+        {
+            try
+            {
+                ViewData["Success"] = Constants.ViewDataErrorHandling.Success;
+                ViewData["ErrorMessage"] = Constants.ViewDataErrorHandling.ErrorMessage;
+                var remedialClass =_classManagementService.GetRemedialById(remedialClassId);
+                if(remedialClass == null)
+                {
+                    remedialClass = new RemedialClass()
+                    {
+                        StudentId = studentId,
+                        SchoolId = schoolId
+                    };
+                }
+                return View(remedialClass);
+            }
+            catch (Exception ex)
+            {
+                var remedialClass = _classManagementService.GetRemedialById(remedialClassId);
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("StudentInfo", new { student_Id = remedialClass.StudentId });
+            }
+        }
+        [HttpPost]
+        public IActionResult AddRemedialClass(RemedialClass remedialClass )
+        {
+            try
+            {
+
+                var learningAreas = Request.Form["learningAreas"];
+                var finalRating = Request.Form["finalRating"];
+                var remedialClassMark = Request.Form["remedialClassMark"];
+                var recomputedFinalGrade = Request.Form["recomputedFinalGrade"];
+                var remarks = Request.Form["remarks"];
+                var schoolastic = _classManagementService.GetScholasticRecordsById(remedialClass.SchoolId);
+                if (learningAreas.Count == 0)
+                    throw new Exception("There are now rows added");
+                var id = _classManagementService.UpdateRemedialClass(remedialClass);
+
+                for (int x = 0; x < learningAreas.Count; x++)
+                {
+                    var remedialDetails = new RemedialDetails()
+                    {
+                        RemedialClass = id,
+                        LearningAreas = learningAreas[x],
+                        FinalRating = Int32.Parse(finalRating[x]),
+                        RemidialClassMark = remedialClassMark[x],
+                        RecomputedFinalGrade = Int32.Parse(recomputedFinalGrade[x]),
+                        Remarks = remarks[x]
+                    };
+                    _classManagementService.AddRemedialDetails(remedialDetails);
+                }
+
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully added scholastic records";
+                return RedirectToAction("StudentInfo", new { student_Id = remedialClass.StudentId, school_year = schoolastic.SchoolYear});
+            }
+            catch (Exception ex)
+            {
+                var schoolastic = _classManagementService.GetScholasticRecordsById(remedialClass.SchoolId);
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("AddRemedialClassDetailsForm", new { remedialClassId = remedialClass.Id, studentId = remedialClass.StudentId, schoolId = remedialClass.SchoolId});
+            }
+        }
+        public IActionResult UpdateScholasticRecords(StudentDetailsWithGrade details)
+        {
+            try
+            {
+                _classManagementService.UpdateScholasticRecords(details.ScholasticRecords);
+                Constants.ViewDataErrorHandling.Success = 1;
+                Constants.ViewDataErrorHandling.ErrorMessage = "Successfully updated scholastic records";
+                return RedirectToAction("StudentInfo", new { student_Id = details.ScholasticRecords.StudentId, school_year = details.ScholasticRecords.SchoolYear });
+            }
+            catch (Exception ex)
+            {
+                Constants.ViewDataErrorHandling.Success = 0;
+                Constants.ViewDataErrorHandling.ErrorMessage = ex.Message;
+                Console.WriteLine(ex);
+                return RedirectToAction("StudentInfo", new { student_Id = details.ScholasticRecords.StudentId, school_year = details.ScholasticRecords.SchoolYear });
+            }
+        }
         public IActionResult RemoveStudent(int studentId)
         {
             try
@@ -490,7 +681,7 @@ namespace Basecode_WebApp.Controllers
             {
                 _newEnrolleeService.AddSchedule(id, Schedule);
                 Constants.ViewDataErrorHandling.Success = 1;
-                Constants.ViewDataErrorHandling.ErrorMessage = "A student has been successfully scheduled for examination.";
+                Constants.ViewDataErrorHandling.ErrorMessage = "Student has been successfully scheduled for examination.";
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -507,7 +698,7 @@ namespace Basecode_WebApp.Controllers
             {
                 _newEnrolleeService.RejectNewEnrollee(id);
                 Constants.ViewDataErrorHandling.Success = 1;
-                Constants.ViewDataErrorHandling.ErrorMessage = "A student has been Rejected";
+                Constants.ViewDataErrorHandling.ErrorMessage = "Student has been Rejected";
                 return RedirectToAction("Enrollment");
             }
             catch (Exception ex)
@@ -524,7 +715,7 @@ namespace Basecode_WebApp.Controllers
             {
                 _newEnrolleeService.RejectNewEnrollee(id);
                 Constants.ViewDataErrorHandling.Success = 1;
-                Constants.ViewDataErrorHandling.ErrorMessage = "A student has been Rejected";
+                Constants.ViewDataErrorHandling.ErrorMessage = "Student has been Rejected";
                 return RedirectToAction("EnrollmentApproval");
             }
             catch (Exception ex)
@@ -545,7 +736,7 @@ namespace Basecode_WebApp.Controllers
                  _newEnrolleeService.AdmitNewEnrollee(id, lrn);
 
                 Constants.ViewDataErrorHandling.Success = 1;
-                Constants.ViewDataErrorHandling.ErrorMessage = "Student Successfully admitted.";
+                Constants.ViewDataErrorHandling.ErrorMessage = "Student successfully admitted.";
                 return RedirectToAction("EnrollmentApproval");
             }
             catch (Exception ex)
@@ -576,7 +767,7 @@ namespace Basecode_WebApp.Controllers
             try
             {
                 Constants.ViewDataErrorHandling.Success = 1;
-                Constants.ViewDataErrorHandling.ErrorMessage = "Teacher Removed Successfully!";
+                Constants.ViewDataErrorHandling.ErrorMessage = "Teacher removed successfully!";
                 await _teacherService.RemoveTeacher(aspid);
                 return RedirectToAction("ManageTeachersList");
             }
@@ -919,7 +1110,7 @@ namespace Basecode_WebApp.Controllers
                 //if(subject.HasChild)
 
                 Constants.ViewDataErrorHandling.Success = 1;
-                Constants.ViewDataErrorHandling.ErrorMessage = "Subject Removed!";
+                Constants.ViewDataErrorHandling.ErrorMessage = "Subject removed!";
                 return RedirectToAction("ManageSubjects");
             }
             catch (Exception ex)
@@ -944,7 +1135,7 @@ namespace Basecode_WebApp.Controllers
             {
                 _classManagementService.RemoveClass(classId);
                 Constants.ViewDataErrorHandling.Success = 1;
-                Constants.ViewDataErrorHandling.ErrorMessage = "Class Removed Successfully!";
+                Constants.ViewDataErrorHandling.ErrorMessage = "Class removed successfully!";
                 return RedirectToAction("ManageClass");
             }
             catch (Exception ex)
@@ -1126,7 +1317,7 @@ namespace Basecode_WebApp.Controllers
                     students.Add(cs);
                 }
                // _classManagementService.AddClassStudent(classStudent);
-                _classManagementService.AddClassStudents(students);
+                _classManagementService.AddClassStudents(students,model.AdviserName);
                 Constants.ViewDataErrorHandling.Success = 1;
                 Constants.ViewDataErrorHandling.ErrorMessage = "Successfully added a student to this class.";
                 return RedirectToAction("ClassDetails", new { classId = model.Id });
@@ -1428,13 +1619,7 @@ namespace Basecode_WebApp.Controllers
                 studentCard.Settings = _settingsService.GetSettings();
                 if(documentType == 0)
                 {
-                    studentCard.StudentDetails = await _studentManagementService.GetStudentGrades(StudentId, SchoolYear);
-                    if(studentCard.StudentDetails.studentClass == null)
-                    {
-                        Constants.ViewDataErrorHandling.Success = 0;
-                        Constants.ViewDataErrorHandling.ErrorMessage = "The student is currently not added to any class.";
-                        return RedirectToAction("StudentInfo", new { student_Id = StudentId });
-                    }
+                    studentCard.StudentDetails = await _studentManagementService.GetStudentGrades(StudentId, SchoolYear);                    
                     var document = new Rotativa.AspNetCore.ViewAsPdf("PDFView/ReportCardPDF", studentCard)
                     {
                         //FileName = studentCard.StudentDetails.Student.lastname+"_"+ studentCard.StudentDetails.Student.firstname+"Report_Card.pdf",

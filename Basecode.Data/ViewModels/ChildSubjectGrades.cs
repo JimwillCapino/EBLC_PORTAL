@@ -14,5 +14,6 @@ namespace Basecode.Data.ViewModels
         public List<ChildSubjectView> ChildSubjects { get; set; }
         public List<GradesDetail> GradesContainer { get; set;}
         public GradesDetail HeadSubjectGrade { get; set; }
+        public int? passingGrade { get; set; }  
     }
 }

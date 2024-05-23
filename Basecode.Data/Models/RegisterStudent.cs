@@ -15,14 +15,11 @@ namespace Basecode.Data.Models
         [Display(Name = "first name")]
         [Required]
         [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.", MinimumLength = 1)]
-        public string FirstName { get; set; }
-        [Display(Name = "middle name")]
-        [Required]
-        [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
-        public string MiddleName { get; set; }
+        public string FirstName { get; set; }  
+        public string? MiddleName { get; set; }
         [Display(Name = "last name")]
         [Required]
-        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
+        [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.", MinimumLength = 1)]
         public string LastName { get; set;}
         [Display(Name = "birthday")]
         [Required]
@@ -45,12 +42,10 @@ namespace Basecode.Data.Models
         [Display(Name = "LRN")]
         [Required]
         public string? LRN { get; set; }
-        [Display(Name = "Certificate of Good Moral")]
-        [Required]
+        [Display(Name = "Certificate of Good Moral")]       
         [RegularExpression(@"^.*\.pdf$", ErrorMessage = "Please upload a PDF file.")]
         public IFormFile? CGMFile { get; set; }
-        [Display(Name = "TOR")]
-        [Required]
+        [Display(Name = "TOR")]        
         [RegularExpression(@"^.*\.pdf$", ErrorMessage = "Please upload a PDF file.")]
         public IFormFile? TORFile { get; set; }
         public byte[]? BirthCertificateRecieve { get; set; }
@@ -59,15 +54,13 @@ namespace Basecode.Data.Models
         public string? ExamSchedule { get; set; }
         [Display(Name = "parent first name")]
         [Required]
-        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
+        [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.", MinimumLength = 1)]
         public string ParentFirstName { get; set; }
-        [Display(Name = "parent middle name")]
-        [Required]
-        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
-        public string ParentMiddleName { get; set; }
+        
+        public string? ParentMiddleName { get; set; }
         [Display(Name = "parent last name")]
         [Required]
-        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
+        [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.", MinimumLength = 1)]
         public string ParentLastName { get; set; }  
         [Display(Name = "phone number")]
         [Required]
@@ -75,7 +68,7 @@ namespace Basecode.Data.Models
         public string PhoneNumber { get; set; }
         [Display(Name = "address")]
         [Required]
-        [StringLength(50, ErrorMessage = "Massword must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
+        [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
         public string Address { get; set; }
         [Display(Name = "email")]
         [Required]

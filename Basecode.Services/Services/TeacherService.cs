@@ -101,7 +101,14 @@ namespace Basecode.Services.Services
                              
                 if (result.Succeeded)
                 {
-                    var userRole = _roleManager.FindByNameAsync("Teacher").Result;                  
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.Port = 587;
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new System.Net.NetworkCredential(_settingsRepository.GetSchoolEmail(), _settingsRepository.GetPassword()); // Enter seders User name and password       
+                    smtp.EnableSsl = true;
+                    var userRole = _roleManager.FindByNameAsync("Teacher").Result;   
+                    
                     if (userRole != null)
                         await _UserManager.AddToRoleAsync(teacherUser, userRole.Name);
 
@@ -111,18 +118,14 @@ namespace Basecode.Services.Services
                     mail.From = new MailAddress(_settingsRepository.GetSchoolEmail());
                     mail.Subject = "Account in EBLC Portal";
 
-                    mail.Body = "Greetings from the EBLC management. Your account has been created." + Environment.NewLine +
-                   "Your credentials are:" + Environment.NewLine +
-                   "Username: " + teacherUser.Email + Environment.NewLine +
-                   "Password: " + account.Password;
+                    mail.Body = "Greetings from the EBLC management.<br><br>"
+                              + "Your account has been created.<br><br>"
+                              + "Your credentials are:<br>"
+                              + "Username: <b>" + teacherUser.Email + "</b><br>"
+                              + "Password: <b>" + account.Password + "</b><br><br>"
+                              + "Thank you and welcome aboard.";
 
                     mail.IsBodyHtml = true;
-                    SmtpClient smtp = new SmtpClient();
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.Port = 587;
-                    smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = new System.Net.NetworkCredential(_settingsRepository.GetSchoolEmail(), _settingsRepository.GetPassword()); // Enter seders User name and password       
-                    smtp.EnableSsl = true;
                     smtp.Send(mail);
 
                 }

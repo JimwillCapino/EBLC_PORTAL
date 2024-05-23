@@ -9,7 +9,7 @@ namespace Basecode.Data.Interfaces
 {
     public interface IStudentRepository
     {
-        public void AddStudent(Student student);
+        public int AddStudent(Student student);
         public Student GetStudent(int id);
         public Task UpdateStudentAsync(Student student);
         public void UpdateStudent(Student student);

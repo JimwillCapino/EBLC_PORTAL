@@ -204,7 +204,7 @@
                             </table>
                             @if (max == 5)
                             {
-                                @if (finalGrade >= 75)
+                                @if (finalGrade >= @Model.passingGrade)
                                 {
                                     <p>Remarks: Passed</p>
                                 }

@@ -70,6 +70,17 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        public int? GetPassingGrade()
+        {
+            try
+            {
+                return this.GetDbSet<Settings>().ToList().FirstOrDefault().PassingGrade;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
         public int? GetWithHighHonor()
         {
             try

@@ -117,12 +117,7 @@ namespace Basecode.WebApp.Controllers
                 studentCard.Settings = _settingsService.GetSettings();
                 Console.Write(SchoolYear);
                 studentCard.StudentDetails = await _studentManagementService.GetStudentGrades(StudentId, _settingsService.GetSchoolYear());
-                if (studentCard.StudentDetails.studentClass == null)
-                {
-                    Constants.ViewDataErrorHandling.Success = 0;
-                    Constants.ViewDataErrorHandling.ErrorMessage = "The student is currently not added to any class.";
-                    return RedirectToAction("StudentInfo", new { student_Id = StudentId });
-                }
+                
                 //else { throw new Exception("Student did not belong to any class."); }
                 var document = new Rotativa.AspNetCore.ViewAsPdf("PDFView/ReportCardPDF", studentCard)
                 {
@@ -633,7 +628,9 @@ namespace Basecode.WebApp.Controllers
                 _settingsService.GetSettings().EndofClass.Value.Year.ToString();
                     school_year = schoolYear;
                 }
-                var test = _studentManagementService.GetValuesWithGrades(studentId, school_year);              
+                var test = _studentManagementService.GetValuesWithGrades(studentId, school_year);
+                var userportal = _usersService.GetUserPortal(_userManager.GetUserId(User)).Result;
+              
                 return View(test);                
             }
             catch (Exception ex)
@@ -649,6 +646,7 @@ namespace Basecode.WebApp.Controllers
             var behaviouralId = Int32.Parse(Request.Form["Behavioural"]);
             var Student_Id = Int32.Parse(Request.Form["StudentId"]);
             var grades = Request.Form["Grades"];
+           
             try
             {                  
                 var values = new Learner_Values
@@ -656,7 +654,8 @@ namespace Basecode.WebApp.Controllers
                     Behavioural_Statement = behaviouralId,                  
                     School_Year = _settingsService.GetSchoolYear(),
                     Student_Id = Student_Id,
-                    Grade = grades
+                    Grade = grades,
+                   
                 };
                 _studentManagementService.AddLearnerValues(values);
                 Constants.ViewDataErrorHandling.Success = 1;

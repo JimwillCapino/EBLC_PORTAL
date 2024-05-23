@@ -10,6 +10,7 @@
     if (Model.Parent.Parentsex == "F") parentsex = "Female";
     else parentsex = "Male";
     int successValue = (int)ViewData["Success"];
+    int quartermax = 0;
 }
 @using Basecode.Data
 @using Basecode.Data.ViewModels
@@ -52,8 +53,16 @@
             <div class="col-lg-4">
                 <div class="card mb-4">
                     <div class="card-body text-center">
-                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
-                             class="rounded-circle img-fluid" style="width: 150px;">
+                        @if (Model.Student.profilePicture == null)
+                        {
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                                 class="rounded-circle img-fluid" style="width: 150px;">
+                        }
+                        else
+                        {
+                            <img src="data:image/png;base64,@Convert.ToBase64String(Model.Student.profilePicture)" alt="avatar"
+                                 class="rounded-circle img-fluid" style="width: 150px;">
+                        }
                         <h5 class="my-3">@Model.Student.FirstName @Model.Student.MiddleName @Model.Student.LastName</h5>
                         <p class="text-muted mb-1">@Model.Student.Status</p>
                         <p class="text-muted mb-4">Grade @Model.Student.Grade</p>
@@ -71,15 +80,8 @@
                             </p>
                         }
 
-                        <div class="d-flex justify-content-center mb-2">                           
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-success ms-1 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Document
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">                                    
-                                    <li><a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear="@Model.SchoolYear" asp-route-documentType="0"><button type="button" class="dropdown-item">Report Card</button></a></li>
-                                </ul>
-                            </div>
+                        <div class="d-flex justify-content-center mb-2">
+                            <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear="@Model.SchoolYear" asp-route-documentType="0"><button type="button" class="btn btn-success">Report Card</button></a>
                         </div>
                         <div class="row">
                             <div class="col align-self-center">
@@ -157,6 +159,10 @@
                                                 <td>@subject.Subject_Name</td>
                                                 @{
                                                     var SubjectWithGrades = Model.grades.FirstOrDefault(p => p.SubjectId == subject.Subject_Id);
+                                                    if (SubjectWithGrades != null && SubjectWithGrades.Grades.Where(p => p.Quarter == 5).Count() > 0)
+                                                    {
+                                                        quartermax += 1;
+                                                    }
                                                 }
                                                 @if (SubjectWithGrades != null)
                                                 {
@@ -181,10 +187,18 @@
                                         }
                                     </tbody>
                                 </table>
-                                <p class="lead">General Average: @Math.Floor(avg / Model.TotalHeadSubjectCount)</p>
-                                @if (Math.Floor(avg / Model.TotalHeadSubjectCount) >= Model.PassingGrade)
+
+                                @if (quartermax == Model.TotalHeadSubjectCount)
                                 {
-                                    <p class="lead">Promoted</p>
+                                    <p class="lead">General Average: @Math.Floor(avg / Model.TotalHeadSubjectCount)</p>
+                                    if (Math.Floor(avg / Model.TotalHeadSubjectCount) >= Model.PassingGrade)
+                                    {
+                                        <p class="lead">Promoted</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="lead">Not Promoted</p>
+                                    }
                                 }
                                 @{
                                     avg = 0;
