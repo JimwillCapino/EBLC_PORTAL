@@ -571,7 +571,18 @@
                     <input type="hidden" id="studentId" name="studentId" value="@Model.Student.Student_ID"/>
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Grade:</label>
-                        <input type="text" class="form-control" id="lrn" name="grade" required>
+                        <select name="grade" class="form-control" required>
+                            <option value="" disabled="disabled" selected="selected">grade</option>
+                            <option value="Nursery">Nursery</option>
+                            <option value="Kinder 1">Kinder 1</option>
+                            <option value="Kinder 2">Kinder 2</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
                     </div>
 
                 </div>

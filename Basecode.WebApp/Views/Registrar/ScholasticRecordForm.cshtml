@@ -57,7 +57,18 @@
                             </div>
                             <div class="form-group col-lg-4">
                                 <label for="inputEmail4">Classified as Grade</label>
-                                <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="Grade">
+                                <select asp-for="Grade" class="form-control">
+                                    <option value="" disabled="disabled" selected="selected">grade</option>
+                                    <option value="Nursery">Nursery</option>
+                                    <option value="Kinder 1">Kinder 1</option>
+                                    <option value="Kinder 2">Kinder 2</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                </select>
                                 <span asp-validation-for="Grade" class="text-danger"></span>
                             </div>
                             <div class="form-group col-lg-4">

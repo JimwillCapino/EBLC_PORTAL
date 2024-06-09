@@ -20,9 +20,7 @@ namespace Basecode.Data.ViewModels
         [Required]
         [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.", MinimumLength = 1)]
         public string FirstName { get; set; }
-        [Display(Name = "middle Name")]
-        [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.", MinimumLength = 1)]
-        public string MiddleName { get; set; }
+        public string? MiddleName { get; set; }
         [Display(Name = "last Name")]
         [Required]
         [StringLength(50, ErrorMessage = " Must be at least {2} and at most {1} characters long.", MinimumLength = 1)]

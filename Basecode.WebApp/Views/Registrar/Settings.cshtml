@@ -115,7 +115,7 @@
                                                     <img src="data:image/png;base64,@Convert.ToBase64String(Model.SchoolLogo)" class="rounded mx-auto d-block" style="width: 100px; height:100px" alt="" />
                                             }
                                             <p>Click this button to pick a new photo</p>                                                                                           
-                                            <input type="file" id="newPhotoInput" asp-for="SchoolLogoRecieve" />
+                                            <input type="file" id="newPhotoInput" accept="image/*" asp-for="SchoolLogoRecieve" />
                                             <input type="hidden" asp-for="SchoolLogo"/>
                                             
                                         </div>
@@ -130,8 +130,8 @@
                                             {
                                                     <img src="data:image/png;base64,@Convert.ToBase64String(Model.DepEdLogo)" class="rounded mx-auto d-block" style="width: 100px; height:100px" alt="" />
                                             }
-                                            <p>Click this button to pick a new photo</p>                                                                                        
-                                            <input type="file" id="newPhotoInput"  asp-for="DepEdLogoRecieve" />
+                                            <p>Click this button to pick a new photo</p>
+                                            <input type="file" id="newPhotoInput" accept="image/*" asp-for="DepEdLogoRecieve" />
                                             <input type="hidden" asp-for="DepEdLogo" />                                        
                                         </div>
                                     </div>

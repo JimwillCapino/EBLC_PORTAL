@@ -9,6 +9,6 @@ namespace Basecode.Data.ViewModels
     public class ChildSubjectForm
     {
         public int HeadId { get; set; }
-        public int Grade { get; set; }
+        public string Grade { get; set; }
     }
 }

@@ -72,6 +72,10 @@
             box-sizing: border-box; /* Include padding and border in the element's total width and height */
         }
 
+        .page-break {
+            page-break-before: always;
+        }
+
         .centered-table {
             border-collapse: collapse;
             width: 100%;
@@ -106,7 +110,7 @@
                         <h2>Learner Permanent Record for Elementary School (SF10-ES)</h2>
                     </td>
                     <td>
-                        <img src="~/pngegg.png" class="rounded" style="width: 80px; height:80px" alt="" />
+                        <img src="/pngegg.png" class="rounded" style="width: 80px; height:80px" alt="" />
                     </td>
                 </tr>
             </table>
@@ -283,7 +287,9 @@
                 </tbody>
                 
             </table>
-            <table>
+            @if(content.RemedialClass != null && content.RemedialDetails != null)
+            {
+             <table>
                 <tr>
                     <td>Remidial Class: </td>
                     <td>Conducted from: @content.RemedialClass.from</td>
@@ -322,8 +328,10 @@
                         </tr>
                     }
                 </tbody>
-            </table>
-            <br />           
+            </table>                
+            }
+            <br />
+            <div class="page-break"></div>
         </div>
 
        

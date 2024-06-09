@@ -159,9 +159,15 @@ namespace Basecode.Services.Services
 
                 rtpCommons.Id = profile.RTPCommonsId;
                 var user = await _userManager.FindByIdAsync(profile.AspUserId);
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                await _userManager.ChangeEmailAsync(user, profile.Email, token);
-                if(profile.ProfilePicRecieve != null)
+                if(user == null)
+                    throw new Exception("User not found.");
+                string token = await _userManager.GenerateChangeEmailTokenAsync(user,profile.Email);
+                var result = await _userManager.ChangeEmailAsync(user, profile.Email, token);
+                if (!result.Succeeded)
+                    throw new Exception("Email error");
+                user.UserName = profile.Email;
+                await _userManager.UpdateAsync(user);
+                if (profile.ProfilePicRecieve != null)
                 {
                     using(MemoryStream stream = new MemoryStream()) 
                     {
@@ -179,7 +185,7 @@ namespace Basecode.Services.Services
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw new Exception(Constants.Exception.DB);
+                throw new Exception(e.Message);
             }
         }
         public async Task ChangePassword(ProfileViewModel profile)

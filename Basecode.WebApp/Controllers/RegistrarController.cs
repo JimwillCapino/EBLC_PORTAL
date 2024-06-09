@@ -949,7 +949,7 @@ namespace Basecode_WebApp.Controllers
                 return RedirectToAction("ManageSubjects");
             }
         }
-        public IActionResult AddChildSubjectForm(int headId, int grade)
+        public IActionResult AddChildSubjectForm(int headId, string grade)
         {
             try
             {
@@ -1624,7 +1624,8 @@ namespace Basecode_WebApp.Controllers
                     {
                         //FileName = studentCard.StudentDetails.Student.lastname+"_"+ studentCard.StudentDetails.Student.firstname+"Report_Card.pdf",
                         PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
-                        PageMargins = { Left = 10, Bottom = 10, Right = 10, Top = 10 }
+                        PageMargins = { Left = 10, Bottom = 10, Right = 10, Top = 10 },
+                        CustomSwitches = "--disable-smart-shrinking"
                     };
                     return document;
                 }
