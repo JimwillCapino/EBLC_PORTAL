@@ -2,51 +2,132 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "List of classes";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model ClassDetailsViewModel
 <link rel="stylesheet" href="/css/TableInfo.css" />
+<style>
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px; /* Adjust vertical spacing */
+        table-layout: fixed;
+    }
+
+    th, td {
+        padding: 10px; /* Adjust padding as needed */
+        text-align: center; /* Center align content */
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        var table = $("#table").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": true, // for disable multiple column at once
+            "ajax": {
+                "url": "/Registrar/ManageClassDataTable",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columnDefs": [{
+                "targets": [0],
+                "orderable": true
+            },
+            {
+                "targets": [1],
+                "orderable": true
+            },
+            {
+                "targets": [2],
+                "orderable": true
+            },
+            {
+                "targets": [3],
+                "orderable": true
+            }
+           ],
+
+            "columns": [
+                { "data": "classname", "name": "classname" },
+                { "data": "advisername", "name": "advisername" },
+                { "data": "grade", "name": "grade" },
+                { "data": "classsize", "name": "classsize" }
+                
+               
+            ]
+        });
+
+        $('#table tbody').on('click', 'tr', function () {
+            // Get data for the clicked row
+            var rowData = table.row(this).data();
+
+            // Redirect to another page with the row data
+            window.location.href = '@Url.Action("ClassDetails", "Registrar")?classId=' + rowData.id; // Adjust the URL as per your MVC route
+        });
+    });
+
+
+</script>
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main p-5">
-        <h1>Manage Class</h1>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1></h1>
-            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Class</button>
-        </div>
-        <div class="table-responsive overflow-auto">
-            <table class="table overflow-auto" id="myTable">
-                <thead>
-                    <tr>
-                        <th>Class Name</th>
-                        <th>Grade</th>
-                        <th>Adviser</th>
-                        <th>Class Size</th>
-                        <th>School Year</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(var classes in Model.Classes)
-                    {
-                        <tr class="bg-blue" onclick="redirectToIndex(@classes.Id)">
-                            <td class="pt-3 mt-1">@classes.ClassName</td>
-                            <td class="pt-3">@classes.Grade</td>
-                            <td class="pt-3">@classes.ClassSize</td>
-                            <td class="pt-3">@classes.AdviserName</td>
-                            <td class="pt-3">@classes.SchoolYear</td>
-                            <td class="pt-3">
-                                <i class="lni lni-trash-can" onclick="RemoveClass(@classes.Id)"></i>
-                            </td>
+    <div class="main p-5" style="height:400px; overflow-y: auto;">
+        
+
+        @if (successValue == 0)
+        {
+            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-exclamation-octagon-fill"></i>
+                <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+        }
+        else if (successValue == 1)
+        {
+            <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-check-circle-fill"></i>
+                <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @{
+            Constants.ViewDataErrorHandling.Success = -1;
+            Constants.ViewDataErrorHandling.ErrorMessage = null;
+        }
+        <div class="container">
+
+            <br />
+            <div style="width:95%; margin:0 auto;">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a>Manage Classes</a></li>
+                    </ol>
+                </nav>
+                <h1>Manage Classes</h1>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1></h1>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Class</button>
+                </div>
+                <table id="table" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Class Name</th>
+                            <th>Adviser</th>
+                            <th>Grade</th>
+                            <th>Class Size</th>                                                    
                         </tr>
-                        <tr id="spacing-row">
-                            <td> </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <!--Modal for Adding Class-->
@@ -54,49 +135,126 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Input Subject Details</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add new Class</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                @using (Html.BeginForm("AddClass", "Registrar", FormMethod.Post))
-                {
+                <form asp-action="AddClass">
                     <div class="modal-body">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="mb-3">
                             <label for="recipient-name" class="col-form-label">Class Name:</label>
-                            <input type="text" class="form-control" id="recipient-name" name="className">
+                            <input type="text" class="form-control" id="recipient-name" asp-for="classname" >
+                            <span asp-validation-for="classname" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Grade:</label>
-                            <input type="text" class="form-control" id="recipient-name" name="grade">
+                            <select asp-for="grade" class="form-control">
+                                <option value="" disabled="disabled" selected="selected">GRADE</option>
+                                <option value="Nursery">Nursery</option>
+                                <option value="Kinder 1">Kinder 1</option>
+                                <option value="Kinder 2">Kinder 2</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                            <span asp-validation-for="grade" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Class Size:</label>
-                            <input type="text" class="form-control" id="recipient-name" name="classsize">
+                            <input type="text" class="form-control" id="recipient-name" asp-for="classsize" >
+                            <span asp-validation-for="classsize" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Adviser:</label>
-                            <select class="form-select" aria-label="Default select example" name="Adviser">
-                                <option selected>Open this select menu</option>
-                                @foreach(var teacher in Model.Teachers)
+                            <select class="form-select" aria-label="Default select example" asp-for="adviser" >
+                                <option value="" selected>Open this select menu</option>
+                                @foreach (var teacher in Model.teachers)
                                 {
-                                    <option value="@teacher.Id">@teacher.FirstName @teacher.MiddleName @teacher.LastName</option>
+                                    <option value="@teacher.id">@teacher.firstname @teacher.middlename @teacher.lastname</option>
                                 }
                             </select>
+                            <span asp-validation-for="adviser" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-danger">Add Class</button>
                     </div>
-                }
+                </form>                
             </div>
         </div>
     </div>
-    <script>
-        function redirectToIndex(classId) {
-            window.location.href = '@Url.Action("ClassDetails", "Registrar")?classId=' + classId;
-        }
+
+    <!--Modal for Editing Class-->
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Class</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="AddClass">
+                    <div class="modal-body">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="classid" id="classid"/>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Class Name:</label>
+                            <input type="text" class="form-control" id="name" asp-for="classname">
+                            <span asp-validation-for="classname" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Grade:</label>
+                            <select asp-for="grade">
+                                <option value="" disabled="disabled" selected="selected">GRADE TO ENROLL</option>
+                                <option value="Nursery">Nursery</option>
+                                <option value="Kinder 1">Kinder 1</option>
+                                <option value="Kinder 2">Kinder 2</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                            <span asp-validation-for="grade" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Class Size:</label>
+                            <input type="text" class="form-control" id="size" asp-for="classsize">
+                            <span asp-validation-for="classsize" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Adviser:</label>
+                            <select class="form-select" aria-label="Default select example" id="adviser" asp-for="adviser">
+                                <option value="" selected>Open this select menu</option>
+                                @foreach (var teacher in Model.teachers)
+                                {
+                                    <option value="@teacher.id">@teacher.firstname @teacher.middlename @teacher.lastname</option>
+                                }
+                            </select>
+                            <span asp-validation-for="adviser" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Add Class</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>        
         function RemoveClass(classId){
             window.location.href = '@Url.Action("RemoveClass", "Registrar")?classId=' + classId;
         }
     </script>
 </div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

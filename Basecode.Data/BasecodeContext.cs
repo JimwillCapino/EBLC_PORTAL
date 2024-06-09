@@ -24,6 +24,9 @@ namespace Basecode.Data
         }
 
         //public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<RemedialClass> RemedialClass { get; set; }
+        public virtual DbSet<RemedialDetails>RemedialDetails { get; set; }
+        public virtual DbSet<ScholasticRecords> ScholasticRecords { get; set; }
         public virtual DbSet<UsersPortal> UsersPortal { get; set; }
         public virtual DbSet<NewEnrollee>NewEnrollee { get; set; }
         public virtual DbSet<RTPCommons> RTPCommons { get; set; }
@@ -46,5 +49,6 @@ namespace Basecode.Data
         public virtual DbSet<Attendance> Attendance { get; set; }
         public virtual DbSet<AdminUserPortal> AdminUserPortal { get; set; }
         public virtual DbSet<TeacherRegistration> TeacherRegistration { get; set; }
+        public virtual DbSet<StudentAdviser> StudentAdviser { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,31 @@ namespace Basecode.Data.Repositories
             _context = context;
             _teacherRepository = teacherRepository;
             _subjectRepository = subjectRepository;
+        }
+        public void AddStudentAdviser(StudentAdviser studentAdviser)
+        {
+            try
+            {
+                _context.StudentAdviser.Add(studentAdviser);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+        public StudentAdviser GetStudentAdviserByStudentId(int id, string schoolYear)
+        {
+            try
+            {
+                return _context.StudentAdviser.FirstOrDefault(p => p.studentId == id && p.Schoolyear == schoolYear);              
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
         }
         public int AddClass(Class classroom)
         {
@@ -48,6 +74,19 @@ namespace Basecode.Data.Repositories
             }
             catch (Exception ex)
             {
+                throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
+            }
+        }        
+        public void UpdateClass(Class classroom)
+        {
+            try
+            {
+                _context.Class.Update(classroom);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
@@ -140,21 +179,21 @@ namespace Basecode.Data.Repositories
         {
             return _subjectRepository.GetSubjects();
         }
-        public List<ClassStudentViewModel> GetStudents(int grade)
+        public List<ClassStudentViewModel> GetStudents(string grade)
         {
             try
             {
-                var student = this.GetDbSet<Student>().ToList().FindAll(s => s.CurrGrade == grade);
+                var student = this.GetDbSet<Student>().ToList().FindAll(s => s.CurrGrade == grade && s.status == "Enrolled");
                 var userstudent = this.GetDbSet<UsersPortal>().ToList();
 
                 var students = from s in student
                                join u in userstudent on s.UID equals u.UID
                                select new ClassStudentViewModel
                                {
-                                   Student_Id =s.Student_Id,
-                                   FirstName = u.FirstName,
-                                   MiddleName = u.MiddleName,
-                                   LastName =   u.LastName,
+                                   studentid =s.Student_Id,
+                                   firstname = u.FirstName,
+                                   middlename = u.MiddleName,
+                                   lastname =   u.LastName,
                                };
                 return students.ToList();
             }
@@ -176,11 +215,11 @@ namespace Basecode.Data.Repositories
                                   join u in u_students on s.UID equals u.UID
                                   select new ClassStudentViewModel
                                   {
-                                      Id = cs.Id,
-                                      Student_Id = cs.Student_Id,
-                                      FirstName = u.FirstName,
-                                      MiddleName = u.MiddleName,
-                                      LastName = u.LastName,
+                                      id = cs.Id,
+                                      studentid = cs.Student_Id,
+                                      firstname = u.FirstName,
+                                      middlename = u.MiddleName,
+                                      lastname = u.LastName,
                                   };
                 return studentlist.ToList();
             }
@@ -203,23 +242,31 @@ namespace Basecode.Data.Repositories
 
                 var classSubs = from classsub in classssubjects
                                 join subs in subjects on classsub.Subject_Id equals subs.Subject_Id
-                                join t in teachers on classsub.Teacher_Id equals t.Id
+                                join t in teachers on classsub.Teacher_Id equals t.id
                                 select new ClassSubjectViewModel
                                 {
                                     Id = classsub.Id,
                                     Subject_Id = subs.Subject_Id,
-                                    TeacherId = t.Id,
+                                    TeacherId = t.id,
                                     SubjectName = subs.Subject_Name,
-                                    TeacherName = t.FirstName+ " " +t.LastName
+                                    TeacherName = t.firstname+ " " +t.lastname,
+                                    Schedule = classsub.Schedule
                                 };
-                return classSubs.ToList();
-                                
+                var orderedClassSubs = classSubs
+    .Where(p => p.Schedule != null) // Filter out null schedule values
+    .OrderBy(p => DateTime.TryParseExact(p.Schedule, "h:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedTime)
+                        ? parsedTime
+                        : DateTime.MinValue) // Handle invalid schedule values
+    .ToList();
+
+                return orderedClassSubs;
+
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
-        }
+        }        
         public async Task<List<ClassInitView>> GetAllClass()
         {
             var classes = this.GetDbSet<Class>().ToList();
@@ -227,16 +274,15 @@ namespace Basecode.Data.Repositories
 
             var classesdetails = from c in classes
                                  join t in teachers
-                                 on c.Adviser equals t.Id
+                                 on c.Adviser equals t.id
                                  select new ClassInitView
                                  {
-                                     Id = c.Id,
-                                     AdviserId = t.Id,
-                                     Grade = c.Grade,
-                                     ClassSize = c.ClassSize,
-                                     ClassName = c.ClassName,
-                                     AdviserName = t.FirstName + " " + t.LastName,
-                                     SchoolYear = c.SchoolYear,
+                                     id = c.Id,
+                                     adviserid = t.id,
+                                     grade = c.Grade,
+                                     classsize = c.ClassSize,
+                                     classname = c.ClassName,
+                                     advisername = t.firstname + " " + t.lastname                                     
                                  };
             return classesdetails.ToList();
         }
@@ -246,16 +292,17 @@ namespace Basecode.Data.Repositories
             {
                 var selectedClass = this.GetDbSet<Class>().Find(id);
                 var teachers = await _teacherRepository.GetAllTeachersInitViewAsync();
-                var teacher = teachers.Find(t => t.Id == selectedClass.Adviser);
+                var teacher = teachers.Find(t => t.id == selectedClass.Adviser);
                 var studentsByGrade = this.GetStudents(selectedClass.Grade);
                 var classdetails = new ClassViewModel
                 {
                     Id = selectedClass.Id,
-                    Adviser = teacher.Id,
+                    Adviser = teacher.id,
                     ClassName = selectedClass.ClassName,
-                    AdviserName = teacher.FirstName+ " " + teacher.LastName,
+                    AdviserName = teacher.firstname+ " " + teacher.lastname,
                     ClassSize = selectedClass.ClassSize,
-                    Grade = selectedClass.Grade
+                    Grade = selectedClass.Grade,
+                    ProfilePic = teacher.profilepic,                   
                 };
                 var studentExist = this.GetDbSet<ClassStudents>();
                 classdetails.Teachers = teachers;
@@ -263,8 +310,9 @@ namespace Basecode.Data.Repositories
                 var cl = classdetails.ClassStudents = this.GetClassStudents(id);
 
                 //Gets the student not existing on all the classes
-                classdetails.Students = this.GetStudents(selectedClass.Grade).Where(s => !studentExist.Any(st => st.Student_Id == s.Student_Id)).ToList();
+                classdetails.Students = this.GetStudents(selectedClass.Grade).Where(s => !studentExist.Any(st => st.Student_Id == s.studentid)).ToList();
                 classdetails.Subjects = this.GetSubjects().Where(s => (!subs.Any(cs => cs.Subject_Id == s.Subject_Id)) && s.Grade == selectedClass.Grade).ToList();
+
 
                 return classdetails;
             }
@@ -289,20 +337,21 @@ namespace Basecode.Data.Repositories
                            on cl.Subject_Id equals s.Subject_Id
                            select new TeacherClassDetails
                            {
-                               Class_Id = ac.Id,
-                               Subject_Id = s.Subject_Id,
-                               Subject_Name = s.Subject_Name,
-                               Class_Name = ac.ClassName,
+                               classid = ac.Id,
+                               subjectid = s.Subject_Id,
+                               subjectname = s.Subject_Name,
+                               classname = ac.ClassName,
                                grade = ac.Grade,
-                               HasChild =s.HasChild
+                               haschild =s.HasChild,
+                               schedule = cl.Schedule
                            };
                 var list1 = list.ToList();
-                //Initialize students belonging to the class
-                for (int x = 0; x < list1.Count(); x++)
-                {
-                    int class_Id = list1.ElementAt(x).Class_Id;
-                    list1.ElementAt(x).Students = this.GetClassStudents(class_Id);
-                }
+                ////Initialize students belonging to the class
+                //for (int x = 0; x < list1.Count(); x++)
+                //{
+                //    int class_Id = list1.ElementAt(x).classid;
+                //    list1.ElementAt(x).Students = this.GetClassStudents(class_Id);
+                //}
 
                 return list1;
             }
@@ -312,21 +361,39 @@ namespace Basecode.Data.Repositories
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
         }
+        public TeacherClassDetails GetTeacherSubjectDetails(int classid, int subjectId)
+        {
+            try
+            {
+                var teacherClassDetails = new TeacherClassDetails();
+                var teacherSubject = this.GetDbSet<ClassSubjects>().Where(p => p.ClassId == classid).FirstOrDefault(p => p.Subject_Id == subjectId);
+                var allclass = this.GetDbSet<Class>().Find(teacherSubject.ClassId);
+                var subject = this.GetDbSet<Subject>().Find(teacherSubject.Subject_Id);
+
+                teacherClassDetails.subjectname = subject.Subject_Name;
+                teacherClassDetails.subjectid = subjectId;
+                teacherClassDetails.classname = allclass.ClassName;
+                teacherClassDetails.classid = allclass.Id;
+                teacherClassDetails.haschild = subject.HasChild;
+                teacherClassDetails.grade = allclass.Grade;
+                return teacherClassDetails;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(ex.Message);
+            }
+        }
         public List<HomeRoom> GetTeacherHomeRoom(string teacher_Id)
         {
             try
             {
                 var classHome = this.GetDbSet<Class>().Where(c => c.Adviser == teacher_Id).Select(c => new HomeRoom
                 {
-                    Class_Id = c.Id,
-                    ClassName = c.ClassName,
-                    Grade = c.Grade
-                }).ToList();
-
-                foreach(var item in classHome)
-                {
-                    item.Students = this.GetClassStudents(item.Class_Id);
-                }
+                    classid = c.Id,
+                    classname = c.ClassName,
+                    grade = c.Grade
+                }).ToList();                
                 return classHome;
             }
             catch (Exception ex) 
@@ -334,28 +401,27 @@ namespace Basecode.Data.Repositories
                 Console.WriteLine(ex);
                 throw;
             }
-        }
-        public async Task<ClassInitView> GetClassWhereStudentBelong(int studentId, string schoolYear)
+        }        
+        public async Task<ClassInitView> GetClassWhereStudentBelong(int studentId, string gradeLevel)
         {
             try
             {
                 var teachers = await _teacherRepository.GetAllTeachersInitViewAsync();
-                var classroom = this.GetDbSet<Class>().Where(s => s.SchoolYear == schoolYear).ToList();
+                var classroom = this.GetDbSet<Class>().Where(s => s.Grade == gradeLevel).ToList();
                 var studentsInClasses = this.GetDbSet<ClassStudents>().Where(s => s.Student_Id == studentId).ToList();
 
                 var unionClassDetails = from c in classroom
                                         join s in studentsInClasses
                                         on c.Id equals s.Class_Id
                                         join t in teachers on 
-                                        c.Adviser equals t.Id
+                                        c.Adviser equals t.id
                                         select new ClassInitView
                                         {
-                                            Id = c.Id,
-                                            ClassName = c.ClassName,
-                                            Grade = c.Grade,
-                                            ClassSize = c.ClassSize,
-                                            SchoolYear = c.SchoolYear,
-                                            AdviserName = t.FirstName + " " + t.LastName,
+                                            id = c.Id,
+                                            classname = c.ClassName,
+                                            grade = c.Grade,
+                                            classsize = c.ClassSize,                                          
+                                            advisername = t.firstname + " " + t.lastname,
                                         };
                 return unionClassDetails.ToList().FirstOrDefault();
             }
@@ -365,29 +431,157 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-        public async Task<int> GetStudentYearLevel(int studentId, string schoolYear)
+        public async Task<string> GetStudentYearLevel(int studentId)
         {
             try
             {
                 var teachers = await _teacherRepository.GetAllTeachersInitViewAsync();
-                var classroom = this.GetDbSet<Class>().Where(s => s.SchoolYear == schoolYear).ToList();
+                var classroom = this.GetDbSet<Class>().ToList();
                 var studentsInClasses = this.GetDbSet<ClassStudents>().Where(s => s.Student_Id == studentId).ToList();
 
                 var unionClassDetails = from c in classroom
                                         join s in studentsInClasses
                                         on c.Id equals s.Class_Id
                                         join t in teachers on
-                                        c.Adviser equals t.Id
+                                        c.Adviser equals t.id
                                         select new ClassInitView
                                         {
-                                            Id = c.Id,
-                                            ClassName = c.ClassName,
-                                            Grade = c.Grade,
-                                            ClassSize = c.ClassSize,
-                                            SchoolYear = c.SchoolYear,
-                                            AdviserName = t.FirstName + " " + t.LastName,
+                                            id = c.Id,
+                                            classname = c.ClassName,
+                                            grade = c.Grade,
+                                            classsize = c.ClassSize,                                           
+                                            advisername = t.firstname + " " + t.lastname,
                                         };
-                return unionClassDetails.ToList().FirstOrDefault().Grade;
+                return unionClassDetails.OrderByDescending(p => p.grade).FirstOrDefault().grade;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public ScholasticRecords GetScholasticRecordsById(int id)
+        {
+            try
+            {
+                return _context.ScholasticRecords.Find(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public ScholasticRecords GetScholasticRecords(int studentId, string SchoolYear)
+        {
+            try
+            {
+                return _context.ScholasticRecords.FirstOrDefault(p => p.StudentId == studentId && p.SchoolYear == SchoolYear);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public int AddSholasticRecord(ScholasticRecords scholasticRecords)
+        {
+            try
+            {
+                var entity = _context.ScholasticRecords.Add(scholasticRecords);
+                _context.SaveChanges();
+                return entity.Entity.SKId;
+               
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public RemedialClass GetRemedialById(int id)
+        {
+            try
+            {
+                return _context.RemedialClass.Find(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public RemedialClass GetRemedial(int studentId, int scholasticId)
+        {
+            try
+            {
+                return _context.RemedialClass.FirstOrDefault(p => p.StudentId == studentId && p.SchoolId == scholasticId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public int AddRemedialClass(RemedialClass remedial)
+        {
+            try
+            {
+                var entity = _context.RemedialClass.Add(remedial);
+                _context.SaveChanges();
+                return entity.Entity.Id;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void AddRemedialDetails(RemedialDetails details)
+        {
+            try
+            {
+                _context.RemedialDetails.Add(details);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+       public List<RemedialDetails> GetRemedialDetailsByClass(int RemedialClassId)
+       {
+            try
+            {
+                return _context.RemedialDetails.Where(p => p.RemedialClass == RemedialClassId).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void UpdateScholasticRecords(ScholasticRecords records)
+        {
+            try
+            {
+                _context.ScholasticRecords.Update(records);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public int UpdateRemedialClass(RemedialClass remedialClass)
+        {
+            try
+            {
+                var entity = _context.RemedialClass.Update(remedialClass);
+                _context.SaveChanges();
+                return entity.Entity.Id;
             }
             catch (Exception ex)
             {

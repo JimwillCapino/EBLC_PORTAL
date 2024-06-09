@@ -2,12 +2,37 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Class details";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model ClassViewModel
-<link rel="stylesheet" href="/css/TableInfo.css" />
+
+<!-- Styles -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+<!-- Or for RTL support -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
+
+
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Flatpickr JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!-- Include Moment.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+
 <script>
     function RemoveStudent(id,classId)
     {
@@ -18,24 +43,81 @@
         window.location.href = '@Url.Action("RemoveClassSubject", "Registrar")?id=' + id + '&classId=' + classId;
     }
 </script>
+
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main p-5"> 
-        <h1>
-            Class: @Model.ClassName
-        </h1>
-        <p class="lead">Adviser: @Model.AdviserName</p>
-        <p class="lead">Grade Level: @Model.Grade</p>
-        <p class="lead">Class Size: @Model.ClassSize</p>
+    <div class="main p-5" style="height:400px; overflow-y: auto;">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="ManageClass">Manage Classes</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a>Class Details</a></li>
+            </ol>
+        </nav>
+        @if (successValue == 0)
+        {
+            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-exclamation-octagon-fill"></i>
+                <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+        }
+        else if (successValue == 1)
+        {
+            <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-check-circle-fill"></i>
+                <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @{
+            Constants.ViewDataErrorHandling.Success = -1;
+            Constants.ViewDataErrorHandling.ErrorMessage = null;
+        }
+        <div class="card">
+            <div class="card-body">
+                <div class="row">                   
+                    <div class="col-sm-2">
+                        @if (Model.ProfilePic == null)
+                        {
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                                 class="rounded-circle img-fluid" style="width: 150px;">
+                        }
+                        else
+                        {
+                            <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProfilePic)" alt="avatar"
+                                 class="rounded-circle img-fluid" style="width: 150px;">
+                        }
+                    </div>
+                    <div class="col">
+                        <h3>
+                            Class: @Model.ClassName
+                        </h3>
+                        <p>Adviser: @Model.AdviserName</p>
+                        <p>Grade Level: @Model.Grade</p>
+                        <p>Class Size: @Model.ClassSize</p>
+                        <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal2">Edit</a>  
+                        <a data-toggle="modal" data-target="#exampleModalAlert" class="btn btn-danger mx-2">Delete</a>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Subjects</button>
+                        @if (Model.ClassStudents.Count < Model.ClassSize)
+                        {
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">Add Students</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>     
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <div class="table-responsive overflow-auto">
+                    <div class="table-responsive overflow-auto" style="height:400px; overflow-y: auto;">
                         <table class="table overflow-auto" id="myTable">
                             <thead>
                                 <tr>
                                     <th>Subject</th>
                                     <th>Teacher</th>
+                                    <th>Schedule</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -43,11 +125,13 @@
                                 @foreach(var classSubject in Model.ClassSubjects)
                                 {
                                     <tr class="bg-blue">                                    
-                                            <td class="pt-3 mt-1">@classSubject.SubjectName</td>
-                                            <td class="pt-3">@classSubject.TeacherName</td> 
-                                            <td class="pt-3">
-                                            <i class="lni lni-trash-can" onclick="RemoveClassSubject(@classSubject.Id,@Model.Id)"></i>
-                                            </td> 
+                                         <td class="pt-3 mt-1">@classSubject.SubjectName</td>
+                                        <td class="pt-3">@classSubject.TeacherName</td>
+                                        <td class="pt-3">@classSubject.Schedule</td>
+                                        <td class="pt-3">
+                                            @* <i class="lni lni-trash-can" onclick="RemoveClassSubject(@classSubject.Id,@Model.Id)"></i> *@
+                                            <a asp-action="RemoveClassSubject" asp-route-id="@classSubject.Id" asp-route-classId="@Model.Id" class="btn btn-danger">Delete</a>
+                                        </td> 
                                     </tr>
                                     <tr id="spacing-row">
                                         <td> </td>
@@ -55,12 +139,12 @@
                                 }
                             </tbody>
                         </table>
-                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Subjects</button>
+                       
                     </div>
                 </div>
                 <div class="col">
-                    <div class="table-responsive overflow-auto">
-                        <table class="table overflow-auto" id="myTable">
+                    <div class="table-responsive overflow-auto" style="height:400px; overflow-y: auto;">
+                        <table class="table" id="myTable" >
                             <thead>
                                 <tr>
                                     <th>Student Name</th>
@@ -71,9 +155,10 @@
                                 @foreach(var student in Model.ClassStudents)
                                 {
                                     <tr class="bg-blue">
-                                        <td class="pt-3 mt-1">@student.FirstName @student.MiddleName @student.LastName</td>
+                                        <td class="pt-3 mt-1">@student.firstname @student.middlename @student.lastname</td>
                                         <td class="pt-3">
-                                            <i class="lni lni-trash-can" onclick="RemoveStudent(@student.Id,@Model.Id)"></i>
+                                           @*  <i class="lni lni-trash-can" onclick="RemoveStudent(@student.Id,@Model.Id)"></i> *@
+                                            <a asp-action="RemoveClassStudent" asp-route-id="@student.id" asp-route-classId="@Model.Id" class="btn btn-danger">Delete</a>
                                         </td>
                                     </tr>
                                     <tr id="spacing-row">
@@ -82,7 +167,7 @@
                                 }                                                         
                             </tbody>
                         </table>
-                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal1">Add Students</button>
+                                           
                     </div>
                 </div>
             </div>
@@ -96,14 +181,14 @@
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Input Subject Details</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                @using (Html.BeginForm("AddClassSubjects", "Registrar", FormMethod.Post))
+                @using (Html.BeginForm("AddClassSubjects", "Registrar", FormMethod.Post, new { id = "addClassSubjectsForm" }))
                 {
                     <div class="modal-body">   
                         <input type="hidden" value="@Model.Id" name="classId"/>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Subject:</label>
-                            <select class="form-select" aria-label="Default select example" name="subjectId">
-                                <option selected>Open this select menu</option>
+                            <select class="form-select" aria-label="Default select example" name="subjectId" required>
+                                <option value="" selected>Open this select menu</option>
                                 @foreach (var subs in Model.Subjects)
                                 {
                                     <option value="@subs.Subject_Id">@subs.Subject_Name</option>
@@ -112,18 +197,23 @@
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Teacher:</label>
-                            <select class="form-select" aria-label="Default select example" name="teacherId">
-                                <option selected>Open this select menu</option>
+                            <select class="form-select" aria-label="Default select example" name="teacherId" required>
+                                <option value="" selected>Open this select menu</option>
                                 @foreach (var teacher in Model.Teachers)
                                 {
-                                    <option value="@teacher.Id">@teacher.FirstName @teacher.MiddleName @teacher.LastName</option>
+                                    <option value="@teacher.id">@teacher.firstname @teacher.middlename @teacher.lastname</option>
                                 }
                             </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Schedule:</label>
+                            <input type="text" id="datetimePicker" name="schedule" class="form-control flatpickr-input" required>
+                            <span id="errorMessage" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-danger">Add Subjects</button>
+                        <button type="submit" id="submitForm" class="btn btn-danger">Add Subjects</button>
                     </div>
                 }
             </div>
@@ -137,28 +227,156 @@
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Select Student</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                @using (Html.BeginForm("AddClassStudents", "Registrar", FormMethod.Post))
-                {
+                <form asp-action="AddClassStudents">
                     <div class="modal-body">
-                        <input type="hidden" value="@Model.Id" name="classId" />
+                        <input type="hidden"  asp-for="Id"/>
+                        <input type="hidden" asp-for="AdviserName" />
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Student Name:</label>
-                            <select class="form-select" aria-label="Default select example" name="studentId">
-                                <option selected>Open this select menu</option>
+                            @*    <select class="form-select" aria-label="Default select example" name="studentId" required>
+                            <option value="" selected>Open this select menu</option>
+                            @foreach (var student in Model.Students)
+                            {
+                            <option value="@student.Student_Id">@student.FirstName @student.MiddleName, @student.LastName</option>
+                            }
+                            </select> *@
+                            <select asp-for="SelectedStudents" class="form-select" id="multiple-select-field" data-placeholder="Choose Students" multiple>
                                 @foreach (var student in Model.Students)
                                 {
-                                    <option value="@student.Student_Id">@student.FirstName @student.MiddleName, @student.LastName</option>
+                                    <option value="@student.studentid">@student.firstname @student.middlename, @student.lastname</option>
                                 }
                             </select>
-                        </div>                   
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-danger">Add Student</button>
                     </div>
-                }
+                </form>                                  
             </div>
         </div>
     </div>
 </div>
-<script src="/js/Tables.js"></script>
+<!--Modal for Editing Class-->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Class Details</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="UpdateClass">
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id"/>
+                    
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Class Name:</label>
+                        <input type="text" class="form-control" id="recipient-name" asp-for="ClassName">
+                        <span asp-validation-for="ClassName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Grade:</label>
+                        <input type="text" class="form-control" id="recipient-name" asp-for="Grade">
+                        <span asp-validation-for="Grade" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Class Size:</label>
+                        <input type="text" class="form-control" id="recipient-name" asp-for="ClassSize">
+                        <span asp-validation-for="ClassSize" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Adviser:</label>
+                        <select class="form-select" aria-label="Default select example" asp-for="Adviser">
+                            <option value="" selected>Open this select menu</option>
+                            @foreach (var teacher in Model.Teachers)
+                            {
+                                <option value="@teacher.id">@teacher.firstname @teacher.middlename @teacher.lastname</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Adviser" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Edit Class</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for alert-->
+<div class="modal fade" id="exampleModalAlert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="exampleModalLabel">Warning</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this Class?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a asp-action="RemoveClass" asp-route-classId="@Model.Id" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#multiple-select-field').select2({
+        theme: "bootstrap-5",
+        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+        placeholder: $(this).data('placeholder'),
+        closeOnSelect: false,
+    });
+</script>
+<script>
+    $(function () {
+        $('#submitForm').click(function (e) {
+            // Prevent default form submission behavior
+            e.preventDefault();
+
+            // Serialize form data
+            var formData = $('#addClassSubjectsForm').serialize();
+           
+            // AJAX request
+            $.ajax({
+                url: '@Url.Action("AddClassSubjects", "Registrar")',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    // Handle success response
+                    if (response.success) {
+                        // Redirect to a success page or perform any other action
+                        window.location.href = '@Url.Action("ClassDetails", "Registrar")?classId='+@Model.Id;
+                    } else {
+                        // Display error message in span
+                        $('#errorMessage').text(response.message);
+                    }
+                },
+                error: function () {
+                    // Handle error
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        });
+    });
+</script>
+<script>
+    flatpickr("#datetimePicker", {      
+        enableTime: true,
+        noCalendar: true,
+        allowInput: true, // Enable keyboard input
+        dateFormat: "h:i K", // Optional: specify time format
+        time_24hr: false, // Set to true for 24-hour format
+        defaultDate: "12:00", // Optional: set default time
+        onChange: function (selectedDates, dateStr, instance) {
+            console.log(dateStr); // Handle formatted time string
+        }
+    });
+</script>

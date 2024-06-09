@@ -45,13 +45,18 @@ namespace Basecode.Services.Services
                     settingsMaps.SchoolLogo = settings.SchoolLogo;
                     settingsMaps.DepEdLogo = settings.DepEdLogo;
                 }
+
+                //if (settingsMaps.WithHighestHonor == settingsMaps.WithHighHonor && settingsMaps.WithHighestHonor == settingsMaps.WithHonor && settingsMaps.WithHonor == settingsMaps.WithHighHonor)
+                //{
+                //    throw new Exception("Collision of thresholds occurred, please try again.");
+                //}
                 _settingsRepository.UpdateSettings(settingsMaps);
 
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"{ex.Message}");
-                throw;
+                throw ex;
             }
         }
         public void UpdateSchoolYear(DateTime StartofClass, DateTime EndofClass, int Id)
@@ -109,6 +114,39 @@ namespace Basecode.Services.Services
             try
             {
                 return _settingsRepository.GetSchoolYear();
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public int? GetWithHighestHonor()
+        {
+            try
+            {
+                return _settingsRepository.GetWithHighestHonor();
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public int? GetWithHighHonor()
+        {
+            try
+            {
+                return _settingsRepository.GetWithHighHonor();
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public int? GetWithHonor()
+        {
+            try
+            {
+                return _settingsRepository.GetWithHonor();
             }
             catch
             {

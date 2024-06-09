@@ -52,11 +52,11 @@ namespace Basecode.Data.Migrations
 
             modelBuilder.Entity("Basecode.Data.Models.RefreshToken", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime>("ExpiresUtc")
                         .HasColumnType("datetime2");
@@ -72,7 +72,7 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("RefreshToken");
                 });
@@ -89,15 +89,15 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("firstname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("lastname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MiddleName")
+                    b.Property<string>("middlename")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -105,7 +105,7 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("ProfilePic")
+                    b.Property<byte[]>("profilepic")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("email")
@@ -127,7 +127,7 @@ namespace Basecode.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -142,7 +142,7 @@ namespace Basecode.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
@@ -154,11 +154,11 @@ namespace Basecode.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -170,7 +170,7 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.HasIndex("RoleId");
 
@@ -179,7 +179,7 @@ namespace Basecode.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
@@ -189,7 +189,7 @@ namespace Basecode.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -229,7 +229,7 @@ namespace Basecode.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -244,11 +244,11 @@ namespace Basecode.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -260,7 +260,7 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.HasIndex("UserId");
 

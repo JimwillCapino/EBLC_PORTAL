@@ -107,6 +107,17 @@ namespace Basecode.Services.Services
             try
             {
                 var subject = _subjectRepository.GetSubjectById(id);
+                List<ChildSubjectView> childsubjects;
+                if (subject.HasChild)
+                {
+                     childsubjects = _subjectRepository.GetChildSubjects(id);
+                    foreach(var childSubject in childsubjects)
+                    {
+                        var childSubjectDelete = _subjectRepository.GetSubjectById(childSubject.subjectId);
+                        _subjectRepository.RemoveChildSubject(childSubject.Id);
+                        _subjectRepository.RemoveSubject(childSubjectDelete);                      
+                    }
+                }                   
                 _subjectRepository.RemoveSubject(subject);
             }
             catch (Exception ex)
@@ -115,14 +126,107 @@ namespace Basecode.Services.Services
                 throw new Exception(Constants.Exception.DB);
             }
         }
+        public void RemoveChildSubject(int id)
+        {
+            try
+            {             
+                _subjectRepository.RemoveChildSubject(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public List<Subject> GetAllSubjects(int studentId, string gradelevel)
+        {
+            try
+            {
+                return _subjectRepository.GetAllSubjects(studentId, gradelevel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(ex.Message);
+            }
+        }
         public ChildSubjectContainer GetChildSubject(int headId)
         {
             try
             {
                 var container = new ChildSubjectContainer();
-                container.ChildSubjects = _subjectRepository.GetChildSubject(headId);
+                container.ChildSubjects = _subjectRepository.GetChildSubjects(headId);
                 container.HeadId = headId;
                 return container;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public List<SubjectViewModel> GetSubjectsForDataTable()
+        {
+            try
+            {
+                return _subjectRepository.GetsSubjectsForDataTables();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public void AddChildSubject(ChildSubjectContainer childSubject)
+        {
+            try
+            {
+                Subject subject = new Subject();
+                ChildSubject childSub = new ChildSubject();
+                var HeadSub = _subjectRepository.GetSubjectById(childSubject.HeadId);
+                subject.Subject_Name = childSubject.Name;
+                subject.Grade = HeadSub.Grade;
+                subject.HasChild = false;
+
+                int id = _subjectRepository.AddSubject(subject);
+
+                childSub.HeadSubjectId = HeadSub.Subject_Id;
+                childSub.Subject_Id = id;
+                _subjectRepository.AddChildSubject(childSub);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public void UpdateChildSubject(ChildSubjectView subject)
+        {
+            try
+            {
+                var updateSubject = _subjectRepository.GetSubjectById(subject.Id);
+                updateSubject.Subject_Name = subject.Name;
+                _subjectRepository.UdpateSubject(updateSubject);
+                _subjectRepository.SaveDbChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public void UpdateSubject(SubjectViewModel subjectView)
+        {
+            try
+            {
+                var subject = new Subject()
+                {
+                    Subject_Id = subjectView.subjectid,
+                    Subject_Name = subjectView.subjectname,
+                    Grade = subjectView.grade,
+                    HasChild = subjectView.haschild
+                };
+                _subjectRepository.UdpateSubject(subject);
             }
             catch (Exception ex)
             {

@@ -1,0 +1,360 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Student information";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+    double avg = 0;
+    int monthIdx = 1;
+    var parentsex = "";
+    if (Model.Parent.Parentsex == "F") parentsex = "Female";
+    else parentsex = "Male";
+    int successValue = (int)ViewData["Success"];
+    int quartermax = 0;
+}
+@using Basecode.Data
+@using Basecode.Data.ViewModels
+@model StudentDetailsWithGrade
+<link rel="stylesheet" href="/css/TableInfo.css" />
+<script src="~/js/Tables.js"></script>
+<div class="wrapper">
+    @await Html.PartialAsync("./_TeacherSideBar")
+    <div class="main p-5" style="height:400px; overflow-y: auto;">
+        <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="HomeRoom">Home Room</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="HomeRoomStudents" asp-route-classid="@Constants.TeacherNavigation.classid">Advisee's</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a>Student Information</a></li>
+                </ol>
+            </nav>
+        @if (successValue == 0)
+        {
+            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-exclamation-octagon-fill"></i>
+                <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+        }
+        else if (successValue == 1)
+        {
+            <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-check-circle-fill"></i>
+                <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @{
+            Constants.ViewDataErrorHandling.Success = -1;
+            Constants.ViewDataErrorHandling.ErrorMessage = null;
+        }
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        @if (Model.Student.profilePicture == null)
+                        {
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                                 class="rounded-circle img-fluid" style="width: 150px;">
+                        }
+                        else
+                        {
+                            <img src="data:image/png;base64,@Convert.ToBase64String(Model.Student.profilePicture)" alt="avatar"
+                                 class="rounded-circle img-fluid" style="width: 150px;">
+                        }
+                        <h5 class="my-3">@Model.Student.FirstName @Model.Student.MiddleName @Model.Student.LastName</h5>
+                        <p class="text-muted mb-1">@Model.Student.Status</p>
+                        <p class="text-muted mb-4">Grade @Model.Student.Grade</p>
+                        <p class="text-muted mb-4">@Model.Student.age years old</p>
+                        @if (Model.Student.lrn == null)
+                        {
+                            <p class="text-muted mb-4">
+                                LRN  not set.
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-4">
+                                @Model.Student.lrn
+                            </p>
+                        }
+
+                        <div class="d-flex justify-content-center mb-2">
+                            <a asp-action="GeneratePdf" asp-route-StudentId="@Model.Student.Student_ID" asp-route-SchoolYear="@Model.SchoolYear" asp-route-documentType="0"><button type="button" class="btn btn-success">Report Card</button></a>
+                        </div>
+                        <div class="row">
+                            <div class="col align-self-center">
+                                @if (Model.Student.Status.Equals("Not Enrolled"))
+                                {
+                                    <a asp-action="EnrollAndPromoteStudent" asp-route-id="@Model.Student.Student_ID"><button type="button" class="btn btn-warning">Enroll Student</button></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4 mb-lg-0">
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush rounded-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <p class="lead">Parents/Guardian Information</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-hands-holding-child"></i>
+                                <p class="mb-0">@Model.Parent.ParentFirstName @Model.Parent.ParentMiddleName, @Model.Parent.ParentLastName</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-phone" style="color:#555555;"></i>
+                                <p class="mb-0">@Model.Parent.PhoneNumber</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-location-dot fa-lg" style="color: #ac2bac;"></i>
+                                <p class="mb-0">@Model.Parent.Address</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-regular fa-envelope fa-lg" style="color: #3b5998;"></i>
+                                <p class="mb-0">@Model.Parent.Email</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-cake-candles fa-lg" style="color: #3b5998;"></i>
+                                <p class="mb-0">@Model.Parent.ParentBirthday.ToLongDateString()</p>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                <i class="fa-solid fa-venus-mars fa-lg" style="color: #3b5998;"></i>
+                                <p class="mb-0">@parentsex</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 grid-margin stretch-card">
+                <div class="tab">
+                    <button class="tablinks" onclick="tabs(event, 'Grades')" id="defaultOpen">Grades</button>
+                    <button class="tablinks" onclick="tabs(event, 'Values')">Values</button>
+                    <button class="tablinks" onclick="tabs(event, 'Attendance')">Attendance</button>
+                </div>
+                <div id="Grades" class="tabcontent">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>Student Grades for this school year.</p>
+                            <div class="btn-group">                             
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>1</th>
+                                            <th>2</th>
+                                            <th>3</th>
+                                            <th>4</th>
+                                            <th>Final</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var subject in Model.Subjects)
+                                        {
+                                            <tr>
+                                                <td>@subject.Subject_Name</td>
+                                                @{
+                                                    var SubjectWithGrades = Model.grades.FirstOrDefault(p => p.SubjectId == subject.Subject_Id);
+                                                    if (SubjectWithGrades != null && SubjectWithGrades.Grades.Where(p => p.Quarter == 5).Count() > 0)
+                                                    {
+                                                        quartermax += 1;
+                                                    }
+                                                }
+                                                @if (SubjectWithGrades != null)
+                                                {
+                                                    @foreach (var grade in SubjectWithGrades.Grades)
+                                                    {
+                                                        <td>@grade.Grade</td>
+                                                        if (grade.Quarter == 5 && grade.Grade >= Model.PassingGrade)
+                                                        {
+
+                                                            avg += grade.Grade;
+                                                            <td>Passed</td>
+                                                        }
+                                                        else if (grade.Quarter == 5 && grade.Grade < Model.PassingGrade)
+                                                        {
+
+                                                            avg += grade.Grade;
+                                                            <td>Failed</td>
+                                                        }
+                                                    }
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                                @if (quartermax == Model.TotalHeadSubjectCount)
+                                {
+                                    <p class="lead">General Average: @Math.Floor(avg / Model.TotalHeadSubjectCount)</p>
+                                    if (Math.Floor(avg / Model.TotalHeadSubjectCount) >= Model.PassingGrade)
+                                    {
+                                        <p class="lead">Promoted</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="lead">Not Promoted</p>
+                                    }
+                                }
+                                @{
+                                    avg = 0;
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="Values" class="tabcontent">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>Select a School Year. Note that after selecting a school year, the page will reload thus going back to the grades tab.</p>
+                            
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                    <thead>
+                                        <tr>
+                                            <th>Core Values</th>
+                                            <th>Behavioral Statement</th>
+                                            <th>1</th>
+                                            <th>2</th>
+                                            <th>3</th>
+                                            <th>4</th>
+                                            <th>Final</th>
+                                        </tr>
+                                    </thead>
+                                        @foreach (var corevalues in Model.learnersValues)
+                                        {
+                                            var grades = Model.valuesGrades.Where(p => p.BehaviouralId == corevalues.behavioural_Statements.ElementAt(0).Id);
+                                        <tr>
+                                            <th rowspan="@corevalues.behavioural_Statements.Count()">
+                                                    @corevalues.Core_Values
+                                            </th>
+                                            <td>
+                                                    @corevalues.behavioural_Statements.ElementAt(0).Statements
+                                            </td>
+                                                @foreach (var grade in grades)
+                                                {
+
+                                                <td>
+                                                        @grade.Grade
+                                                </td>
+                                                }
+                                        </tr>
+                                            @for (int x = 1; x < @corevalues.behavioural_Statements.Count(); x++)
+                                            {
+                                                var gradesi = Model.valuesGrades.Where(p => p.BehaviouralId == corevalues.behavioural_Statements.ElementAt(x).Id);
+
+                                            <tr>
+                                                <td>
+                                                        @corevalues.behavioural_Statements.ElementAt(x).Statements
+                                                </td>
+                                                    @for (int y = 0; y < gradesi.Count(); y++)
+                                                    {
+                                                    <td>
+                                                            @gradesi.ElementAt(y).Grade
+                                                    </td>
+                                                    }
+                                            </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="Attendance" class="tabcontent">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>Select a School Year. Note that after selecting a school year, the page will reload thus going back to the grades tab.</p>
+                        
+                            <div class="btn-group">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            @foreach (var month in Model.StudentAttendance.Months)
+                                            {
+                                                <th>@month</th>
+                                            }
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Days of School</td>
+                                            @foreach (var attendance in Model.StudentAttendance.Attendances)
+                                            {
+
+                                                <td>@(attendance != null ? attendance.Days_of_Schoool : " ")</td>
+                                            }
+                                            @if (Model.StudentAttendance.Months.Count() == Model.StudentAttendance.Attendances.Count())
+                                            {
+                                                var sum = 0;
+                                                @foreach (var attendance in Model.StudentAttendance.Attendances)
+                                                {
+                                                    sum += attendance != null ? attendance.Days_of_Schoool : 0;
+
+                                                }
+                                                <td>@sum</td>
+                                            }
+                                        </tr>
+                                        <tr>
+                                            <td>Days of Present</td>
+                                            @foreach (var attendance in Model.StudentAttendance.Attendances)
+                                            {
+                                                <td>@(attendance != null ? attendance.Days_of_Present : " ")</td>
+                                            }
+                                            @if (Model.StudentAttendance.Months.Count() == Model.StudentAttendance.Attendances.Count())
+                                            {
+                                                var sum = 0;
+                                                @foreach (var attendance in Model.StudentAttendance.Attendances)
+                                                {
+                                                    sum += attendance != null ? attendance.Days_of_Present : 0;
+
+                                                }
+                                                <td>@sum</td>
+                                            }
+
+                                        </tr>
+                                        <tr>
+                                            <td>Time of Tardy</td>
+                                            @foreach (var attendance in Model.StudentAttendance.Attendances)
+                                            {
+                                                <td>@(attendance != null ? attendance.Time_of_Tardy : " ")</td>
+                                            }
+                                            @if (Model.StudentAttendance.Months.Count() == Model.StudentAttendance.Attendances.Count())
+                                            {
+                                                var sum = 0;
+                                                @foreach (var attendance in Model.StudentAttendance.Attendances)
+                                                {
+                                                    sum += attendance != null ? attendance.Time_of_Tardy : 0;
+
+                                                }
+                                                <td>@sum</td>
+                                            }
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center mb-2">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+
+</div>
+</div>

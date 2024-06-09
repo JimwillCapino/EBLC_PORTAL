@@ -1,6 +1,8 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@700&family=Poppins:wght@600&display=swap');
 
-
+#table tbody tr:hover {
+    cursor: pointer;
+}
 .h2 {
     color: #444;
     font-family: 'PT Sans', sans-serif
@@ -49,15 +51,7 @@ img {
     border: none
 }
 
-.table tbody td:first-child {
-    border-bottom-left-radius: 10px;
-    border-top-left-radius: 10px
-}
 
-.table tbody td:last-child {
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px
-}
 #spacing-row {
     height: 10px
 }

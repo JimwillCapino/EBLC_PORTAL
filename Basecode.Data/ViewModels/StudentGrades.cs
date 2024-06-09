@@ -11,6 +11,7 @@ namespace Basecode.Data.ViewModels
         public int HeadId { get; set; }
         public int SubjectId { get; set; }  
         public string SubjectName { get; set; }
+        public int? ScholasticRecordId { get; set; }
         public List<GradesViewModel> Grades { get; set; }
     }
 }

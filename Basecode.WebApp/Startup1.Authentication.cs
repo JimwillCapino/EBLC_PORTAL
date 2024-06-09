@@ -15,6 +15,7 @@ namespace Basecode.WebApp
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.SaveToken = true;
+                
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ClockSkew = TimeSpan.Zero,              // Clock skew compensates for server time drift.We recommend 5 minutes or less

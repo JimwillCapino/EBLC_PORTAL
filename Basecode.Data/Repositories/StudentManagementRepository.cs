@@ -18,7 +18,7 @@ namespace Basecode.Data.Repositories
             BasecodeContext context) : base(unitOfWork)
         {
             _context = context;
-        }
+        }      
         public void SubmitGrade(Grades grade)
         {
             try
@@ -27,6 +27,19 @@ namespace Basecode.Data.Repositories
                 _context.SaveChanges();
             }
             catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+        public void AddStudentAdviser(StudentAdviser studentAdviser)
+        {
+            try
+            {
+                _context.StudentAdviser.Add(studentAdviser);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
                 throw;
@@ -100,6 +113,7 @@ namespace Basecode.Data.Repositories
                     Subject_Id = subject_Id,
                     Grades =grades.ToList(),
                 };
+
                 return gradesDetails;
             }
             catch (Exception ex)
@@ -130,6 +144,7 @@ namespace Basecode.Data.Repositories
 
                 var studentdetails = new StudentViewModel
                 {
+                    profilePicture = userstudent.ProfilePic,
                     Student_ID = student.Student_Id,
                     FirstName = userstudent.FirstName,
                     MiddleName = userstudent.MiddleName,
@@ -137,7 +152,8 @@ namespace Basecode.Data.Repositories
                     age = DateTime.Now.Year - userstudent.Birthday.Year,
                     lrn = student.LRN,
                     Status = student.status,
-                    Grade = student.CurrGrade
+                    Grade = student.CurrGrade,
+                    Birthday = userstudent.Birthday
                 };
                 return studentdetails;
             }
@@ -151,10 +167,17 @@ namespace Basecode.Data.Repositories
         {
             try
             {
+                var schoolYearsWithGradeList = new List<string>();
                 var schoolYears = this.GetDbSet<Grades>()
-                    .Where(g => g.Student_Id == student_Id)
-                    .Select(g => g.School_Year).Distinct();
-                return schoolYears.ToList();
+                    .Where(g => g.Student_Id == student_Id).ToList().Select(p => p.School_Year).Distinct();
+                var grades = this.GetDbSet<Grades>()
+                    .Where(g => g.Student_Id == student_Id).ToList();                
+                foreach ( var schoolYear in schoolYears)
+                {
+                    var gradelevel = grades.FirstOrDefault(g => g.School_Year == schoolYear).Grade_Level.ToString();
+                    schoolYearsWithGradeList.Add(schoolYear +" Grade:"+ gradelevel);
+                }               
+                return schoolYearsWithGradeList;
             }
             catch (Exception ex)
             {
@@ -162,18 +185,20 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-        public List<string> GetValuesSchoolyear(int student_Id)
+        public List<string> GetSchoolYearsWithOutGradeLevel(int student_Id)
         {
             try
             {
-                var schoolYears = this.GetDbSet<Learner_Values>()
-                    .Where(g => g.Student_Id == student_Id)
-                    .Select(g => g.School_Year).Distinct().ToList();
-                var valuesSchoolyears = this.GetValuesSchoolyear(student_Id);
-                var attendanceSchoolYears = this.GetAttendanceSchoolYear(student_Id);
-
-                var concatList = schoolYears.Concat(valuesSchoolyears).Concat(attendanceSchoolYears).Distinct();
-                return concatList.ToList();
+                var schoolYearsWithGradeList = new List<string>();
+                var schoolYears = this.GetDbSet<Grades>()
+                    .Where(g => g.Student_Id == student_Id).Select(p => p.School_Year).Distinct();
+                var grades = this.GetDbSet<Grades>()
+                    .Where(g => g.Student_Id == student_Id);
+                foreach (var schoolYear in schoolYears)
+                {                    
+                    schoolYearsWithGradeList.Add(schoolYear);
+                }               
+                return schoolYearsWithGradeList;
             }
             catch (Exception ex)
             {
@@ -181,16 +206,19 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-        public List<string> GetAttendanceSchoolYear(int student_Id)
+        
+        public string GradeLevel(int studentId, string schoolYear)
         {
             try
             {
-                var schoolYears = this.GetDbSet<Attendance>()
-                                    .Where(g => g.Studentid == student_Id)
-                                    .Select(g => g.School_Year).Distinct();
-                return schoolYears.ToList();
+                var student = this.GetDbSet<Grades>().Where(p => p.Student_Id == studentId && p.School_Year == schoolYear);
+                if(student.Count()>0)
+                {
+                    return student.FirstOrDefault().Grade_Level;
+                }
+                return _context.Student.Find(studentId).CurrGrade;
             }
-            catch (Exception ex)
+             catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 throw;
@@ -200,14 +228,14 @@ namespace Basecode.Data.Repositories
         {
             try
             {
-                //Get the Grade(S) of a particular student along with the choosen school Year
+                //Get the grade(S) of a particular student along with the choosen school Year
                 var grades = this.GetDbSet<Grades>().Where(g => g.Student_Id == student_Id)
-                   .Where(g => g.School_Year == school_year);
-                var subjects = this.GetDbSet<Subject>();
+                   .Where(g => g.School_Year == school_year).ToList();
+                var subjects = this.GetDbSet<Subject>().ToList();
                 //Get the subjects with child subjects
-                var HeadSubjects = this.GetDbSet<Subject>().Where(p => p.HasChild == true);
+                var HeadSubjects = this.GetDbSet<Subject>().Where(p => p.HasChild == true).ToList();
                 //Get the Child Subjects
-                var childSubjects = this.GetDbSet<ChildSubject>();
+                var childSubjects = this.GetDbSet<ChildSubject>().ToList();
                 //Join the childSubject table to the Subject Table to get the child subject details e.g name                
                 var childSubjectsUnion = from s in subjects
                                          join
@@ -233,7 +261,7 @@ namespace Basecode.Data.Repositories
                                        Grade = g.Grade
                                    };
                 //Join the child subject to the grade table to get its grades.
-                //The Subject Id holds the head Id value instead of the child subject Id.
+                //The Subject id holds the head id value instead of the child subject id.
                 //This is to make sure that the placement in viewing the grades of the head subject and the child subject
                 //are adjacent to one another.
                 var childSubjectGrade = from g in grades join c in childSubjectsUnion
@@ -317,15 +345,17 @@ namespace Basecode.Data.Repositories
                                           SubjectId = s.Subject_Id,
                                           SubjectName = s.Subject_Name,
                                           Quarter = g.Quarter,
-                                          Grade = g.Grade
+                                          Grade = g.Grade,
+                                          ScholasticRecordId = g.ScholasticRecords
                                       };
 
-                var studentGrade = studentsubjects.GroupBy(g => new { g.SubjectName,g.SubjectId })
+                var studentGrade = studentsubjects.GroupBy(g => new { g.SubjectName,g.SubjectId, g.ScholasticRecordId})
                     .Select(group => new StudentGrades
                     {
                         HeadId  = 0,
                         SubjectId = group.Key.SubjectId,
                         SubjectName = group.Key.SubjectName,
+                        ScholasticRecordId = group.Key.ScholasticRecordId,
                         Grades = group.Select(g => new GradesViewModel
                         {
                             Grade = g.Grade,
@@ -355,9 +385,28 @@ namespace Basecode.Data.Repositories
                         BehaviouralId = p.Behavioural_Statement,
                         Grade = p.Grade,
                         Quarter = p.Quarter
+                        
                     }).ToList();
                 
                 return studentGrades;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public int GetBehavioralMaxQuarter(int studentId, int BehavioralId, string schoolYear)
+        {
+            try
+            {
+                var maxQuarter = 0;
+                var list = this.GetDbSet<Learner_Values>().Where(p => p.Student_Id == studentId).Where(p => p.School_Year == schoolYear)
+                    .Where(p => p.Behavioural_Statement == BehavioralId);
+                if (list.Count() > 0)
+                    maxQuarter = list.Max(p => p.Quarter);
+                
+                return maxQuarter;
             }
             catch (Exception ex)
             {
@@ -385,6 +434,33 @@ namespace Basecode.Data.Repositories
                                       Status = s.status
                                   };
                 return studentlist.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public IEnumerable<StudentPreviewInformation> GetAllStudentPreview()
+        {
+            try
+            {
+                var user = this.GetDbSet<UsersPortal>();
+                var student = this.GetDbSet<Student>();
+
+                var studentlist = from u in user
+                                  join s in student
+                                  on u.UID equals s.UID
+                                  select new StudentPreviewInformation
+                                  {
+                                      studentid = s.Student_Id,
+                                      fullname = u.FirstName+ " "+u.MiddleName+" "+u.LastName,                                    
+                                      age = (DateTime.Today.Year - u.Birthday.Year),
+                                      lrn = s.LRN,
+                                      grade = s.CurrGrade,
+                                      status = s.status
+                                  };
+                return studentlist;
             }
             catch (Exception ex)
             {
@@ -449,6 +525,31 @@ namespace Basecode.Data.Repositories
             try
             {
                 _context.Core_Values.Remove(values);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public Behavioural_Statement GetBehavioural_Statement(int id)
+        {
+            try
+            {
+                return _context.Behavioural_Statement.Find(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        public void DeleteBehavioralStatement(Behavioural_Statement statement)
+        {
+            try
+            {
+                _context.Behavioural_Statement.Remove(statement);
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -571,11 +672,11 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
-        public bool isDateExisting(int month, string schoolYear)
+        public bool isDateExisting(int month, string schoolYear, int studentid)
         {
             try
             {
-                var list = this.GetDbSet<Attendance>().Where(p => p.School_Year == schoolYear).Where(p => p.Month == month);
+                var list = this.GetDbSet<Attendance>().Where(p => p.School_Year == schoolYear).Where(p => p.Month == month).Where(p => p.Studentid == studentid);
                 return list.Count() > 0;
             }
             catch (Exception ex)
@@ -584,5 +685,6 @@ namespace Basecode.Data.Repositories
                 throw;
             }
         }
+        
     }
 }

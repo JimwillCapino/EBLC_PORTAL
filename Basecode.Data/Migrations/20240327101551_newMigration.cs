@@ -28,27 +28,27 @@ namespace Basecode.Data.Migrations
                 table: "UsersPortal");
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "Birthday",
+                name: "birthday",
                 table: "UsersPortal",
                 type: "datetime2",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "Email",
+                name: "email",
                 table: "NewEnrollee",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "ExamSchedule",
+                name: "examschedule",
                 table: "NewEnrollee",
                 type: "datetime2",
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "GradeEnrolled",
+                name: "gradeenrolled",
                 table: "NewEnrollee",
                 type: "int",
                 nullable: false,
@@ -373,19 +373,19 @@ namespace Basecode.Data.Migrations
                 name: "Teacher");
 
             migrationBuilder.DropColumn(
-                name: "Birthday",
+                name: "birthday",
                 table: "UsersPortal");
 
             migrationBuilder.DropColumn(
-                name: "Email",
+                name: "email",
                 table: "NewEnrollee");
 
             migrationBuilder.DropColumn(
-                name: "ExamSchedule",
+                name: "examschedule",
                 table: "NewEnrollee");
 
             migrationBuilder.DropColumn(
-                name: "GradeEnrolled",
+                name: "gradeenrolled",
                 table: "NewEnrollee");
 
             migrationBuilder.DropColumn(

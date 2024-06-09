@@ -14,6 +14,12 @@
     </div>
     <ul class="sidebar-nav">
         <li class="sidebar-item">
+            <a asp-action="Index" class="sidebar-link">
+                <i class="lni lni-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
             <a asp-action="Profile" class="sidebar-link">
                 <i class="lni lni-user"></i>
                 <span>Profile</span>
@@ -38,7 +44,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a asp-action="ManageTeachers" class="sidebar-link">
+                    <a asp-action="ManageTeachersList" class="sidebar-link">
                         Manage Teachers
                     </a>
                 </li>
@@ -49,43 +55,60 @@
                 </li>
             </ul>
         </li>
-        @* <li class="sidebar-item">
+        <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                data-bs-target="#multi" aria-expanded="false" aria-controls="multi">
-                <i class="lni  lni-money-protection"></i>
-                <span>Fees</span>
+                <i class="lni  lni-enter"></i>
+                <span>Enrollment</span>
             </a>
             <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
-                        Tuituion Fee
+                    <a asp-action="Enrollment" class="sidebar-link">
+                        To review
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a asp-action="MonthlyFee" class="sidebar-link">
-                       Monthly Fee
+                    <a asp-action="EnrollmentApproval" class="sidebar-link">
+                      Approval
                     </a>
                 </li>
             </ul>
-        </li> *@
-        <li class="sidebar-item">
-            <a asp-action="Enrollment" class="sidebar-link">
+        </li>
+       @*  <li class="sidebar-item">
+             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+               data-bs-target="#auth1" aria-expanded="false" aria-controls="auth1">
                 <i class="lni lni-enter"></i>
                 <span>Enrollment</span>
             </a>
+             <ul id="auth1" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+
+                 <li class="sidebar-item">
+            <a asp-action="Enrollment" class="sidebar-link">
+                
+                <span>To Review</span>
+            </a>
         </li>
         <li class="sidebar-item">
+            <a asp-action="Enrollment" class="sidebar-link">               
+                <span>Approval</span>
+            </a>
+        </li>
+
+             </ul>
+        </li> *@
+        
+       @*  <li class="sidebar-item">
             <a href="#" class="sidebar-link">
                 <i class="lni lni-alarm"></i>
                 <span>Notification</span>
             </a>
-        </li>
-        <li class="sidebar-item">
-            <a href="#" class="sidebar-link">
-                <i class="lni lni-popup"></i>
-                <span>Announcements</span>
+        </li> *@
+         <li class="sidebar-item">
+            <a asp-action="ViewLearnersValues"  class="sidebar-link">
+                <i class="lni lni-heart"></i>
+                <span>Values</span>
             </a>
-        </li>
+        </li> 
         <li class="sidebar-item">
             <a asp-action="Settings" class="sidebar-link">
                 <i class="lni lni-cog"></i>
@@ -94,7 +117,7 @@
         </li>
     </ul>
     <div class="sidebar-footer">
-        <a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" class="sidebar-link">
+        <a asp-action="SignOut" class="sidebar-link">
             <i class="lni lni-exit"></i>
             <span>Logout</span>
         </a>

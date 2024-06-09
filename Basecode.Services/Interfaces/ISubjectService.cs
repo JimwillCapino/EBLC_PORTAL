@@ -17,8 +17,14 @@ namespace Basecode.Services.Interfaces
         public HeadSubject GetHeadSubjectById(int id);
         public void SaveDbChanges();
         public void RemoveSubject(int id);
+        public List<Subject> GetAllSubjects(int studentId, string gradelevel);
         public ChildSubjectContainer GetChildSubject(int headId);
         public Subject GetSubject(int id);
+        public List<SubjectViewModel> GetSubjectsForDataTable();
+        public void AddChildSubject(ChildSubjectContainer childSubject);
+        public void UpdateChildSubject(ChildSubjectView subject);
+        public void RemoveChildSubject(int id);
+        public void UpdateSubject(SubjectViewModel subjectView);
     }
 
 }

@@ -14,7 +14,13 @@
     </div>
     <ul class="sidebar-nav">
         <li class="sidebar-item">
-            <a href="#" class="sidebar-link">
+            <a asp-action="Index" class="sidebar-link">
+                <i class="lni lni-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a asp-action ="Profile" class="sidebar-link">
                 <i class="lni lni-user"></i>
                 <span>Profile</span>
             </a>
@@ -28,30 +34,13 @@
         <li class="sidebar-item">
             <a asp-action="StudentList" class="sidebar-link">
                 <i class="lni lni-blackboard"></i>
-                <span>Student Record</span>
+                <span>Classes</span>
             </a>        
         </li>
-        <li class="sidebar-item">
-            <a href="#" class="sidebar-link">
-                <i class="lni lni-alarm"></i>
-                <span>Notification</span>
-            </a>
-        </li>
-        <li class="sidebar-item">
-            <a href="#" class="sidebar-link">
-                <i class="lni lni-popup"></i>
-                <span>Announcements</span>
-            </a>
-        </li>
-        <li class="sidebar-item">
-            <a href="#" class="sidebar-link">
-                <i class="lni lni-cog"></i>
-                <span>Setting</span>
-            </a>
-        </li>
+               
     </ul>
     <div class="sidebar-footer">
-        <a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" class="sidebar-link">
+        <a asp-action="SignOut" class="sidebar-link">
             <i class="lni lni-exit"></i>
             <span>Logout</span>
         </a>

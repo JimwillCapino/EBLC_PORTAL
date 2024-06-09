@@ -1,10 +1,12 @@
 ﻿using Basecode.Data.Interfaces;
 using Basecode.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Basecode.Data.Repositories
 {
@@ -44,7 +46,8 @@ namespace Basecode.Data.Repositories
         {
             try
             {
-                return _context.Settings.FirstOrDefault();
+                var query = this.GetDbSet<Settings>().AsNoTracking().ToList();
+                return query.FirstOrDefault();
             }
             catch(Exception ex)
             {
@@ -56,14 +59,81 @@ namespace Basecode.Data.Repositories
         {
             try
             {
-                var settings = this.GetSettings();
-                var schoolYear = settings.StartofClass.Value.Year.ToString() + "-" + settings.EndofClass.Value.Year.ToString();
+                string schoolYear;  
+                var settings = _context.Settings.AsNoTracking().ToList();
+                schoolYear = settings.FirstOrDefault()?.StartofClass.Value.Year.ToString() + "-" + settings.FirstOrDefault()?.EndofClass.Value.Year.ToString();
                 return schoolYear;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 throw;
+            }
+        }
+        public int? GetPassingGrade()
+        {
+            try
+            {
+                return this.GetDbSet<Settings>().ToList().FirstOrDefault().PassingGrade;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public int? GetWithHighHonor()
+        {
+            try
+            {
+                return this.GetDbSet<Settings>().ToList().FirstOrDefault().WithHighHonor;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public int? GetWithHighestHonor()
+        {
+            try
+            {
+                return this.GetDbSet<Settings>().ToList().FirstOrDefault().WithHighestHonor;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public int? GetWithHonor()
+        {
+            try
+            {
+                return this.GetDbSet<Settings>().ToList().FirstOrDefault().WithHonor;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public string? GetSchoolEmail()
+        {
+            try
+            {
+                return this.GetDbSet<Settings>().ToList().FirstOrDefault().SchoolEmail;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
+            }
+        }
+        public string? GetPassword()
+        {
+            try
+            {
+                return this.GetDbSet<Settings>().ToList().FirstOrDefault().twoFPassword;
+            }
+            catch
+            {
+                throw new Exception(Data.Constants.Exception.DB);
             }
         }
     }

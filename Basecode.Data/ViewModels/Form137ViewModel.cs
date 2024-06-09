@@ -9,10 +9,14 @@ namespace Basecode.Data.ViewModels
 {
     public class Form137ViewModel
     {
-        public int GradeLevel { get; set; }
+        public string GradeLevel { get; set; }
         public string SchoolYear { get; set; }
         public int TotalHeadSubjectCount { get; set; }
         public List<Subject> Subjects { get; set; }
-        public List<StudentGrades> grades { get; set; }       
+        public List<StudentGrades> grades { get; set; }
+        public ScholasticRecords ScholasticRecords { get; set; }
+        public RemedialClass RemedialClass { get; set; }
+        public List<RemedialDetails> RemedialDetails { get; set; }
+        public string? AdviserName { get; set; }
     }
 }

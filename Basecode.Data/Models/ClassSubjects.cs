@@ -14,5 +14,6 @@ namespace Basecode.Data.Models
         public int? ClassId { get; set; }
         public int? Subject_Id {  get; set; }
         public string Teacher_Id { get; set; }
+        public string Schedule { get;  set; }
     }
 }

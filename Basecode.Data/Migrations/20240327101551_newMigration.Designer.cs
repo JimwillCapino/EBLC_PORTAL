@@ -27,11 +27,11 @@ namespace Basecode.Data.Migrations
 
             modelBuilder.Entity("Basecode.Data.Models.Attendance", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<int>("Days_of_Present")
                         .HasColumnType("int");
@@ -52,18 +52,18 @@ namespace Basecode.Data.Migrations
                     b.Property<int>("Time_of_Tardy")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Attendance");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.Behavioural_Statement", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<int>("Core_Values")
                         .HasColumnType("int");
@@ -72,115 +72,115 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Behavioural_Statement");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.ChildSubject", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<int>("HeadSubjectId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Subject_Id")
+                    b.Property<int>("subjectid")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("ChildSubject");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.Class", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<string>("Adviser")
+                    b.Property<string>("adviser")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ClassName")
+                    b.Property<string>("classname")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ClassSize")
+                    b.Property<int>("classsize")
                         .HasColumnType("int");
 
-                    b.Property<int>("Grade")
+                    b.Property<int>("grade")
                         .HasColumnType("int");
 
-                    b.Property<string>("SchoolYear")
+                    b.Property<string>("schoolyear")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Class");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.ClassStudents", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Class_Id")
+                    b.Property<int?>("classidT")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Student_Id")
+                    b.Property<int?>("studentid")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("ClassStudents");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.ClassSubjects", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<int?>("ClassId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Subject_Id")
+                    b.Property<int?>("subjectid")
                         .HasColumnType("int");
 
                     b.Property<string>("Teacher_Id")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("ClassSubjects");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.Core_Values", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<string>("core_Values")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Core_Values");
                 });
@@ -193,7 +193,7 @@ namespace Basecode.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Grade_Id"));
 
-                    b.Property<int>("Grade")
+                    b.Property<int>("grade")
                         .HasColumnType("int");
 
                     b.Property<int>("Grade_Level")
@@ -206,10 +206,10 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Student_Id")
+                    b.Property<int>("studentid")
                         .HasColumnType("int");
 
-                    b.Property<int>("Subject_Id")
+                    b.Property<int>("subjectid")
                         .HasColumnType("int");
 
                     b.HasKey("Grade_Id");
@@ -219,32 +219,32 @@ namespace Basecode.Data.Migrations
 
             modelBuilder.Entity("Basecode.Data.Models.HeadSubject", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<int>("Subect_Id")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("HeadSubject");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.Learner_Values", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<int>("Behavioural_Statement")
                         .HasColumnType("int");
 
-                    b.Property<string>("Grade")
+                    b.Property<string>("grade")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -255,10 +255,10 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Student_Id")
+                    b.Property<int>("studentid")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Learner_Values");
                 });
@@ -277,14 +277,14 @@ namespace Basecode.Data.Migrations
                     b.Property<byte[]>("CGM")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ExamSchedule")
+                    b.Property<DateTime?>("examschedule")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("GradeEnrolled")
+                    b.Property<int>("gradeenrolled")
                         .HasColumnType("int");
 
                     b.Property<int>("ParentID")
@@ -303,11 +303,11 @@ namespace Basecode.Data.Migrations
 
             modelBuilder.Entity("Basecode.Data.Models.Parent", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<string>("Gcash")
                         .HasColumnType("nvarchar(max)");
@@ -319,18 +319,18 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Parent");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.RTPCommons", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -343,18 +343,18 @@ namespace Basecode.Data.Migrations
                     b.Property<int>("UID")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("RTPCommons");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.RTPUsers", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<string>("AspUserId")
                         .IsRequired()
@@ -363,18 +363,18 @@ namespace Basecode.Data.Migrations
                     b.Property<int>("RTPId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("RTPUsers");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.RefreshToken", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime>("ExpiresUtc")
                         .HasColumnType("datetime2");
@@ -390,18 +390,18 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("RefreshToken");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.Settings", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<DateTime?>("EndofClass")
                         .HasColumnType("datetime2");
@@ -409,18 +409,18 @@ namespace Basecode.Data.Migrations
                     b.Property<DateTime?>("StartofClass")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Settings");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.Student", b =>
                 {
-                    b.Property<int>("Student_Id")
+                    b.Property<int>("studentid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Student_Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("studentid"));
 
                     b.Property<int>("CurrGrade")
                         .HasColumnType("int");
@@ -437,29 +437,29 @@ namespace Basecode.Data.Migrations
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Student_Id");
+                    b.HasKey("studentid");
 
                     b.ToTable("Student");
                 });
 
             modelBuilder.Entity("Basecode.Data.Models.Subject", b =>
                 {
-                    b.Property<int>("Subject_Id")
+                    b.Property<int>("subjectid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Subject_Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("subjectid"));
 
-                    b.Property<int?>("Grade")
+                    b.Property<int?>("grade")
                         .HasColumnType("int");
 
-                    b.Property<bool>("HasChild")
+                    b.Property<bool>("haschild")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Subject_Name")
+                    b.Property<string>("subjectname")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Subject_Id");
+                    b.HasKey("subjectid");
 
                     b.ToTable("Subject");
                 });
@@ -488,22 +488,22 @@ namespace Basecode.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UID"));
 
-                    b.Property<DateTime>("Birthday")
+                    b.Property<DateTime>("birthday")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("firstname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("lastname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MiddleName")
+                    b.Property<string>("middlename")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("ProfilePic")
+                    b.Property<byte[]>("profilepic")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("sex")
@@ -517,7 +517,7 @@ namespace Basecode.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -532,7 +532,7 @@ namespace Basecode.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
@@ -544,11 +544,11 @@ namespace Basecode.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -560,7 +560,7 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.HasIndex("RoleId");
 
@@ -569,7 +569,7 @@ namespace Basecode.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
@@ -579,7 +579,7 @@ namespace Basecode.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -619,7 +619,7 @@ namespace Basecode.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -634,11 +634,11 @@ namespace Basecode.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -650,7 +650,7 @@ namespace Basecode.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.HasIndex("UserId");
 

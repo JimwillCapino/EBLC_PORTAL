@@ -36,7 +36,7 @@ namespace Basecode.Data.Repositories
             {
                 throw new Exception(ex.Message + "\n" + ex.Source + "\n" + ex.StackTrace + "\n" + ex.InnerException.Message);
             }
-        }
+        }        
         public void AddTeacherRegistration(TeacherRegistration teacher)
         {
             try
@@ -127,12 +127,13 @@ namespace Basecode.Data.Repositories
                               join users in usersportal on rtc.UID equals users.UID
                               select new TeacherViewModel
                               {
-                                  FirstName = users.FirstName,
-                                  LastName = users.LastName,
-                                  MiddleName = users.MiddleName,
-                                  Gender = users.sex,
-                                  Id = au.Id,
-                                  Email = au.Email
+                                  firstname = users.FirstName,
+                                  lastname = users.LastName,
+                                  middlename = users.MiddleName,
+                                  gender = users.sex,
+                                  id = au.Id,
+                                  email = au.Email,
+                                  profilepic = users.ProfilePic
                               };
                 return teacher.ToList();                             
             }

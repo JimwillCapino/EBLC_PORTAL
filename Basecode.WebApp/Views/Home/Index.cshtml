@@ -1,9 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
 }
-@using Basecode.Data.ViewModels
-@model TeacherRegistrarionViewModel
+@using Basecode.Data
     <main class="flex-shrink-0">
         
         <!-- Header-->
@@ -14,35 +14,51 @@
                     <div class="col">
                         <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: transparent !important;">
                             <div class="container px-5">
-                                <a class="navbar-brand" href="index.html">EBLC Portal</a>
+                                
+                                <a class="navbar-brand"> <img src="~/logo.png" alt="..." style="width:90px; height:90px"/> Emmanuel Baptist Learning Center Portal</a>
                                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                                        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="pricing.html">Pricing</a></li>
-                                    </ul>
-                                </div>
+                                
                             </div>
                         </nav>
                     </div>
 
                 </div>
-                <div class="row mt-5">
+                <div class="row mt-2">
                     <div class="col">
                         <!-- Navigation-->
 
                         <div class="blur-overlay"></div>
                         <div class="container px-5">
+                    @if (successValue == 0)
+                    {
+                        <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                            <i class="bi-exclamation-octagon-fill"></i>
+                            <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+
+                    }
+                    else if (successValue == 1)
+                    {
+                        <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                            <i class="bi-check-circle-fill"></i>
+                            <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    @{
+                        Constants.ViewDataErrorHandling.Success = -1;
+                        Constants.ViewDataErrorHandling.ErrorMessage = null;
+                    }
                             <div class="row gx-5 align-items-center justify-content-center">
                                 <div class="col-lg-8 col-xl-7 col-xxl-6">
                                     <div class="my-5 text-center text-xl-start">
-                                        <h1 class="display-6 fw-bolder text-white mb-2">Welcome to the EBLC Portal</h1>
+                                        <h1 class="display-6 fw-bolder text-white mb-2">Welcome to the Emmanuel Baptist Learning Center Portal</h1>
                                         <p class="lead fw-normal text-white-50 mb-4">"Train up a child in a way he should go. For when he is old, he will not depart from it."</p>
                                         <div class="d-grid gap-3 d-sm-flex">
                                             <a class="btn btn-danger btn-lg px-4 me-sm-3" asp-action="Enroll">Enroll Now</a>
-                                            <a class="btn btn-outline-light btn-lg px-4" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                                            <a class="btn btn-outline-light btn-lg px-4" id="login"  asp-action="LogIn">Login</a>
+                                             @* asp-area="Identity" asp-page="/Account/Login" *@
                                         </div>
                                     </div>
                                 </div>
@@ -50,8 +66,9 @@
                         </div>
                     </div>
                 </div>
-        </div>
-    <div class="container d-flex justify-content-center align-items-center min-vh-100 mt-4">
+        </div
+       
+   @*  <div class="container d-flex justify-content-center align-items-center min-vh-100 mt-4">
         <!----------------------- Login Container -------------------------->
         <div class="row border rounded-5 p-3 bg-white shadow box-area">
             <!--------------------------- Left Box ----------------------------->
@@ -114,7 +131,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
         <!-- Features section-->
 @*         <section class="py-5" id="features">
             <div class="container px-5 my-5">
@@ -153,22 +170,21 @@
                 <div class="row gx-5 justify-content-center">
                     <div class="col-lg-10 col-xl-7">
                         <div class="text-center">
-                            <div class="fs-4 mb-4 fst-italic">"Working with Start Bootstrap templates has saved me tons of development time when building new projects! Starting with a Bootstrap template just makes things easier!"</div>
-                            <div class="d-flex align-items-center justify-content-center">
-                                <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
+                        <div class="fs-4 mb-4 fst-italic">" The fear of the LORD is the beginning of knowledge, but fools despise wisdom and instruction."</div>
+                            <div class="d-flex align-items-center justify-content-center">                               
                                 <div class="fw-bold">
-                                    Tom Ato
+                                    Proverbs
                                     <span class="fw-bold text-danger mx-1">/</span>
-                                    CEO, Pomodoro
+                                    1: 17
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> 
         <!-- Blog preview section-->
-        <section class="py-5">
+        @* <section class="py-5">
             <div class="container px-5 my-5">
                 <div class="row gx-5 justify-content-center">
                     <div class="col-lg-8 col-xl-6">
@@ -261,22 +277,16 @@
                 </aside>
             </div>
         </section>
-    </main>
+    </main>*@
     <!-- Footer-->
     <footer class="bg-dark py-4 mt-auto">
         <div class="container px-5">
             <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-                <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2023</div></div>
-                <div class="col-auto">
-                    <a class="link-light small" href="#!">Privacy</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Terms</a>
-                    <span class="text-white mx-1">&middot;</span>
-                    <a class="link-light small" href="#!">Contact</a>
-                </div>
+                <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; EBLC Portal 2023</div></div>
+               
             </div>
         </div>
-    </footer>
+    </footer> 
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <!-- Core theme JS-->

@@ -15,9 +15,9 @@ namespace Basecode.Services.Interfaces
         public IEnumerable<RegisterStudent> GetAllEnrollees();
         public IEnumerable<NewEnrolleeViewModel> GetNewEnrolleeInitView();
         public RegisterStudent GetStudent(int id);
-        public void AddSchedule(int id, DateTime Schedule);
+        public void AddSchedule(int id, string Schedule);
         public void RemoveNewEnrollee(NewEnrollee enrollee);
         public void RejectNewEnrollee(int id);
-        public void AdmitNewEnrollee(int uid);
+        public void AdmitNewEnrollee(int uid, string lrn);
     }
 }

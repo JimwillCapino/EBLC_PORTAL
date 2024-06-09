@@ -13,6 +13,10 @@ namespace Basecode.Data
         {
             public static int id;
         }
+        public class TeacherNavigation
+        {
+            public static int classid;
+        }
         public class Parent
         {
             public static int UID;
@@ -64,7 +68,7 @@ namespace Basecode.Data
             // Messages
             public const string BadRequest = "Bad Request";
             public const string InvalidRole = "Invalid Role";
-            public const string EmailSuccess = "Email Successfully Sent!";
+            public const string EmailSuccess = "email Successfully Sent!";
         }
 
         public class Attachment
@@ -146,7 +150,7 @@ namespace Basecode.Data
             {
                 get
                 {
-                    return "JumpStart Email";
+                    return "JumpStart email";
                 }
             }
         }
@@ -164,7 +168,7 @@ namespace Basecode.Data
             public const string FilePath = "{0}://{1}:{2}{3}";
             public const string FormData = "form-data";
             public const string Slash = "\\";
-            public const string Id = "Id";
+            public const string Id = "id";
             public const string ModuleName = "ModuleName";
             public const string RemovedFileList = "RemovedFileList";
             public const string AttachmentPath = "Attachment";

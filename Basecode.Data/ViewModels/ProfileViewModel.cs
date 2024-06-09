@@ -16,29 +16,41 @@ namespace Basecode.Data.ViewModels
         public int RTPUsersId { get; set; }
         public byte[]? ProfilePic { get; set; }
         public IFormFile? ProfilePicRecieve { get; set; }
+        [Display(Name = "first Name")]
         [Required]
+        [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.", MinimumLength = 1)]
         public string FirstName { get; set; }
+        public string? MiddleName { get; set; }
+        [Display(Name = "last Name")]
         [Required]
-        public string MiddleName { get; set; }
-        [Required]
+        [StringLength(50, ErrorMessage = " Must be at least {2} and at most {1} characters long.", MinimumLength = 1)]
         public string LastName { get; set; }
+        [Display(Name = "birthday")]
         [Required]
         public DateTime Birthday { get; set; }
+        [Display(Name = "sex")]
         [Required]
-        public string sex { get; set; }
+        public string sex { get; set; }        
         [Required]
-        [EmailAddress(ErrorMessage = "Invalid Email Address")]
+        [EmailAddress(ErrorMessage = "Invalid email Address")]
         public string Email { get; set; }
+        [Display(Name = "adrress")]
         [Required]
+        [StringLength(50, ErrorMessage = "Must be at least {2} and at most {1} characters long.")]
         public string Address { get; set; }
+        [Display(Name = "phone number")]
         [Required]
+        [RegularExpression(@"^0\d{9,14}$", ErrorMessage = "Please enter a valid phone number starting with zero.")]
         public string PhoneNumber { get; set; }
-        public string CurrentPassword { get; set; }
         [Required]
         [DataType(DataType.Password)]
+        public string CurrentPassword { get; set; }
+        [Display(Name = "Password")]
+        [Required(ErrorMessage = "The password field is required.")]
+        [DataType(DataType.Password)]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$",
-        ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character")]        
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]        
+     ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.")]
+        [StringLength(100, ErrorMessage = "The password must be at least {2} and at most {1} characters long.", MinimumLength = 8)]
         public string NewPassword { get; set; }
     }
 }

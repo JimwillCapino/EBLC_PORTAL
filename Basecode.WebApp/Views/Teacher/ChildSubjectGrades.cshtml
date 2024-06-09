@@ -1,22 +1,56 @@
-﻿@*
+﻿ @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Submit grade";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     int? max = 0;
+    int successValue = (int)ViewData["Success"];
+    int finalgrade = 0;
 }
+@using Basecode.Data
 @using Basecode.Data.ViewModels
 @model ChildSubjectGrades
 <link rel="stylesheet" href="/css/TableInfo.css" />
+<link href="~/css/BackButton.css" rel="stylesheet" />
 <div class="wrapper">
     @await Html.PartialAsync("./_TeacherSideBar")
-    <div class="main p-5">
+    <div class="main p-4" style="height:400px; overflow-y: auto;">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="StudentList">Subjects</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="StudentListPerSubject" asp-route-classid="@Constants.TeacherNavigation.classid" asp-route-subjectid="@Model.HeadId">Students</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a>Grade Submmission</a></li>
+            </ol>
+        </nav>
+        @if (successValue == 0)
+        {
+            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-exclamation-octagon-fill"></i>
+                <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+        }
+        else if (successValue == 1)
+        {
+            <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-check-circle-fill"></i>
+                <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @{
+            Constants.ViewDataErrorHandling.Success = -1;
+            Constants.ViewDataErrorHandling.ErrorMessage = null;
+        }
         <div class="card">
             <div class="card-body">
+                <h3>@Model.HeadSubjectName</h3>
                 <h4 class="card-title">Child Subject Grades</h4>
                 <p class="card-description">
-                    Below are the grades obtained by the student.
+                    When adding a grade, please check before clicking the save button.
                 </p>
                 <button type="button" id="add"class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Grades</button>
                 <div class="table-responsive">
@@ -27,7 +61,8 @@
                                 <th>1</th>
                                 <th>2</th>
                                 <th>3</th>
-                                <th>4</th>                                
+                                <th>4</th>
+                                <th>Final</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,14 +77,34 @@
                                         {
                                             max = grade.Quarter;
                                         }
-                                        <td>@grade.Grade</td>
+                                        <td>@grade.Grade <a href="" onclick="updateGrade('@grade.Grade_Id','@Model.StudentId','@subject.subjectId','@grade.Quarter','@grade.Grade','@subject.Name')" data-bs-toggle="modal" data-bs-target="#exampleModal1"><i class="lni lni-pencil"></i></a></td>
                                     }
                                 </tr>
                             }
+                            <tr>
+                                <td>@Model.HeadSubjectName</td>
+                                @foreach(var grade in Model.HeadSubjectGrade.Grades)
+                                {
+                                    <td>@grade.Grade</td>
+                                    finalgrade = grade.Grade;
+                                }
+                            </tr>
                         </tbody>
                     </table>
+                    @if (max == 4)
+                    {
+                        @if (finalgrade >= Model.passingGrade)
+                        {
+                            <p>Remarks: Passed</p>
+                        }
+                        else
+                        {
+                            <p>Remarks: Failed</p>
+                        }
+                    }
                 </div>              
             </div>
+           
         </div>
     </div>
     <!--Modal for adding grades-->
@@ -72,8 +127,8 @@
                             var subject = Model.ChildSubjects.ElementAt(x);
                             <div class="mb-3">
                                  <label for="recipient-name" class="col-form-label">@subject.Name:</label>
-                                 <input type="hidden" value="@subject.Id" name="subject" />
-                                 <input type="text" class="form-control" id="recipient-name" name="grades" required>
+                                 <input type="hidden" value="@subject.subjectId" name="subject" />
+                                <input type="number" class="form-control" id="recipient-name" name="grades" min="50" max="100" required>
                             </div>
                         }
                     </div>
@@ -86,11 +141,52 @@
         </div>
     </div>
 
+    @* Modal For Updating grades *@
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Update Grade</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                @using (Html.BeginForm("EditChildSubGrade", "Teacher", FormMethod.Post))
+                {
+                    <div class="modal-body">
+                        <input type="hidden" id="gradeid" name="Grade_Id"/>
+                        <input type="hidden" id="studentId" name="Student_Id" />
+                        <input type="hidden" id="subjectId" name="Subject_Id" />
+                        <input type="hidden" id="quarter" name="Quarter" />
+                        <input type="hidden" name="headid"  value="@Model.HeadId"/>
+                        <div class="mb-3">
+                            <label id="subname" for="recipient-name" class="col-form-label">:</label>
+                            <input type="number" class="form-control" id="grade" name="Grade" min="50" max="100" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Submit Grade</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
 </div>
+
+
 <script>
     var button = document.getElementById("add");
     if (@max == 4)
     {
         button.disabled = true;
+    }
+    function updateGrade(gradeId,studentId,subjectId,quarter,grade,subname)
+    {
+        document.getElementById("gradeid").value = gradeId;
+        document.getElementById("studentId").value = studentId;
+        document.getElementById("subjectId").value = subjectId;
+        document.getElementById("quarter").value = quarter;
+        document.getElementById("grade").value = grade;
+        document.getElementById("subname").textContent = subname;
     }
 </script>

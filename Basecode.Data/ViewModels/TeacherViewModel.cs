@@ -8,11 +8,12 @@ namespace Basecode.Data.ViewModels
 {
     public class TeacherViewModel
     {
-        public string Id { get; set; }
-        public string FirstName { get; set; }   
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }
-        public string Gender { get; set; }
-        public string Email { get; set; }
+        public string id { get; set; }
+        public byte[]? profilepic { get; set; }
+        public string firstname { get; set; }   
+        public string middlename { get; set; }
+        public string lastname { get; set; }
+        public string gender { get; set; }
+        public string email { get; set; }
     }
 }

@@ -16,5 +16,6 @@ namespace Basecode.Data.Interfaces
         public UsersPortal GetUserById(int id);
         public  Task<ProfileViewModel> GetUserPortal(string AspUserId);
         public Task UpdateUserPortal(UsersPortal user);
+        public Task<bool> IsNewUser(string AspUserId);
     }
 }

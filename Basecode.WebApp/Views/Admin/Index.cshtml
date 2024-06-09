@@ -1,33 +1,76 @@
-﻿@model Basecode.Data.ViewModels.CreateRoleViewModel
-
-@{
-    ViewData["Title"] = "index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
 }
-
-<h1>index</h1>
-
-<h4>CreateRoleViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post" asp-action="CreateRole">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Role" class="control-label"></label>
-                <input asp-for="Role" class="form-control" />
-                <span asp-validation-for="Role" class="text-danger"></span>
+@using Basecode.Data
+@using Basecode.Data.ViewModels
+@model AdminDashboard
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<div class="wrapper">
+    @await Html.PartialAsync("./_AdminSideBar")
+    <div class="main p-3" style="height:400px; overflow-y: auto;">
+        @if (successValue == 0)
+        {
+            <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-exclamation-octagon-fill"></i>
+                <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+        }
+        else if (successValue == 1)
+        {
+            <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                <i class="bi-check-circle-fill"></i>
+                <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @{
+            Constants.ViewDataErrorHandling.Success = -1;
+            Constants.ViewDataErrorHandling.ErrorMessage = null;
+        }
+        <div class="container p-lg-2">
+            <i class="fas fa-user-circle"></i><span class="p-2">@Model.SchoolYear</span>
+            <h1>
+                Dashboard
+            </h1>
+        </div>
+        <div class="container mt-3 gap-3">
+            <div class="row">
+                <div class="col">
+                    <div class="card-counter warning">
+                        <i class="fa-solid fa-person-chalkboard"></i>
+                        <span class="count-numbers">@Model.TeacherCount</span>
+                        <span class="count-name">Teachers</span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card-counter success">
+                        <i class="  fa-solid fa-universal-access"></i>
+                        <span class="count-numbers">@Model.StudentEnrolledCount</span>
+                        <span class="count-name">Enrolled</span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card-counter danger">
+                        <i class="fa-solid fa-user-xmark"></i>
+                        <span class="count-numbers">@Model.StudentNotEnrolledCount</span>
+                        <span class="count-name">Not Enrolled</span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card-counter info">
+                        <i class="fa-solid fa-user-xmark"></i>
+                        <span class="count-numbers">@Model.RegistrarsCount</span>
+                        <span class="count-name">Registrar</span>
+                    </div>
+
+                </div>
+            </div>                                        
+        </div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

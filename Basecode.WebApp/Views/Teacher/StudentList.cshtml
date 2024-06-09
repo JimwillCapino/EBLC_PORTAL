@@ -2,56 +2,93 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "Classes";
     Layout = "~/Views/Shared/NoLayout.cshtml";
 }
 @using Basecode.Data.ViewModels
-@model List<TeacherClassDetails>
+
 
 <link rel="stylesheet" href="/css/TeachersPage.css" />
+<script>
+    $(document).ready(function () {
+        var table = $("#table").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": true, // for disable multiple column at once
+            "ajax": {
+                "url": "/Teacher/StudentListDataTable",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columnDefs": [{
+                "targets": [0],
+                "orderable": true
+            },
+            {
+                "targets": [1],
+                "orderable": true
+            },
+            {
+                "targets": [2],
+                "orderable": true
+            },
+            {
+                "targets": [3],
+                "orderable": true
+            }
+            ],
+
+            "columns": [
+                { "data": "classname", "name": "classname" },
+                { "data": "subjectname", "name": "subjectname" },
+                { "data": "grade", "name": "grade" },
+                { "data": "schedule", "name": "schedule" }
+            ]
+        });
+
+        $('#table tbody').on('click', 'tr', function () {
+            // Get data for the clicked row
+            var rowData = table.row(this).data();
+
+            // Redirect to another page with the row data
+            window.location.href = '@Url.Action("StudentListPerSubject", "Teacher")?classid=' + rowData.classid + '&subjectid=' + rowData.subjectid; // Adjust the URL as per your MVC route
+        });
+    });
+
+</script>
+
 <div class="wrapper">
     @await Html.PartialAsync("./_TeacherSideBar")
-    <div class="main p-5">
-        <p class="lead">Your Class</p>
-        <div class="tab">
-            @foreach(var classTeacher in Model)
-            {
-                string tab = classTeacher.grade + " "+classTeacher.Class_Name + " " + classTeacher.Subject_Name;
-                <button class="tablinks" onclick="tabs(event, '@tab')" id="defaultOpen">Grade @tab</button>           
-            }
+    <div class="main p-5" style="height:400px; overflow-y: auto;">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a>Subjects</a></li>               
+            </ol>
+        </nav>
+        <div style="width:90%; margin:0 auto;">
+            <h2>Your Classes</h2>
+            <table id="table" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Class Name</th>
+                        <th>Subject Name</th>
+                        <th>Grade</th>
+                        <th>Schedule</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
-        @foreach(var classTeacher in Model)
-        {
-            string tab = classTeacher.grade + " " + classTeacher.Class_Name + " " + classTeacher.Subject_Name;
-            <div id="@tab" class="tabcontent">
-                <div class="table-responsive">
-                    <table class="table" id="myTable">
-                        <thead>
-                            <tr>
-                                <th scope="col">Students</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var student in classTeacher.Students)
-                            {
-                                <tr class="bg-blue" onclick="redirectToSubmitGradePage(@student.Student_Id,@classTeacher.Subject_Id)">
-                                    <td class="pt-2">
-                                        <div class="pl-lg-5 pl-md-3 pl-1 name">@student.FirstName @student.MiddleName, @student.LastName</div>
-                                    </td>
-                                </tr>
-                                <tr id="spacing-row">
-                                    <td></td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        }      
     </div>
     <script>
-        function redirectToSubmitGradePage(student_Id, subject_Id) {
-            window.location.href = '@Url.Action("SubmitGrade", "Teacher")?student_Id=' + student_Id + '&subject_Id=' + subject_Id;
+        function redirectToSubmitGradePage(student_Id) {
+            window.location.href = '@Url.Action("StudentValues", "Teacher")?studentId=' + student_Id;
+        }
+        function redirectToAttendanccePage(student_Id) {
+            window.location.href = '@Url.Action("StudentAttendance", "Teacher")?studentId=' + student_Id;
         }
     </script>
 </div>

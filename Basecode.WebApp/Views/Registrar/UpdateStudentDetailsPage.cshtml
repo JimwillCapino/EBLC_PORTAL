@@ -1,0 +1,152 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Update student details";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+}
+
+@using Basecode.Data.ViewModels
+@model StudentDetailsContainer
+<div class="wrapper">
+    @await Html.PartialAsync("./_RegistrarSideBar")
+    <div class="main">
+    
+        <div class="container py-3 min-vh-100 d-flex flex-column">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a asp-action="StudentRecord">List of Students</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a asp-action="StudentInfo" asp-route-student_Id="@Model.Student.Student_ID">Student Information</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a>Edit Student Information</a></li>
+                </ol>
+            </nav>
+            <div class="card shadow rounded-3 my-auto">
+                <div class="card-header p-3 h4">
+                    Enter Student Details
+                </div>
+                <div class="card-body p-4">
+                    <form role="form" enctype="multipart/form-data" method="post" class="row" asp-action="UpdateStudentDetails">
+                        <div class="form-group col-lg-4">
+                            <label for="inputEmail4">Profile Picture</label>
+                            <input type="file" class="form-control" id="inputEmail4" placeholder="" asp-for="Student.ProfilePicRecieve">
+                            <span asp-validation-for="Student.ProfilePicRecieve" class="text-danger"></span>
+                        </div>
+                        
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Student.Student_ID" />
+                        <div class="form-group col-lg-4">
+                            <label for="inputEmail4">First Name</label>
+                            <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="Student.FirstName">
+                            <span asp-validation-for="Student.FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputPassword4">Middle Name</label>
+                            <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="Student.MiddleName">
+                            <span asp-validation-for="Student.MiddleName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputPassword4">Last Name</label>
+                            <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="Student.LastName">
+                            <span asp-validation-for="Student.LastName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputEmail4">Birthday</label>
+                            <input type="date" class="form-control" id="inputEmail4" placeholder="" asp-for="Student.Birthday">
+                            <span asp-validation-for="Student.Birthday" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputState">Sex</label>
+                            <select id="inputState" class="form-control" asp-for="Student.sex">
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                            <span asp-validation-for="Student.sex" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputState">Enrollment Status</label>
+                            <select asp-for="Student.Status" id="inputState" class="form-control" required>
+                                <option value="" selected>Select Enrollement Status</option>
+                                <option value="Enrolled">Enrolled</option>
+                                <option value="Not Enrolled">Not Enrolled</option>
+                            </select>                         
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputEmail4">Grade to Enroll</label>
+                            <select asp-for="Student.Grade" class="form-control">
+                                <option value="" disabled="disabled" selected="selected">GRADE TO ENROLL</option>
+                                <option value="Nursery">Nursery</option>
+                                <option value="Kinder 1">Kinder 1</option>
+                                <option value="Kinder 2">Kinder 2</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                            <span asp-validation-for="Student.Grade" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputPassword4">LRN</label>
+                            <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="Student.lrn">
+                            <span asp-validation-for="Student.lrn" class="text-danger"></span>
+                        </div>
+                        <h3 class="mt-4">Guardian Information</h3>
+                        <div class="form-group col-lg-4">
+                            <label for="inputEmail4">First Name</label>
+                            <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="Parent.ParentFirstName">
+                            <span asp-validation-for="Parent.ParentFirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputPassword4">Middle Name</label>
+                            <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="Parent.ParentMiddleName">
+                            <span asp-validation-for="Parent.ParentMiddleName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputPassword4">Last Name</label>
+                            <input type="text" class="form-control" id="inputPassword4" placeholder="" asp-for="Parent.ParentLastName">
+                            <span asp-validation-for="Parent.ParentLastName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputEmail4">Birthday</label>
+                            <input type="date" class="form-control" id="inputEmail4" placeholder="" asp-for="Parent.ParentBirthday">
+                            <span asp-validation-for="Parent.ParentBirthday" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputEmail4">Phone Number</label>
+                            <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="Parent.PhoneNumber">
+                            <span asp-validation-for="Parent.PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputPassword4">Address</label>
+                            <input type="text" class="form-control" id="inputEmail4" placeholder="" asp-for="Parent.Address">
+                            <span asp-validation-for="Parent.Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputPassword4">Email</label>
+                            <input type="email" class="form-control" id="inputEmail4" placeholder="" asp-for="Parent.Email">
+                            <span asp-validation-for="Parent.Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="inputPassword4">Sex</label>
+                            <select id="inputState" class="form-control" asp-for="Parent.Parentsex">
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                            <span asp-validation-for="Parent.Parentsex" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-lg-12">
+                            <button type="submit" class="btn btn-warning float-end mt-2" for="form-group-input">Submit</button>
+                        </div>
+                    </form>
+                    @section Scripts {
+                        @{
+                            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

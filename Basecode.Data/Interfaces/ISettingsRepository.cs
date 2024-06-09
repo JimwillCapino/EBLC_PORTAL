@@ -13,5 +13,12 @@ namespace Basecode.Data.Interfaces
         public Settings GetSettings();
         public string GetSchoolYear();
         public Settings GetSettingsById(int id);
+        public int? GetWithHighHonor();
+        public int? GetWithHighestHonor();
+        public int? GetWithHonor();
+        public string? GetSchoolEmail();
+        public string? GetPassword();
+        public int? GetPassingGrade();
+
     }
 }

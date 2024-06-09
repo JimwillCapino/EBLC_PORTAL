@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    Layout = "~/Views/Shared/NoLayout.cshtml";
+    Layout = null;
     double avg = 0;
     int? countRows;
 }
@@ -10,58 +10,206 @@
 @model Form137Container
 
 <html>
-    <head>
+<head>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
         .flexrow {
-            display: -webkit-box;
-            display: -webkit-flex;
-            display: flex !important;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 20px 0;
         }
 
             .flexrow > div {
-                -webkit-box-flex: 1;
-                -webkit-flex: 1;
                 flex: 1;
             }
 
         .container {
             page-break-inside: avoid;
+            margin: 20px;
         }
 
-        th {
+        th, td {
             text-align: left;
             padding: 8px;
+            border: 1px solid #ddd;
         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        img {
+            display: block;
+            margin: auto;
+        }
+
+        h2, h3, h4, h5 {
+            margin: 5px 0;
+        }
+
+        .lead {
+            font-size: 1.25em;
+            margin: 10px 0;
+        }
+
+        .rounded {
+            border-radius: 50%;
+        }
+
+        .full-width-div {
+            width: 100%;
+            background-color: lightblue; /* Just to visualize the full width */
+            padding: 20px; /* Optional padding */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .centered-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+            .centered-table td {
+                border: none; /* Remove borders from the table cells */
+                text-align: center; /* Center align the content */
+                vertical-align: middle; /* Vertically center the content */
+            }
+
+            .centered-table h2, .centered-table h3, .centered-table h4 {
+                margin: 0; /* Remove default margins from headings */
+                padding: 0; /* Remove default padding from headings */
+            }
     </style>
-    </head>
-    <body>
-    <div style="margin: auto; text-align: center; ">
-        <div class="row flexrow">
-            <div class="col-auto">
-                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Settings.SchoolLogo)" class="rounded float-left" style="width: 80px; height:80px" alt="" />
-                <h2>School ID: <br />@Model.Settings.SchoolId</h2>
-            </div>
-            <div class="col-auto text-center">
-                <h4>REPUBLIC OF THE PHILIPPINES</h4>
-                <h3>Department of Education</h3>
-                <h5>Region @Model.Settings.Region</h5>
-                <h5>Division of @Model.Settings.Division</h5>
-                <h5>District @Model.Settings.District</h5>
-                <h2><b>@Model.Settings.School_Name</b></h2>
-                <h5>@Model.Settings.Address</h5>
-            </div>
-            <div class="col-auto">
-                <img src="data:image/png;base64,@Convert.ToBase64String(Model.Settings.DepEdLogo)" class="rounded float-left" style="width: 80px; height:80px" alt="" />
-            </div>
-        </div>
+</head>
+<body>
+    <div style="margin: auto; text-align: center;">
+        <div>
+            <table class="centered-table">
+                <tr>
+                    <td>
+                        <img src="data:image/png;base64,@Convert.ToBase64String(Model.Settings.DepEdLogo)" class="rounded" style="width: 80px; height:80px" alt="" />
+                    </td>
+                    <td class="flexrow">
+                        <h4>REPUBLIC OF THE PHILIPPINES</h4>
+                        <h3>Department of Education</h3>
+                        <h2>Learner Permanent Record for Elementary School (SF10-ES)</h2>
+                    </td>
+                    <td>
+                        <img src="/pngegg.png" class="rounded" style="width: 80px; height:80px" alt="" />
+                    </td>
+                </tr>
+            </table>
+        </div>       
     </div>
-    <p class="lead">Name: @Model.Student.FirstName @Model.Student.MiddleName @Model.Student.LastName</p>
-    <p class="lead">LRN: @Model.Student.lrn</p>
-    @foreach(var content in Model.StudentForm137)
+    <div class="full-width-div">
+        LEARNER'S PERSONAL INFORMATION
+    </div>
+    <div>
+        <table>
+            <tr>
+                <td>
+                    Last Name: @Model.Student.LastName
+                </td>
+                <td>
+                    First Name: @Model.Student.FirstName
+                </td>
+                <td>
+                    Middle Name: @Model.Student.MiddleName
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Learner Reference Number: @Model.Student.lrn
+                </td>
+               <td>
+                   Birthday(mm/dd/yyyy): @Model.Student.Birthday.ToShortDateString()
+               </td>
+               <td>
+                   Sex: @Model.Student.sex
+               </td>
+            </tr>
+        </table>
+    </div>
+    <div class="full-width-div">
+        ELIGIBILITY FOR ELEMENTARY SCHOOL ENROLMENT
+    </div>
+    <div>
+        <table>
+            <tr>
+                <td>Credential Presented for Grade 1:</td>
+                <td>
+                    <input type="checkbox"/>
+                    <label>Kinder Progress Report</label>
+                </td>
+                <td>
+                    <input type="checkbox" />
+                    <label>ECCD Checklist</label>
+                </td>
+                <td>
+                    <input type="checkbox" />
+                    <label>Kindergarten  Certificate of Completion</label>
+                </td>
+            </tr>
+            <tr>
+                @{var model1 = Model.StudentForm137.FirstOrDefault(p => p.GradeLevel == "1");}
+                @if(model1 != null)
+                {
+                    <td>Name of School: @model1.ScholasticRecords.School</td>
+                    <td>School ID: @model1.ScholasticRecords.SchoolId</td>
+                }
+                else
+                {
+                    <td>Name of School: </td>
+                    <td>School ID: </td>
+                }
+
+            </tr>
+        </table>
+    </div>
+    <div class="full-width-div">
+        SCHOLASTIC RECORD
+    </div>
+    @foreach (var content in Model.StudentForm137)
     {
-        <p class="lead">School Year: @content.SchoolYear Grade Level:@content.GradeLevel</p>
+       <table>
+           <tr>
+               <td>School: @content.ScholasticRecords.School</td>
+               <td>School ID: @content.ScholasticRecords.SchoolId</td>
+               <td></td>
+           </tr>
+           <tr>
+               <td>@content.ScholasticRecords.District</td>
+               <td>@content.ScholasticRecords.Division</td>
+               <td>@content.ScholasticRecords.Region</td>
+           </tr>
+           <tr>
+               <td>Classified as Grade: @content.ScholasticRecords.Grade</td>
+               <td>Section: @content.ScholasticRecords.Section</td>
+               <td>School Year: @content.ScholasticRecords.SchoolYear</td>
+           </tr>
+           <tr>
+               <td>Name of Adviser/Teacher: @content.ScholasticRecords.Adviser</td>
+               <td>Signature:</td>
+               <td></td>
+           </tr>
+       </table>
         <div class="container">
-            <table class="table">
+            <table>
                 <thead>
                     <tr>
                         <th>Subject</th>
@@ -77,7 +225,7 @@
                     @foreach (var subject in content.Subjects)
                     {
                         countRows = 0;
-                        <tr scope="row">
+                        <tr>
                             <td>@subject.Subject_Name</td>
                             @{
                                 var SubjectWithGrades = content.grades.FirstOrDefault(p => p.SubjectId == subject.Subject_Id);
@@ -85,24 +233,22 @@
                             @if (SubjectWithGrades != null)
                             {
                                 @foreach (var grade in SubjectWithGrades.Grades)
-                                {                                    
+                                {
                                     <td>@grade.Grade</td>
                                     if (grade.Quarter == 5 && grade.Grade >= 75)
                                     {
-
                                         avg += grade.Grade;
                                         <td>Passed</td>
                                         countRows++;
                                     }
                                     else if (grade.Quarter == 5 && grade.Grade < 75)
                                     {
-
                                         avg += grade.Grade;
                                         <td>Failed</td>
                                         countRows++;
                                     }
                                     countRows++;
-                                }                               
+                                }
                                 for (int x = 0; x < (6 - (countRows)); x++)
                                 {
                                     <td></td>
@@ -119,17 +265,76 @@
                             }
                         </tr>
                     }
+                   <tr>
+                       <td>
+                            <p class="lead">General Average:</p>                           
+                       </td>
+                        <td> </td>
+                        <td> </td>
+                        <td> </td>
+                        <td> </td>
+                        <td> @Math.Floor(avg / content.TotalHeadSubjectCount) </td>
+                        <td>
+                            @if (Math.Floor(avg / content.TotalHeadSubjectCount) >= 75)
+                            {
+                                <p class="lead">Promoted</p>
+                            }
+                            @{
+                                avg = 0;
+                            }
+                        </td>
+                   </tr>
                 </tbody>
+                
             </table>
+            @if(content.RemedialClass != null && content.RemedialDetails != null)
+            {
+             <table>
+                <tr>
+                    <td>Remidial Class: </td>
+                    <td>Conducted from: @content.RemedialClass.from</td>
+                    <td>to: @content.RemedialClass.to</td>
+                </tr>
+            </table>
+            <table>
+                 <thead>
+                    <tr>
+                        <td>
+                            Learning Areas
+                        </td>
+                        <td>
+                           Final Rating
+                        </td>
+                        <td>
+                              Remedial Class Mark
+                        </td>
+                        <td>
+                             Recomputed Final Grade
+                        </td>
+                        <td>
+                              Remarks
+                        </td>
+                    </tr>
+                 </thead>
+                 <tbody>
+                    @foreach(var remedial in content.RemedialDetails)
+                    {
+                        <tr>
+                           <td>@remedial.LearningAreas</td>
+                           <td>@remedial.FinalRating</td>
+                           <td>@remedial.RemidialClassMark</td>
+                           <td>@remedial.RecomputedFinalGrade</td>
+                           <td>@remedial.Remarks</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>                
+            }
+            <br />
+            <div class="page-break"></div>
         </div>
-        
-        
-        <p class="lead">General Average: @Math.Floor(avg / content.TotalHeadSubjectCount)</p>
-        @if (Math.Floor(avg / content.TotalHeadSubjectCount) >= 75)
-        {
-            <p class="lead">Promoted</p>
-        }
-        avg = 0;                          
+
+       
     }
-    </body>
+</body>
 </html>

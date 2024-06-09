@@ -1,10 +1,11 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using Basecode.Data
 @using Basecode.Data.Models
 @model RegisterStudent
 @{
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "New enrollee details";
     Layout = "~/Views/Shared/NoLayout.cshtml";
     var s = "";
     if (Model.sex == "F") s = "Female";
@@ -14,18 +15,60 @@
     var parentsex = "";
     if (Model.Parentsex == "F") parentsex = "Female";
     else parentsex = "Male";
+    int successValue = (int)ViewData["Success"];
 }
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
+<!-- Flatpickr JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <link rel="stylesheet" href="/css/TableInfo.css" />
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main p-5">
+    <div class="main p-5" style="height:400px; overflow-y: auto;">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a asp-action="Enrollment">List of Enorllees</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a>New Enrollee Information</a></li>
+            </ol>
+        </nav>
+         @if (successValue == 0)
+            {
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-exclamation-octagon-fill"></i>
+                    <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+            }
+            else if (successValue == 1)
+            {
+                <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-check-circle-fill"></i>
+                    <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @{
+                Constants.ViewDataErrorHandling.Success = -1;
+                Constants.ViewDataErrorHandling.ErrorMessage = null;
+            }
         <div class="row">
             <div class="col-lg-4">
                 <div class="card mb-4">
                     <div class="card-body text-center">
-                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
-                             class="rounded-circle img-fluid" style="width: 150px;">
+                        @if (Model.ProfilePic == null)
+                        {
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                                 class="rounded-circle img-fluid" style="width: 150px;">
+                        }
+                        else
+                        {
+                            <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProfilePic)" alt="avatar"
+                                 class="rounded-circle img-fluid" style="width: 150px;">
+                        }
+
                         <h5 class="my-3">@Model.FirstName @Model.MiddleName @Model.LastName</h5>
                         <p class="text-muted mb-1">Grade to Enroll: @Model.GradeEnrolled</p>
                         <p class="text-muted mb-1">Age: @age</p>
@@ -50,11 +93,7 @@
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                                 <i class="fa-solid fa-phone" style="color:#555555;"></i>
                                 <p class="mb-0">@Model.PhoneNumber</p>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                <i class="fa-solid fa-g fa-lg" style="color: #55acee;"></i>
-                                <p class="mb-0">@Model.Gcash</p>
-                            </li>
+                            </li>                            
                             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                                 <i class="fa-solid fa-location-dot fa-lg" style="color: #ac2bac;"></i>
                                 <p class="mb-0">@Model.Address</p>
@@ -85,8 +124,16 @@
                 <div id="Grades" class="tabcontent">
                    
                     <div class="card">
-                        <div class="card-body">                           
-                            <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.TORRecieve)" type="application/pdf" width="100%" height="600px" />                                             
+                        <div class="card-body">
+                            @if(@Model.TORRecieve != null)
+                            {
+                                <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.TORRecieve)" type="application/pdf" width="100%" height="600px" />
+                            }
+                            else
+                            {
+                                <p>No data to show</p>
+                            }
+
                         </div>
                     </div>
                 </div>
@@ -95,7 +142,15 @@
                     
                     <div class="card">
                         <div class="card-body">
-                            <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.BirthCertificateRecieve)" type="application/pdf" width="100%" height="600px" />
+                            @if(Model.BirthCertificateRecieve != null)
+                            {
+                                <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.BirthCertificateRecieve)" type="application/pdf" width="100%" height="600px" />
+                            }
+                            else
+                            {
+                                <p>No data to show</p>
+                            }
+                            
                         </div>
                     </div>
                 </div>
@@ -103,7 +158,14 @@
 
                     <div class="card">
                         <div class="card-body">
-                            <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.CGMRecieve)" type="application/pdf" width="100%" height="600px" />
+                            @if(Model.CGMRecieve != null)
+                            {
+                                <embed src="data:application/pdf;base64,@Convert.ToBase64String(Model.CGMRecieve)" type="application/pdf" width="100%" height="600px" />
+                            }
+                            else
+                            {
+                                <p>No data to show</p>
+                            }
                         </div>
                     </div>
                 </div>
@@ -119,19 +181,21 @@
                     <h5 class="modal-title" id="exampleModalLabel">Enter Exam Schedule</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                 @using (Html.BeginForm("AddSchedule","Registrar",FormMethod.Post))
+                @using (Html.BeginForm("AddSchedule", "Registrar", FormMethod.Post, new { id = "addShedule" }))
                     {
                         <div class="modal-body">
                    
                                 <div class="input-group mb-3">                          
-                                    <input type="datetime-local" class="form-control" name="datetime">
+                                    <input type="text" id="datetimePicker" class="form-control" name="datetime" required>
+                                    
                                     <input type="hidden" name="Id" value="@Model.Id"/>
-                                </div>                               
-                        </div>
+                                </div>
+                        <span id="errorMessage" class="text-danger"></span>
+                    </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>     
-                            <button type="submit" value="Submit" class="btn btn-danger">Save changes</button>                                           
-                        </div>
+                        <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" id="submitForm" value="Submit" class="btn btn-danger">Save changes</button>
+                    </div>
                     }
             </div>
         </div>
@@ -155,3 +219,47 @@
   </div>
 </div>
 </div>
+<script>
+    flatpickr("#datetimePicker", {
+        enableTime: true, // Disable time picker
+        noCalendar: false, // Enable calendar (date picker)
+        allowInput: true, // Enable keyboard input
+        dateFormat: "Y/m/d h:i K", // Specify the date format (e.g., "Y-m-d" for "2024-05-16")
+        defaultDate: null, // Optional: set default date, remove this line if not needed
+        onChange: function (selectedDates, dateStr, instance) {
+            console.log(dateStr); // Handle formatted date string
+        }
+    });
+</script>
+<script>
+    $(function () {
+        $('#submitForm').click(function (e) {
+            // Prevent default form submission behavior
+            e.preventDefault();
+
+            // Serialize form data
+            var formData = $('#addShedule').serialize();
+
+            // AJAX request
+            $.ajax({
+                url: '@Url.Action("AddSchedule", "Registrar")',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    // Handle success response
+                    if (response.success) {
+                        // Redirect to a success page or perform any other action
+                        window.location.href = '@Url.Action("Enrollment", "Registrar")';
+                    } else {
+                        // Display error message in span
+                        $('#errorMessage').text(response.message);
+                    }
+                },
+                error: function () {
+                    // Handle error
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        });
+    });
+</script>

@@ -2,50 +2,118 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{    
-    ViewData["Title"] = "Registrar";
+    ViewData["Title"] = "List of subjects";
     Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
 }
-@using Basecode.Data.Models
-@model List<Subject> 
+@using Basecode.Data
+@using Basecode.Data.ViewModels
+@model SubjectViewModel
+<script>
+    $(document).ready(function () {
+        var table = $("#table").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": true, // for disable multiple column at once
+            "ajax": {
+                "url": "/Registrar/ManageSubjectsDataTable",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columnDefs": [{
+                "targets": [0],
+                "orderable": true
+            },
+            {
+                "targets": [1],
+                "orderable": true
+            },
+            {
+                "targets": [2],
+                "orderable": false
+            }
+            ],
+
+            "columns": [
+                { "data": "subjectname", "name": "subjectname" },
+                { "data": "grade", "name": "grade" },                
+                {
+                    data: null, render: function (data, type, row) {
+                        //return row.haschild == true ? '<a href="#" class="btn btn-success" onclick=redirect("' + row.subjectid + '");>Child Subjects</a> <a href="#" onclick="removeSub(' + row.subjectid + ')" class="btn btn-danger">Delete</a> <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="SetSubjectEditPanel(' + row.subjectid + ',' + row.subname + ',' + row.grade + ',' + row.haschild + ')">Edit</a>' : '<a href="#" onclick="removeSub(' + row.subjectid + ')" class="btn btn-danger">Delete</a> <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="SetSubjectEditPanel(' + row.subjectid + ',' + row.subname + ',' + row.grade + ',' + row.haschild + ')">Edit</a>';
+                        return row.haschild == true ? '<a href="#" class="btn btn-success" onclick=redirect("' + row.subjectid + '");>Child Subjects</a> <a href="#" data-toggle="modal" data-target="#exampleModal3" onclick="removeAlert(' + row.subjectid + ')" class="btn btn-danger">Delete</a> <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="SetSubjectEditPanel(' + row.subjectid + ',' + ensureString(row.subjectname) + ',' + row.grade + ',' + row.haschild + ')">Edit</a>' : '<a href="#"  data-toggle="modal" data-target="#exampleModal3" onclick="removeAlert(' + row.subjectid + ')" class="btn btn-danger">Delete</a> <a class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="SetSubjectEditPanel(' + row.subjectid + ',' + ensureString(row.subjectname) + ',' + row.grade + ')">Edit</a>';
+
+                    }
+                }
+            ]
+        });
+
+    });    
+</script>
+<style>
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px; /* Adjust vertical spacing */
+        table-layout: fixed;
+    }
+
+    th, td {
+        padding: 10px; /* Adjust padding as needed */
+        text-align: center; /* Center align content */
+    }
+</style>
 <div class="wrapper">
     @await Html.PartialAsync("./_RegistrarSideBar")
-    <div class="main p-5">
-        <h1>Manage Subjects</h1>
-        <div class="d-flex justify-content-between align-items-center mb-3"> 
-            <h1></h1>
-            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Subjects</button>
-        </div>
-        <div class="table-responsive overflow-auto">
-            <table class="table overflow-auto" id="myTable">
-                <thead>
-                    <tr>
-                        <th>Subject Name</th>
-                        <th>Grade</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(var subject in Model)
-                    {
-                        <tr class="bg-blue">
-                            <td class="pt-3 mt-1">@subject.Subject_Name</td>
-                            <td class="pt-3">@subject.Grade</td>
-                            <td class="pt-3">
-                                <i class="lni lni-cross-circle px-3"></i>
-                                @if(subject.HasChild)
-                                {
-                                   
-                                        <i class="lni lni-layers" onclick="redirect('@subject.Subject_Id')"></i>
-                                    
-                                }                               
-                            </td>
+    <div class="main p-5" style="height:400px; overflow-y: auto;">
+        <div class="container">
+            
+            <br />
+            <div style="width:95%; margin:0 auto;">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item" aria-current="page"><a asp-action="index">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a>Subjects</a></li>
+                    </ol>
+                </nav>
+                <h1>Manage Subjects</h1>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1></h1>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Subjects</button>
+                </div>
+                @if (successValue == 0)
+                {
+                    <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                        <i class="bi-exclamation-octagon-fill"></i>
+                        <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                }
+                else if (successValue == 1)
+                {
+                    <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                        <i class="bi-check-circle-fill"></i>
+                        <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                @{
+                    Constants.ViewDataErrorHandling.Success = -1;
+                    Constants.ViewDataErrorHandling.ErrorMessage = null;
+                }
+                <table id="table" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Subject Name</th>
+                            <th>Grade</th>
+                            <th>Actions</th>
                         </tr>
-                        <tr id="spacing-row">
-                            <td> </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>            
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <!--Modal for Adding Exam Schedule-->
@@ -56,31 +124,110 @@
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Input Subject Details</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                @using (Html.BeginForm("AddSubject","Registrar",FormMethod.Post))
-                {
+                <form asp-action="AddSubject">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="recipient-name" class="col-form-label">Subject Name:</label>
-                            <input type="text" class="form-control" id="recipient-name" name="name">
+                            <input type="text" class="form-control" id="recipient-name" asp-for="subjectname">
+                            <span asp-validation-for="subjectname" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Grade:</label>
-                            <input type="text" class="form-control" id="recipient-name" name="grade">
+                            <select asp-for="grade" class="form-control">
+                                <option value="" disabled="disabled" selected="selected">grade</option>
+                                <option value="Nursery">Nursery</option>
+                                <option value="Kinder 1">Kinder 1</option>
+                                <option value="Kinder 2">Kinder 2</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                            <span asp-validation-for="grade" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Has Child Subject:</label>
-                            <select class="form-select" aria-label="Default select example" name="HasChild">
-                                <option selected>Click to open menu</option>
+                            <select class="form-select" aria-label="Default select example" asp-for="haschild">
+                                <option value="" selected>Click to open menu</option>
                                 <option value="false">False</option>
-                                <option value="true">True</option>                                
+                                <option value="true">True</option>
                             </select>
+                            <span asp-validation-for="haschild" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-danger">Add Subject</button>
                     </div>
-                }                
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for delete alert -->
+    <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="exampleModalLabel">Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="subid"/>
+                    Are you sure you want to delete this subject? Grades of students associated with this subject will also be removed. Edit this subject instead if you want to make changes.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" onclick="removeSub()" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Modal for Edit Subject-->
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Subject Details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="UpdateSubject">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="subjectid" id="id"/>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Subject Name:</label>
+                            <input type="text" class="form-control" id="subname" asp-for="subjectname">
+                            <span asp-validation-for="subjectname" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Grade:</label>
+                            <select asp-for="grade" class="form-control">
+                                <option value="" disabled="disabled" selected="selected">GRADE TO ENROLL</option>
+                                <option value="Nursery">Nursery</option>
+                                <option value="Kinder 1">Kinder 1</option>
+                                <option value="Kinder 2">Kinder 2</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                            <span asp-validation-for="grade" class="text-danger"></span>
+                        </div>                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Edit Subject</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -89,4 +236,29 @@
     function redirect(headId){
         window.location.href = '@Url.Action("ViewChildSubject", "Registrar")?headId=' + headId;
     }
+    function removeSub(){
+        var subId = document.getElementById("subid").value;
+        window.location.href = '@Url.Action("RemoveSubjectHead", "Registrar")?id=' + subId;
+    }
+    function SetSubjectEditPanel(id, subname, grade){
+        document.getElementById("id").value=id;
+        document.getElementById("subname").value = subname;
+        document.getElementById("grade").value = grade;
+        
+    }
+    function ensureString(value) {
+        if (typeof value === 'string') {
+            return "'" + value.replace(/'/g, "\\'") + "'";
+        } else {
+            return 'undefined'; // or any default value you want to provide
+        }
+    }
+    function removeAlert(subid){
+        document.getElementById("subid").value = subid;
+    }
 </script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

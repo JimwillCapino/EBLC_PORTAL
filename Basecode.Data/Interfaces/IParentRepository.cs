@@ -1,4 +1,5 @@
 ﻿using Basecode.Data.Models;
+using Basecode.Data.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,7 @@ namespace Basecode.Data.Interfaces
         public IEnumerable<Parent> GetAllParents();
         public void RemoveParent(Parent parent);
         public Parent GetParentById(int id);
+        public  Task<ParentDetails> GetParentDetailById(int studentId);
+        public Task UpdateParentAsyn(Parent parent);
     }
 }

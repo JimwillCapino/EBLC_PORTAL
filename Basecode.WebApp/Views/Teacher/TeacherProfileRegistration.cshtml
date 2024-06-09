@@ -1,0 +1,137 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Create profile";
+    Layout = "~/Views/Shared/NoLayout.cshtml";
+    int successValue = (int)ViewData["Success"];
+}
+@using Basecode.Data.ViewModels
+@using Basecode.Data
+@model ProfileViewModel
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Flatpickr JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<div class="wrapper"> 
+    
+    <div class="container d-flex justify-content-center align-items-center min-vh-100 mt-4">
+        <!----------------------- Login Container -------------------------->
+        <div class="row border rounded-5 p-3 bg-white shadow box-area">
+            @if (successValue == 0)
+            {
+                <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-exclamation-octagon-fill"></i>
+                    <strong class="mx-2">Error!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+            }
+            else if (successValue == 1)
+            {
+                <div class="alert alert-success alert-dismissible d-flex align-items-center fade show">
+                    <i class="bi-check-circle-fill"></i>
+                    <strong class="mx-2">Success!</strong>@ViewData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @{
+                Constants.ViewDataErrorHandling.Success = -1;
+                Constants.ViewDataErrorHandling.ErrorMessage = null;
+            }
+            <!--------------------------- Left Box ----------------------------->
+            <div class="col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box" style="background: #dc3545">
+                <div class="featured-image mb-3">
+                    <img src="~/signin-image.jpg" class="img-fluid" style="width: 250px;">
+                </div>
+                <p class="text-white fs-2" style="font-weight: 600;">Teachers Registration</p>
+            </div>
+            <!-------------------- ------ Right Box ---------------------------->
+
+            <div class="col-md-6 right-box">
+                <div class="row align-items-center p-5">
+                    <div class="header-text mb-4">
+                        <h2>Hello, Teacher!</h2>
+                    </div>
+                    <form asp-action="UserSetUpTeacher" enctype="multipart/form-data" class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputEmail1" class="form-label">Profile Picture</label>
+                            <input type="file" accept="image/*" class="form-control" id="exampleInputEmail1" asp-for="ProfilePicRecieve" accept="image/*">
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputEmail1" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="exampleInputEmail1" asp-for="FirstName">
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputPassword1" class="form-label">Middle Name</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" asp-for="MiddleName">
+                            
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputPassword1" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="exampleInputPassword1" asp-for="LastName">
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="disabledSelect" class="form-label">Sex</label>
+                            <select id="disabledSelect" class="form-select" asp-for="sex">
+                                <option value="">Choose sex</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                            <span asp-validation-for="sex" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputPassword1" class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" asp-for="PhoneNumber">
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputPassword1" class="form-label">Address</label>
+                            <input type="text" class="form-control"  asp-for="Address">
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label class="form-label">Birthday</label>
+                            <input type="text" class="form-control" id="datetimePicker" asp-for="Birthday">
+                            <span asp-validation-for="Birthday" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputPassword1" class="form-label">Current Password</label>
+                            <input type="password" class="form-control"  asp-for="CurrentPassword">
+                            <span asp-validation-for="CurrentPassword"></span>
+                        </div>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleInputPassword1" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1" asp-for="NewPassword">
+                            <span asp-validation-for="NewPassword" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script>
+    flatpickr("#datetimePicker", {
+        enableTime: false, // Disable time picker
+        noCalendar: false, // Enable calendar (date picker)
+        allowInput: true, // Enable keyboard input
+        dateFormat: "m/d/Y", // Specify the date format (e.g., "Y-m-d" for "2024-05-16")
+        defaultDate: null, // Optional: set default date, remove this line if not needed
+        onChange: function (selectedDates, dateStr, instance) {
+            console.log(dateStr); // Handle formatted date string
+        }
+    });
+</script>

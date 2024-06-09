@@ -29,13 +29,19 @@ namespace Basecode.Data.Interfaces
         public Core_Values GetCoreValuesById(int Id);
         public List<ValuesGrades> GetValuesGrades(int StudentId, string schoolyear);
         public Learner_Values GetLearnerValuesById(int id);
-        public void UpdateLearnerValues(Learner_Values valuesgrades);
-        public List<string> GetValuesSchoolyear(int student_Id);
+        public void UpdateLearnerValues(Learner_Values valuesgrades);       
         public void AddAttendance(Attendance attendance);
         public void UpdateAttendance(Attendance attendance);
         public void DeleteAttendance(Attendance attendance);
         public List<Attendance> GetStudentAtendance(int student_Id, string schoolYear);
-        public bool isDateExisting(int month, string schoolYear);
-        public List<string> GetAttendanceSchoolYear(int student_Id);
+        public bool isDateExisting(int month, string schoolYear, int studentid);
+        
+        public IEnumerable<StudentPreviewInformation> GetAllStudentPreview();
+        public int GetBehavioralMaxQuarter(int studentId, int BehavioralId, string schoolYear);
+        public Behavioural_Statement GetBehavioural_Statement(int id);
+        public void DeleteBehavioralStatement(Behavioural_Statement statement);
+        public string GradeLevel(int studentId, string schoolYear);
+        public List<string> GetSchoolYearsWithOutGradeLevel(int student_Id);
+        public void AddStudentAdviser(StudentAdviser studentAdviser);
     }
 }

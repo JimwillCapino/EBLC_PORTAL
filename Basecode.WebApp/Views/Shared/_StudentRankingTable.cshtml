@@ -1,0 +1,32 @@
+﻿@using Basecode.Data.ViewModels
+
+@if (Model !=null )
+{
+    if(Model.Count()>0)
+    {
+        @foreach (var student in Model)
+        {
+            <tr>
+                <td>
+                    @student.fullname
+                </td>
+                <td>
+                    @student.Average
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="2">There are no students who achieved this ranking</td>
+        </tr>
+    }
+
+}
+else
+{
+    <tr>
+        <td colspan="2">No data to show</td>
+    </tr>
+}

@@ -18,8 +18,12 @@ namespace Basecode.Data.Interfaces
         public void SaveDbChanges();
         public void RemoveSubject(Subject subject); 
         public Subject GetSubjectById(int id);
-        public List<ChildSubjectView> GetChildSubject(int headId);
-        public List<Subject> GetAllSubjects(int studentId, string schoolYear);
+        public List<ChildSubjectView> GetChildSubjects(int headId);
+        public List<Subject> GetAllSubjects(int studentId, string gradeLevel);
         public List<HeadSubject> GetAllHeadSubject();
+        public List<SubjectViewModel> GetsSubjectsForDataTables();
+        public void UdpateSubject(Subject subject);
+        public void RemoveChildSubject(int id);
+        public List<Subject> GetAllSubjectTakenByStudent(int studentId, string gradeLevel);
     }
 }

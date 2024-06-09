@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,13 +23,15 @@ namespace Basecode.Services.Services
         RoleManager<IdentityRole> _roleManager;
         IRTPRepository _rtpCommons;
         IRTPUsersRepository _rtpusers;
+        ISettingsRepository _settingsRepository;
         public TeacherService(ITeacherRepository teacherRepository,
             IMapper mapper,
             IUsersRepository usersRepository,
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IRTPRepository rtpRepoistory,
-            IRTPUsersRepository rtpusers
+            IRTPUsersRepository rtpusers,
+            ISettingsRepository settingsRepository
             ) 
         {
             _TeacherRepository = teacherRepository;
@@ -38,6 +41,7 @@ namespace Basecode.Services.Services
             _roleManager = roleManager;
             _rtpCommons = rtpRepoistory;
             _rtpusers = rtpusers;
+            _settingsRepository = settingsRepository;
         }
         private IdentityUser CreateUser()
         {
@@ -81,6 +85,59 @@ namespace Basecode.Services.Services
             {
                 Console.WriteLine(ex);
                 throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public async Task AddTeacherUserAccount(UsersRegistration account)
+        {
+            try
+            {
+                var teacherUser = new IdentityUser
+                {
+                    UserName = account.EmailAddress, 
+                    Email = account.EmailAddress                    
+                };
+
+                var result = await _UserManager.CreateAsync(teacherUser, account.Password);
+                             
+                if (result.Succeeded)
+                {
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.Port = 587;
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new System.Net.NetworkCredential(_settingsRepository.GetSchoolEmail(), _settingsRepository.GetPassword()); // Enter seders User name and password       
+                    smtp.EnableSsl = true;
+                    var userRole = _roleManager.FindByNameAsync("Teacher").Result;   
+                    
+                    if (userRole != null)
+                        await _UserManager.AddToRoleAsync(teacherUser, userRole.Name);
+
+
+                    MailMessage mail = new MailMessage();
+                    mail.To.Add(teacherUser.Email);
+                    mail.From = new MailAddress(_settingsRepository.GetSchoolEmail());
+                    mail.Subject = "Account in EBLC Portal";
+
+                    mail.Body = "Greetings from the EBLC management.<br><br>"
+                              + "Your account has been created.<br><br>"
+                              + "Your credentials are:<br>"
+                              + "Username: <b>" + teacherUser.Email + "</b><br>"
+                              + "Password: <b>" + account.Password + "</b><br><br>"
+                              + "Thank you and welcome aboard.";
+
+                    mail.IsBodyHtml = true;
+                    smtp.Send(mail);
+
+                }
+                else
+                {
+                    throw new Exception(result.Errors.First().Code);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB+". Specifically "+ex.Message);
             }
         }
         public async Task ApproveTeacherRegistration(int id)
@@ -155,6 +212,27 @@ namespace Basecode.Services.Services
             {
                 Console.WriteLine(ex);
                 throw new Exception(Constants.Exception.DB);
+            }
+        }
+        public async Task RemoveTeacher(string aspid)
+        {
+            try
+            {
+                var user = await _UserManager.FindByIdAsync(aspid);
+                var rtpid = _rtpusers.GetRTPUsers().FirstOrDefault(p => p.AspUserId == aspid).RTPId;
+                var uid = _rtpCommons.getRTPCommons().FirstOrDefault(p => p.Id == rtpid).UID;
+                var userportal = _UsersRepository.GetUserById(uid);
+                await _UserManager.DeleteAsync(user);
+                _UsersRepository.RemoveUser(userportal);               
+            }
+            catch(NullReferenceException ex)
+            {
+                throw new Exception("User not found");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw new Exception(Constants.Exception.DB +". Ensure that the teacher is not an adviser on any class.");
             }
         }
     }
